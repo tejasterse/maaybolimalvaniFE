@@ -8,6 +8,8 @@ import ListingPage from './ListingPage.jsx';
 import SearchPage from './SearchPage.jsx';
 import GalleryPage from './GalleryPage.jsx';
 import ChatbotPage from './ChatbotPage.jsx';
+import KavitaLekhPage from './KavitaLekhPage.jsx';
+import FestivalsPage from './FestivalsPage.jsx';
 import { AboutUsPage, TermsPage, PrivacyPage } from './StaticPages.jsx';
 
 const navItems = [
@@ -18,36 +20,58 @@ const navItems = [
   { key: 'paryatan', label: 'पर्यटन' },
   { key: 'sanskriti', label: 'संस्कृती' },
   { key: 'krida', label: 'क्रीडा' },
+  { key: 'gunhe', label: 'गुन्हे' },
+  { key: 'kavita-lekh', label: 'कविता-लेख-विनोद' },
+  { key: 'utsav', label: 'सण व उत्सव' },
   { key: 'gallery', label: 'गॅलरी' },
   { key: 'search', label: 'शोधा' },
 ];
 
 // Category pages all use ListingPage with different labels
-const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida'];
+const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'];
 
 export default function UserReaderLayout({ onAdminLogin }) {
   const [activePage, setActivePage] = useState('home');
+  const [pageHistory, setPageHistory] = useState(['home']);
   const [pageParams, setPageParams] = useState(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const navigate = (key, params = null) => {
+    if (key !== activePage) {
+      setPageHistory((prev) => [...prev, key]);
+    }
     setActivePage(key);
     setPageParams(params);
     setShowMobileMenu(false);
     window.scrollTo(0, 0);
   };
 
+  const goBack = () => {
+    if (pageHistory.length > 1) {
+      const updatedHistory = [...pageHistory];
+      updatedHistory.pop(); // remove current page
+      const previous = updatedHistory[updatedHistory.length - 1] || 'home';
+      setPageHistory(updatedHistory);
+      setActivePage(previous);
+    } else {
+      setActivePage('home');
+    }
+    window.scrollTo(0, 0);
+  };
+
   const renderPage = () => {
     if (activePage === 'home') return <HomePage onNavigate={navigate} />;
-    if (activePage === 'article') return <ArticlePage onNavigate={navigate} />;
+    if (activePage === 'article') return <ArticlePage onNavigate={navigate} onGoBack={goBack} articleData={pageParams} />;
     if (activePage === 'listing' || categoryPages.includes(activePage))
-      return <ListingPage onNavigate={navigate} categoryKey={activePage} initialTaluka={pageParams?.taluka} />;
-    if (activePage === 'search') return <SearchPage onNavigate={navigate} />;
-    if (activePage === 'gallery') return <GalleryPage />;
-    if (activePage === 'chatbot') return <ChatbotPage />;
-    if (activePage === 'about-us') return <AboutUsPage />;
-    if (activePage === 'terms') return <TermsPage />;
-    if (activePage === 'privacy') return <PrivacyPage />;
+      return <ListingPage onNavigate={navigate} onGoBack={goBack} categoryKey={activePage} initialTaluka={pageParams?.taluka} />;
+    if (activePage === 'kavita-lekh') return <KavitaLekhPage onNavigate={navigate} onGoBack={goBack} initialSection={pageParams?.section || 'kavita'} />;
+    if (activePage === 'utsav') return <FestivalsPage onNavigate={navigate} onGoBack={goBack} />;
+    if (activePage === 'search') return <SearchPage onNavigate={navigate} onGoBack={goBack} />;
+    if (activePage === 'gallery') return <GalleryPage onNavigate={navigate} onGoBack={goBack} initialTab={pageParams?.tab || 'सर्व'} />;
+    if (activePage === 'chatbot') return <ChatbotPage onNavigate={navigate} onGoBack={goBack} />;
+    if (activePage === 'about-us') return <AboutUsPage onNavigate={navigate} onGoBack={goBack} />;
+    if (activePage === 'terms') return <TermsPage onNavigate={navigate} onGoBack={goBack} />;
+    if (activePage === 'privacy') return <PrivacyPage onNavigate={navigate} onGoBack={goBack} />;
     return <HomePage onNavigate={navigate} />;
   };
 
@@ -58,58 +82,53 @@ export default function UserReaderLayout({ onAdminLogin }) {
 
       <UtilityBar onAdminLogin={onAdminLogin} onNavigate={navigate} />
 
-      {/* Masthead */}
-      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)', paddingTop: 16 }}>
-        <div className="max-w-[1180px] mx-auto px-6">
-          <div className="flex items-center justify-between">
-            <div
-              className="cursor-pointer"
-              onClick={() => navigate('home')}
-            >
-              <img src="/logo.jpg" alt="मायबोली मालवणी" className="h-[60px] md:h-[70px] object-contain rounded-lg border border-gold" />
-            </div>
-            {/* Search bar in header */}
-            <div className="hidden md:flex items-center gap-2">
-              <div
-                className="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer"
-                style={{ background: '#F0EAD9', border: '1px solid var(--line)' }}
-                onClick={() => navigate('search')}
-              >
-                <span className="font-poppins text-[12.5px] text-grey">🔍 बातम्या शोधा…</span>
-              </div>
-            </div>
-            {/* Mobile hamburger */}
-            <button
-              className="md:hidden text-[22px] text-ink"
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-            >
-              {showMobileMenu ? '✕' : '☰'}
-            </button>
+      {/* Header with Logo on Left and Navbar on Right */}
+      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }}>
+        <div className="max-w-[1240px] mx-auto px-4 flex items-center justify-between gap-3 py-1">
+          {/* Logo */}
+          <div
+            className="cursor-pointer flex-shrink-0 p-0 m-0 leading-none flex items-center"
+            onClick={() => navigate('home')}
+          >
+            <img src="/logo.png" alt="मायबोली मालवणी" className="h-[80px] md:h-[95px] object-contain drop-shadow-md transition-transform hover:scale-105 p-0 m-0 block" />
           </div>
-        </div>
 
-        {/* Primary Nav — desktop */}
-        <nav style={{ background: 'var(--maroon)', marginTop: 14 }}>
-          <div className="max-w-[1180px] mx-auto px-6">
-            <ul className="hidden md:flex list-none justify-center flex-wrap gap-0.5 overflow-x-auto">
-              {navItems.map(({ key, label }) => (
-                <li key={key}>
-                  <button
-                    onClick={() => navigate(key)}
-                    className={`block px-4 py-3 font-poppins text-[13px] font-medium border-r border-white/[0.08] nav-transition
-                      ${activeNavKey === key ? 'bg-maroon-deep text-gold-light' : 'text-[#fbe8c9] hover:bg-maroon-deep hover:text-gold-light'}`}
-                  >
-                    {label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
+          {/* Primary Nav — positioned directly on right side of logo */}
+          <nav className="hidden lg:flex items-center flex-1 justify-end gap-1 bg-maroon p-1.5 rounded-xl border border-gold/40 shadow-sm overflow-x-auto">
+            {navItems.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => navigate(key)}
+                className={`px-3 py-2 rounded-lg font-poppins text-[12.5px] font-semibold transition-all whitespace-nowrap ${
+                  activeNavKey === key
+                    ? 'bg-maroon-deep text-gold-light shadow'
+                    : 'text-[#fbe8c9] hover:bg-maroon-deep hover:text-gold-light'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+            <button
+              onClick={() => navigate('search')}
+              className="p-2 rounded-lg text-gold-light hover:bg-maroon-deep text-[14px] ml-1"
+              title="शोधा"
+            >
+              🔍
+            </button>
+          </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            className="lg:hidden text-[24px] text-maroon bg-white px-3 py-1.5 rounded-xl border border-line shadow-sm"
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+          >
+            {showMobileMenu ? '✕' : '☰'}
+          </button>
+        </div>
 
         {/* Mobile menu */}
         {showMobileMenu && (
-          <div className="md:hidden" style={{ background: 'var(--maroon-deep)', borderTop: '1px solid rgba(255,255,255,.1)' }}>
+          <div className="lg:hidden" style={{ background: 'var(--maroon-deep)', borderTop: '1px solid rgba(255,255,255,.1)' }}>
             {navItems.map(({ key, label }) => (
               <button
                 key={key}
@@ -123,6 +142,27 @@ export default function UserReaderLayout({ onAdminLogin }) {
           </div>
         )}
       </header>
+
+      {/* Back Navigation Bar for opened inner pages */}
+      {activePage !== 'home' && (
+        <div className="bg-[#F6F1E5] border-b border-gold/30 py-2.5 px-6 shadow-inner">
+          <div className="max-w-[1240px] mx-auto flex items-center justify-between">
+            <button
+              onClick={goBack}
+              className="flex items-center gap-2 font-poppins font-bold text-[13px] text-maroon hover:text-maroon-deep bg-white border border-gold/50 px-4 py-1.5 rounded-full shadow-sm hover:shadow transition-all"
+            >
+              <span className="text-base">←</span>
+              <span>मागे जा (Go Back)</span>
+            </button>
+            <button
+              onClick={() => navigate('home')}
+              className="font-poppins text-[12px] font-semibold text-teal hover:underline flex items-center gap-1"
+            >
+              <span>🏠 मुख्य पानावर जा</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="flex-1">
         {renderPage()}

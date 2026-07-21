@@ -6,10 +6,10 @@ export default function Footer({ onNavigate, onAdminLogin }) {
           {/* Logo and Brand tagline */}
           <div>
             <div
-              className="mb-2 cursor-pointer"
+              className="m-0 p-0 cursor-pointer"
               onClick={() => onNavigate && onNavigate('home')}
             >
-              <img src="/logo.jpg" alt="मायबोली मालवणी" className="h-[48px] object-contain rounded-lg border border-white/20" />
+              <img src="/logo.png" alt="मायबोली मालवणी" className="h-[75px] object-contain drop-shadow-md p-0 m-0 block" />
             </div>
             <div className="font-poppins text-[11.5px] leading-relaxed" style={{ color: '#8fa0b3' }}>
               कोकणाचा आवाज · मालवणी अभिमान<br />सिंधुदुर्ग जिल्ह्यातील विश्वासार्ह मराठी बातमीपत्र
@@ -26,6 +26,9 @@ export default function Footer({ onNavigate, onAdminLogin }) {
                 { label: 'मासेमारी-शेती', key: 'maasemari' },
                 { label: 'संस्कृती', key: 'sanskriti' },
                 { label: 'क्रीडा', key: 'krida' },
+                { label: 'गुन्हे', key: 'gunhe' },
+                { label: 'कविता-लेख-विनोद', key: 'kavita-lekh' },
+                { label: 'सण व उत्सव', key: 'utsav' },
               ].map(({ label, key }) => (
                 <button
                   key={key}

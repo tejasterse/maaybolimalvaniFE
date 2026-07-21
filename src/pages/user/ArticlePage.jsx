@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { articleMedia } from '../../constants/data.jsx';
 
 const relatedArticles = [
   { img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=250&h=150&fit=crop', title: 'वेंगुर्ला किनाऱ्यावर सांस्कृतिक कार्यक्रमाचे आयोजन', meta: '१ दिवसापूर्वी · वेंगुर्ला', key: 'vengurla' },
@@ -91,9 +92,26 @@ const articlesData = {
   }
 };
 
-export default function ArticlePage({ onNavigate }) {
+export default function ArticlePage({ onNavigate, articleData }) {
   const [currentArticleKey, setCurrentArticleKey] = useState('main');
-  const data = articlesData[currentArticleKey] || articlesData['main'];
+
+  // Dynamic article data formatting
+  const data = articleData ? {
+    tag: articleData.tag || articleData.categoryKey || 'मालवण · बातमी',
+    title: articleData.title || 'सिंधुदुर्ग ताज्या घडामोडी',
+    author: articleData.meta?.split('·')[1]?.trim() || articleData.author || 'सारिका पवार',
+    authorInitial: (articleData.meta?.split('·')[1]?.trim() || articleData.author || 'SP').slice(0, 2).toUpperCase(),
+    time: articleData.meta || 'आज · ३ मिनिटे वाचन',
+    img: articleData.img || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=560&fit=crop',
+    imgCaption: `${articleData.title || 'ताज्या घडामोडी'} — छायाचित्र: मायबोली मालवणी`,
+    body: articleData.body || [
+      articleData.excerpt || `${articleData.title} संदर्भात सिंधुदुर्ग जिल्ह्यातून महत्त्वाची बातमी समोर येत आहे.`,
+      `स्थानिक नागरिक व प्रशासनाकडून या घडामोडीवर लक्ष ठेवले जात असून आवश्यक त्या सर्व उपाययोजना राबवल्या जात आहेत.`,
+      `या निर्णयामुळे परिसरातील व्यावसायिक व नागरिकांमध्ये समाधानाचे वातावरण असून पुढील घडामोडींवर लक्ष ठेवले जात आहे.`
+    ],
+    quote: articleData.quote || `"${articleData.title} संदर्भात घेतलेला हा निर्णय कौतुकास्पद आहे." — मायबोली मालवणी विशेष वृत्त`,
+    tags: articleData.tags || ['#सिंधुदुर्ग', '#मालवणी', '#कोकण', '#बातमी']
+  } : (articlesData[currentArticleKey] || articlesData['main']);
 
   const handleRelatedClick = (key) => {
     setCurrentArticleKey(key);
@@ -107,10 +125,12 @@ export default function ArticlePage({ onNavigate }) {
   return (
     <div>
       <div className="max-w-[1180px] mx-auto px-6">
-        {/* Breadcrumb */}
-        <div className="font-poppins text-[12px] text-grey pt-5">
-          <button onClick={() => onNavigate && onNavigate('home')} className="text-teal">होम</button> /{' '}
-          <button onClick={() => onNavigate && onNavigate('listing')} className="text-teal">पर्यटन</button> / {data.title}
+        {/* Breadcrumb Navigation */}
+        <div className="flex items-center justify-between pt-4">
+          <div className="font-poppins text-[12px] text-grey">
+            <button onClick={() => onNavigate && onNavigate('home')} className="text-teal hover:underline">होम</button> /{' '}
+            <button onClick={() => onNavigate && onNavigate('listing')} className="text-teal hover:underline">बातमी</button> / {data.title}
+          </div>
         </div>
 
         {/* Article Head */}
@@ -165,11 +185,18 @@ export default function ArticlePage({ onNavigate }) {
       <img
         src={data.img}
         alt={data.title}
-        className="w-full max-w-[900px] h-[420px] object-cover rounded-[10px] mx-auto block mb-2 shadow-sm"
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80';
+        }}
+        className="w-full max-w-[900px] h-[420px] object-cover rounded-[10px] mx-auto block mb-2 shadow-sm bg-gray-100"
       />
-      <div className="max-w-[900px] mx-auto mb-8 font-poppins text-[11.5px] text-grey text-center">
+      <div className="max-w-[900px] mx-auto mb-6 font-poppins text-[11.5px] text-grey text-center">
         {data.imgCaption}
       </div>
+
+      {/* Media Column (Only 2 options: Photos & Videos) — Placed at the top */}
+      <ArticleMediaSection onNavigate={onNavigate} />
 
       {/* Article Body */}
       <div
@@ -227,3 +254,47 @@ export default function ArticlePage({ onNavigate }) {
     </div>
   );
 }
+
+// Media Column Sub-component: ONLY 2 Options (Photos & Videos)
+function ArticleMediaSection({ onNavigate }) {
+  return (
+    <div className="max-w-[760px] mx-auto mb-8 px-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* 1. Photos Option */}
+        <div
+          onClick={() => onNavigate && onNavigate('gallery', { tab: 'फोटो' })}
+          className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-teal group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-teal/10 text-teal flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              📷
+            </div>
+            <div>
+              <div className="font-tiro text-[20px] text-navy font-bold">फोटो (Photos)</div>
+              <div className="font-poppins text-[12px] text-grey">बातमीचे फोटो दालन उघडा</div>
+            </div>
+          </div>
+          <span className="font-poppins text-lg text-teal group-hover:translate-x-1 transition-transform">→</span>
+        </div>
+
+        {/* 2. Videos Option */}
+        <div
+          onClick={() => onNavigate && onNavigate('gallery', { tab: 'व्हिडिओ' })}
+          className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-maroon group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-maroon/10 text-maroon flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              🎥
+            </div>
+            <div>
+              <div className="font-tiro text-[20px] text-navy font-bold">व्हिडिओ (Videos)</div>
+              <div className="font-poppins text-[12px] text-grey">बातमीचे व्हिडिओ उघडा</div>
+            </div>
+          </div>
+          <span className="font-poppins text-lg text-maroon group-hover:translate-x-1 transition-transform">→</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+

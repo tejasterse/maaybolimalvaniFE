@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { galleryItems, albums } from '../../constants/data.jsx';
 
-export default function GalleryPage() {
+export default function GalleryPage({ initialTab = 'सर्व', onNavigate, onGoBack }) {
   const [lightbox, setLightbox] = useState(null);
-  const [activeTab, setActiveTab] = useState('सर्व');
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   const openLB = (item) => setLightbox(item);
   const closeLB = (e) => {

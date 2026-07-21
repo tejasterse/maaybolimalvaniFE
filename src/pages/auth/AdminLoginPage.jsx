@@ -21,7 +21,7 @@ export default function AdminLoginPage({ onLogin, onGoUser }) {
     >
       {/* Brand */}
       <div className="text-center mb-8 flex flex-col items-center">
-        <img src="/logo.jpg" alt="मायबोली मालवणी" className="h-[90px] object-contain rounded-xl border border-white/20 mb-3 shadow-md" />
+        <img src="/logo.png" alt="मायबोली मालवणी" className="h-[120px] object-contain mb-3 drop-shadow-lg" />
         <div
           className="inline-block font-poppins text-[11px] font-bold uppercase tracking-[.15em] px-4 py-1 rounded-full"
           style={{ background: 'var(--gold)', color: 'var(--navy)' }}

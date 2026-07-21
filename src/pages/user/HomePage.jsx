@@ -8,21 +8,26 @@ const breakingNews = [
   'वेंगुर्ला किनाऱ्यावर नवीन वॉटर-स्पोर्ट्स केंद्र कार्यान्वित',
 ];
 
+const handleImageError = (e) => {
+  e.currentTarget.onerror = null;
+  e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80';
+};
+
 const heroArticle = {
   title: 'सिंधुदुर्ग किल्ल्यावर पर्यटकांची विक्रमी गर्दी, स्थानिक व्यावसायिकांना दिलासा',
   tag: 'ब्रेकिंग न्यूज',
   meta: 'मालवण · सारिका पवार · १५ मिनिटांपूर्वी',
   excerpt: 'आज सकाळपासून सिंधुदुर्ग किल्ल्यावर पर्यटकांची मोठी गर्दी दिसान इली. सुट्टीच्या दिवसामुळे राज्याच्या विविध भागांतून तसेच गोव्यातून पर्यटक मोठ्या संख्येने आले होते…',
-  img: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop',
+  img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop',
 };
 
 const talukaHighlights = [
-  { name: 'मालवण', img: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop', headline: 'किल्ल्यावर विक्रमी गर्दी' },
-  { name: 'कणकवली', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=200&h=140&fit=crop', headline: 'निवडणूक घोषणा' },
-  { name: 'देवगड', img: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=200&h=140&fit=crop', headline: 'आंबा हंगाम चर्चा' },
-  { name: 'सावंतवाडी', img: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=200&h=140&fit=crop', headline: 'खेळणी उद्योगाला प्रोत्साहन' },
-  { name: 'वेंगुर्ला', img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=200&h=140&fit=crop', headline: 'किनारपट्टी विकास' },
-  { name: 'कुडाळ', img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=200&h=140&fit=crop', headline: 'गणेशोत्सव तयारी' },
+  { name: 'मालवण', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop', headline: 'किल्ल्यावर विक्रमी गर्दी' },
+  { name: 'कणकवली', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop', headline: 'निवडणूक घोषणा' },
+  { name: 'देवगड', img: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=300&h=200&fit=crop', headline: 'आंबा हंगाम चर्चा' },
+  { name: 'सावंतवाडी', img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop', headline: 'खेळणी उद्योगाला प्रोत्साहन' },
+  { name: 'वेंगुर्ला', img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=300&h=200&fit=crop', headline: 'किनारपट्टी विकास' },
+  { name: 'कुडाळ', img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=200&fit=crop', headline: 'गणेशोत्सव तयारी' },
 ];
 
 const categories = [
@@ -81,15 +86,15 @@ const latestArticles = [
 
 // New Sections Data
 const entertainment = [
-  { id: 1, title: 'मालवणी कविता: पावसाची चाहूल', author: 'सुहास कुबल', type: 'कविता', img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop' },
-  { id: 2, title: 'कथा: कोकणचा निसर्ग', author: 'स्मिता देसाई', type: 'लेख', img: 'https://images.unsplash.com/photo-1505322022379-7c3353ee6291?w=300&h=200&fit=crop' },
-  { id: 3, title: 'विनोद: मालवणी माणसाची हुशारी', author: 'प्रशांत गावडे', type: 'विनोद', img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=200&fit=crop' }
+  { id: 1, title: 'मालवणी कविता: पावसाची चाहूल', author: 'सुहास कुबल', type: 'कविता', icon: '📜', section: 'kavita', img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop' },
+  { id: 2, title: 'लेख: दशावतार लोककला वारसा', author: 'गजानन बांदिवडेकर', type: 'लेख', icon: '✍️', section: 'lekh', img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop' },
+  { id: 3, title: 'विनोद: मालवणी माणसाची हुशारी', author: 'प्रशांत गावडे', type: 'विनोद', icon: '😂', section: 'vinod', img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=200&fit=crop' }
 ];
 
 const festivalsPrograms = [
-  { id: 1, title: 'दशावतार नाटक - वालावल', date: '२५ जुलै', location: 'वालावल, कुडाळ', img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop' },
-  { id: 2, title: 'गणेशोत्सव मंडळ बैठक', date: '२८ जुलै', location: 'मालवण', img: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=300&h=200&fit=crop' },
-  { id: 3, title: 'जत्रा आणि भजन', date: '२ ऑगस्ट', location: 'देवगड', img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=300&h=200&fit=crop' }
+  { id: 1, title: 'नारळी पौर्णिमा व दर्या पूजन', date: '९ ऑगस्ट', location: 'मालवण पतन', icon: '🥥', img: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=300&h=200&fit=crop' },
+  { id: 2, title: 'सिंधुदुर्ग गणेशोत्सव २०२६', date: '२७ ऑगस्ट', location: 'सिंधुदुर्ग जिल्हा', icon: '🪔', img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop' },
+  { id: 3, title: 'भराडी देवी यात्रा नियोजन', date: '१५ फेब्रु', location: 'आंगणेवाडी', icon: '🚩', img: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=300&h=200&fit=crop' }
 ];
 
 const timetables = [
@@ -147,13 +152,14 @@ export default function HomePage({ onNavigate }) {
         <div className="py-6">
           <div
             className="hero-inner flex gap-6 bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-transform hover:-translate-y-1"
-            onClick={() => onNavigate('article')}
+            onClick={() => onNavigate('article', heroArticle)}
             style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}
           >
             <img
               src={heroArticle.img}
               alt={heroArticle.title}
-              className="w-[55%] h-[340px] object-cover flex-shrink-0 block"
+              onError={handleImageError}
+              className="w-[55%] h-[340px] object-cover flex-shrink-0 block bg-gray-100"
             />
             <div className="flex flex-col justify-center pr-8 py-8">
               <span
@@ -172,7 +178,7 @@ export default function HomePage({ onNavigate }) {
               <button
                 className="mt-5 self-start font-poppins font-semibold text-[13px] px-5 py-2.5 rounded-lg transition-colors hover:bg-opacity-90"
                 style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
-                onClick={(e) => { e.stopPropagation(); onNavigate('article'); }}
+                onClick={(e) => { e.stopPropagation(); onNavigate('article', heroArticle); }}
               >
                 पूर्ण बातमी वाचा →
               </button>
@@ -192,7 +198,7 @@ export default function HomePage({ onNavigate }) {
                 onClick={() => onNavigate('listing', { taluka: t.name })}
                 className="rounded-xl overflow-hidden relative cursor-pointer transition-transform hover:-translate-y-1 shadow-sm"
               >
-                <img src={t.img} alt={t.name} className="w-full h-[110px] object-cover block" />
+                <img src={t.img} alt={t.name} onError={handleImageError} className="w-full h-[110px] object-cover block bg-gray-100" />
                 <div
                   className="absolute inset-0 flex flex-col justify-end p-2.5"
                   style={{ background: 'linear-gradient(0deg, rgba(14,42,71,.88) 0%, transparent 55%)' }}
@@ -239,11 +245,11 @@ export default function HomePage({ onNavigate }) {
               filteredLatest.map((a) => (
                 <div
                   key={a.id}
-                  onClick={() => onNavigate('article')}
+                  onClick={() => onNavigate('article', a)}
                   className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1"
                   style={{ border: '1px solid var(--line)' }}
                 >
-                  <img src={a.img} alt={a.title} className="w-full h-[160px] object-cover block" />
+                  <img src={a.img} alt={a.title} onError={handleImageError} className="w-full h-[160px] object-cover block bg-gray-100" />
                   <div className="p-4">
                     <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.tag}</span>
                     <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2">{a.title}</h3>
@@ -271,6 +277,7 @@ export default function HomePage({ onNavigate }) {
                 'मासेमारी-शेती': 'maasemari',
                 'संस्कृती': 'sanskriti',
                 'क्रीडा': 'krida',
+                'गुन्हे': 'gunhe',
               };
               const targetKey = categoryMapping[cat.name] || 'listing';
               return (
@@ -294,55 +301,68 @@ export default function HomePage({ onNavigate }) {
           </div>
         </div>
 
-        {/* 5. Poems, Writings, Other Entertainment */}
+        {/* 5. Poems, Writings, Other Entertainment (With Images & Icons) */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-tiro text-[24px] text-maroon-deep">कविता, लेख आणि मनोरंजन</h2>
             <button
-              onClick={() => onNavigate('listing')}
+              onClick={() => onNavigate('kavita-lekh')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
-              अधिक वाचा →
+              सर्व साहित्य बघा →
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {entertainment.map((item) => (
               <div
                 key={item.id}
-                onClick={() => onNavigate('article')}
-                className="bg-cream rounded-xl overflow-hidden shadow-sm cursor-pointer flex transition-transform hover:-translate-y-1"
-                style={{ border: '1px solid var(--line)' }}
+                onClick={() => onNavigate('kavita-lekh', { section: item.section })}
+                className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1 border border-line"
               >
-                <img src={item.img} alt={item.title} className="w-[100px] h-[100px] object-cover block" />
-                <div className="p-3 flex flex-col justify-center">
-                  <span className="font-poppins text-[10px] text-amber font-bold uppercase tracking-wide">{item.type}</span>
-                  <h3 className="font-tiro text-[15px] leading-tight text-ink mt-1 mb-1">{item.title}</h3>
-                  <div className="font-poppins text-[11px] text-grey">लेखक: {item.author}</div>
+                <div className="relative h-[120px] overflow-hidden">
+                  <img src={item.img} alt={item.title} onError={handleImageError} className="w-full h-full object-cover bg-gray-100" />
+                  <span className="absolute top-2 left-2 bg-navy/80 backdrop-blur-sm text-gold-light font-poppins font-bold text-[10px] px-2.5 py-1 rounded-md flex items-center gap-1">
+                    <span>{item.icon}</span> {item.type}
+                  </span>
+                </div>
+                <div className="p-3.5">
+                  <h3 className="font-tiro text-[16.5px] leading-tight text-ink mb-1">{item.title}</h3>
+                  <div className="font-poppins text-[11.5px] text-grey">लेखक: {item.author}</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 6. Gavatle San Utsav, Programs */}
+        {/* 6. Gavatle San Utsav, Programs (With Images & Icons) */}
         <div className="mb-10">
-          <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">गावचे सण, उत्सव आणि कार्यक्रम</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-tiro text-[24px] text-maroon-deep">गावचे सण, उत्सव आणि कार्यक्रम</h2>
+            <button
+              onClick={() => onNavigate('utsav')}
+              className="font-poppins font-semibold text-[12.5px] text-maroon px-4 py-1.5 rounded-lg border border-maroon hover:bg-maroon hover:text-white transition-colors"
+            >
+              सर्व उत्सव पहा →
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {festivalsPrograms.map((prog) => (
               <div
                 key={prog.id}
-                onClick={() => onNavigate('article')}
-                className="bg-white rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-1 border-l-4"
-                style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
+                onClick={() => onNavigate('utsav')}
+                className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1 border border-line"
               >
-                <div className="flex items-center gap-4">
-                  <img src={prog.img} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
-                  <div>
-                    <h3 className="font-tiro text-[16px] text-navy mb-1">{prog.title}</h3>
-                    <div className="font-poppins text-[12px] text-grey flex items-center gap-2">
-                      <span>📅 {prog.date}</span>
-                      <span>📍 {prog.location}</span>
-                    </div>
+                <div className="relative h-[120px] overflow-hidden">
+                  <img src={prog.img} alt={prog.title} onError={handleImageError} className="w-full h-full object-cover bg-gray-100" />
+                  <span className="absolute top-2 left-2 bg-amber/90 text-navy font-poppins font-bold text-[10.5px] px-2.5 py-1 rounded-md flex items-center gap-1 shadow">
+                    <span>{prog.icon}</span> उत्सव
+                  </span>
+                </div>
+                <div className="p-3.5">
+                  <h3 className="font-tiro text-[16.5px] text-navy mb-1.5">{prog.title}</h3>
+                  <div className="font-poppins text-[12px] text-grey flex items-center justify-between">
+                    <span>📅 {prog.date}</span>
+                    <span>📍 {prog.location}</span>
                   </div>
                 </div>
               </div>

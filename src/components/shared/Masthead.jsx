@@ -5,7 +5,7 @@ export default function Masthead({ activeNav = 'होम' }) {
   return (
     <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)', paddingTop: 20 }}>
         <div className="flex justify-center mb-1">
-          <img src="/logo.jpg" alt="मायबोली मालवणी" className="h-[75px] object-contain rounded-lg border border-gold" />
+          <img src="/logo.png" alt="मायबोली मालवणी" className="h-[95px] object-contain drop-shadow-md" />
         </div>
       <nav style={{ background: 'var(--maroon)', marginTop: 16 }}>
         <div className="max-w-[1180px] mx-auto px-6">

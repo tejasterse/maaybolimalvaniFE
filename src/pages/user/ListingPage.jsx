@@ -9,14 +9,15 @@ const categoryDetails = {
   maasemari: { title: 'मासेमारी-शेती', desc: 'कोकणातील मत्स्यव्यवसाय आणि कृषी क्षेत्रातील घडामोडी', count: 'एकूण ३८ लेख' },
   paryatan: { title: 'पर्यटन', desc: 'सिंधुदुर्ग व कोकण परिसरातील पर्यटनाशी संबंधित सर्व बातम्या', count: 'एकूण २९ लेख' },
   sanskriti: { title: 'संस्कृती', desc: 'कोकणातील कला, सण, दशावतार आणि सांस्कृतिक वारसा', count: 'एकूण ४१ लेख' },
-  krida: { title: 'क्रीडा', desc: 'सिंधुदुर्ग व कोकण परिसरातील क्रीडा विश्वातील घडामोडी', count: 'एकूण १७ लेख' }
+  krida: { title: 'क्रीडा', desc: 'सिंधुदुर्ग व कोकण परिसरातील क्रीडा विश्वातील घडामोडी', count: 'एकूण १७ लेख' },
+  gunhe: { title: 'गुन्हे बातम्या', desc: 'सिंधुदुर्ग व कोकण परिसरातील कायदा, सुव्यवस्था आणि गुन्हेगारी विषयक घडामोडी', count: 'एकूण १२ लेख' }
 };
 
-export default function ListingPage({ onNavigate, categoryKey, initialTaluka }) {
+export default function ListingPage({ onNavigate, onGoBack, categoryKey, initialTaluka }) {
   const [selectedTaluka, setSelectedTaluka] = useState(initialTaluka || 'सर्व तालुके');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('latest');
-  const detail = categoryDetails[categoryKey] || categoryDetails['paryatan'];
+  const detail = categoryDetails[categoryKey] || categoryDetails['listing'];
 
   // Sync selectedTaluka if initialTaluka changes
   useEffect(() => {
@@ -117,13 +118,17 @@ export default function ListingPage({ onNavigate, categoryKey, initialTaluka }) 
           paginatedArticles.map((item) => (
             <div
               key={item.title}
-              onClick={() => onNavigate && onNavigate('article')}
+              onClick={() => onNavigate && onNavigate('article', item)}
               className="listing-item-inner flex gap-5 bg-white rounded-[10px] p-4 mb-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-0.5"
             >
               <img
                 src={item.img}
                 alt={item.title}
-                className="w-[200px] h-[130px] object-cover rounded-lg flex-shrink-0 hidden sm:block"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=80';
+                }}
+                className="w-[200px] h-[130px] object-cover rounded-lg flex-shrink-0 hidden sm:block bg-gray-100"
               />
               <div>
                 <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-[.05em]">

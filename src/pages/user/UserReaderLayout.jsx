@@ -1,14 +1,8 @@
-import { useState } from 'react';
+import { Outlet, useNavigate, useLocation, } from 'react-router-dom';
 import UtilityBar from '../../components/shared/UtilityBar.jsx';
 import ChatbotFab from '../../components/shared/ChatbotFab.jsx';
 import Footer from '../../components/shared/Footer.jsx';
-import HomePage from './HomePage.jsx';
-import ArticlePage from './ArticlePage.jsx';
-import ListingPage from './ListingPage.jsx';
-import SearchPage from './SearchPage.jsx';
-import GalleryPage from './GalleryPage.jsx';
-import ChatbotPage from './ChatbotPage.jsx';
-import { AboutUsPage, TermsPage, PrivacyPage } from './StaticPages.jsx';
+import { useState } from 'react';
 
 const navItems = [
   { key: 'home', label: 'होम' },
@@ -25,38 +19,24 @@ const navItems = [
 // Category pages all use ListingPage with different labels
 const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida'];
 
-export default function UserReaderLayout({ onAdminLogin }) {
-  const [activePage, setActivePage] = useState('home');
-  const [pageParams, setPageParams] = useState(null);
+export default function UserReaderLayout() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const navigate = (key, params = null) => {
-    setActivePage(key);
-    setPageParams(params);
+  const handleNavigate = (key) => {
     setShowMobileMenu(false);
     window.scrollTo(0, 0);
+    if (key === 'home') navigate('/');
+    else navigate(`/${key}`);
   };
 
-  const renderPage = () => {
-    if (activePage === 'home') return <HomePage onNavigate={navigate} />;
-    if (activePage === 'article') return <ArticlePage onNavigate={navigate} />;
-    if (activePage === 'listing' || categoryPages.includes(activePage))
-      return <ListingPage onNavigate={navigate} categoryKey={activePage} initialTaluka={pageParams?.taluka} />;
-    if (activePage === 'search') return <SearchPage onNavigate={navigate} />;
-    if (activePage === 'gallery') return <GalleryPage />;
-    if (activePage === 'chatbot') return <ChatbotPage />;
-    if (activePage === 'about-us') return <AboutUsPage />;
-    if (activePage === 'terms') return <TermsPage />;
-    if (activePage === 'privacy') return <PrivacyPage />;
-    return <HomePage onNavigate={navigate} />;
-  };
-
-  const activeNavKey = categoryPages.includes(activePage) ? activePage : activePage;
+  const activeNavKey = location.pathname.substring(1) || 'home';
 
   return (
     <div style={{ background: 'var(--cream)', color: 'var(--ink)', fontFamily: "'Mukta', sans-serif", minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
-      <UtilityBar onAdminLogin={onAdminLogin} onNavigate={navigate} />
+      <UtilityBar />
 
       {/* Masthead */}
       <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)', paddingTop: 16 }}>
@@ -64,7 +44,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
           <div className="flex items-center justify-between">
             <div
               className="cursor-pointer"
-              onClick={() => navigate('home')}
+              onClick={() => handleNavigate('home')}
             >
               <img src="/logo.jpg" alt="मायबोली मालवणी" className="h-[60px] md:h-[70px] object-contain rounded-lg border border-gold" />
             </div>
@@ -73,7 +53,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
               <div
                 className="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer"
                 style={{ background: '#F0EAD9', border: '1px solid var(--line)' }}
-                onClick={() => navigate('search')}
+                onClick={() => handleNavigate('search')}
               >
                 <span className="font-poppins text-[12.5px] text-grey">🔍 बातम्या शोधा…</span>
               </div>
@@ -95,7 +75,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
               {navItems.map(({ key, label }) => (
                 <li key={key}>
                   <button
-                    onClick={() => navigate(key)}
+                    onClick={() => handleNavigate(key)}
                     className={`block px-4 py-3 font-poppins text-[13px] font-medium border-r border-white/[0.08] nav-transition
                       ${activeNavKey === key ? 'bg-maroon-deep text-gold-light' : 'text-[#fbe8c9] hover:bg-maroon-deep hover:text-gold-light'}`}
                   >
@@ -113,7 +93,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
             {navItems.map(({ key, label }) => (
               <button
                 key={key}
-                onClick={() => navigate(key)}
+                onClick={() => handleNavigate(key)}
                 className="block w-full text-left px-6 py-3 font-poppins text-[14px] font-medium border-b border-white/10"
                 style={{ color: activeNavKey === key ? 'var(--gold-light)' : '#fbe8c9' }}
               >
@@ -125,12 +105,12 @@ export default function UserReaderLayout({ onAdminLogin }) {
       </header>
 
       <div className="flex-1">
-        {renderPage()}
+        <Outlet />
       </div>
 
-      <Footer onNavigate={navigate} onAdminLogin={onAdminLogin} />
+      <Footer />
 
-      <ChatbotFab onClick={() => navigate('chatbot')} />
+      <ChatbotFab />
     </div>
   );
 }

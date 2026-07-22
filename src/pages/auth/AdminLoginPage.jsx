@@ -1,17 +1,32 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import apiClient from '../../api/apiClient.js';
+import { useMutation } from '@tanstack/react-query';
 
-export default function AdminLoginPage({ onLogin, onGoUser }) {
+export default function AdminLoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [error, setError] = useState('');
+  const loginMutation = useMutation({
+    mutationFn: async (credentials) => {
+      const response = await apiClient.post('/auth/login', credentials);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // Token is also saved in cookie by backend if configured, or can store locally
+      localStorage.setItem('token', data.token);
+      navigate('/admin');
+    },
+    onError: (err) => {
+      setError(err.response?.data?.message || 'चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.');
+    }
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-    if (email.trim().toLowerCase() === 'admin@maayboli.in' && pass.trim() === 'malvan@2026') {
-      onLogin('admin');
-    } else {
-      setError('चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.');
-    }
+    loginMutation.mutate({ email, password: pass });
   };
 
   return (
@@ -101,13 +116,14 @@ export default function AdminLoginPage({ onLogin, onGoUser }) {
 
           <button
             type="submit"
-            className="w-full font-poppins font-bold text-[14px] py-3.5 rounded-lg transition-all hover:opacity-90"
+            disabled={loginMutation.isPending}
+            className="w-full font-poppins font-bold text-[14px] py-3.5 rounded-lg transition-all hover:opacity-90 disabled:opacity-50"
             style={{
               background: 'var(--gold)',
               color: 'var(--navy)',
             }}
           >
-            Admin म्हणून प्रवेश करा →
+            {loginMutation.isPending ? 'प्रतीक्षा करा...' : 'Admin म्हणून प्रवेश करा →'}
           </button>
 
           {/* Demo hint */}
@@ -124,7 +140,7 @@ export default function AdminLoginPage({ onLogin, onGoUser }) {
       <div className="mt-6 flex items-center gap-3">
         <span className="font-poppins text-[12.5px]" style={{ color: '#9fb0c2' }}>वाचक आहात?</span>
         <button
-          onClick={onGoUser}
+          onClick={() => navigate('/')}
           className="font-poppins font-semibold text-[12.5px] px-4 py-1.5 rounded-lg"
           style={{ background: 'rgba(255,255,255,.1)', color: '#E8C169', border: '1.5px solid rgba(255,255,255,.2)' }}
         >

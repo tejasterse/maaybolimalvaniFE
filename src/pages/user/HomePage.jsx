@@ -1,20 +1,67 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { fetchPosts } from '../../api/posts.js';
+import { fetchCategories } from '../../api/categories.js';
+import { fetchDistricts } from '../../api/districts.js';
+import { fetchAds } from '../../api/ads.js';
+import { fetchEntertainment } from '../../api/entertainment.js';
+import { fetchEvents } from '../../api/events.js';
+import { fetchGallery } from '../../api/gallery.js';
 
-const breakingNews = [
-  'सिंधुदुर्ग किल्ल्यावर आज ३,००० पर्यटकांची विक्रमी गर्दी',
-  'कणकवलीत उद्या वीजपुरवठा खंडित राहणार — महावितरण',
-  'मालवण बंदरात नवीन मासळी लिलाव केंद्र सुरू',
-  'देवगड आंबा हंगाम यंदा लवकर संपणार — बागायतदार',
-  'वेंगुर्ला किनाऱ्यावर नवीन वॉटर-स्पोर्ट्स केंद्र कार्यान्वित',
-];
+function AdCarousel({ ads }) {
+  const [currentAdIndex, setCurrentAdIndex] = useState(0);
+  const [lightboxAd, setLightboxAd] = useState(null);
 
-const heroArticle = {
-  title: 'सिंधुदुर्ग किल्ल्यावर पर्यटकांची विक्रमी गर्दी, स्थानिक व्यावसायिकांना दिलासा',
-  tag: 'ब्रेकिंग न्यूज',
-  meta: 'मालवण · सारिका पवार · १५ मिनिटांपूर्वी',
-  excerpt: 'आज सकाळपासून सिंधुदुर्ग किल्ल्यावर पर्यटकांची मोठी गर्दी दिसान इली. सुट्टीच्या दिवसामुळे राज्याच्या विविध भागांतून तसेच गोव्यातून पर्यटक मोठ्या संख्येने आले होते…',
-  img: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop',
-};
+  useEffect(() => {
+    if (!ads || ads.length <= 1) return;
+    const intervalId = setInterval(() => {
+      setCurrentAdIndex((prev) => (prev + 1) % ads.length);
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [ads]);
+
+  if (!ads || ads.length === 0) return null;
+
+  const currentAd = ads[currentAdIndex];
+
+  return (
+    <>
+      <div className="mb-10 w-full rounded-xl overflow-hidden shadow-sm transition-opacity hover:opacity-95 bg-white flex justify-center items-center border border-line">
+        {currentAd.link_url ? (
+          <a href={currentAd.link_url} target="_blank" rel="noreferrer" className="w-full block text-center">
+            <img src={`http://localhost:5000/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto" />
+          </a>
+        ) : (
+          <div className="w-full block text-center cursor-pointer" onClick={() => setLightboxAd(currentAd)}>
+            <img src={`http://localhost:5000/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto block" />
+          </div>
+        )}
+      </div>
+
+      {lightboxAd && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-6"
+          style={{ background: 'rgba(14,42,71,.92)' }}
+          onClick={() => setLightboxAd(null)}
+        >
+          <span
+            className="absolute top-6 right-8 text-white text-[26px] cursor-pointer font-poppins"
+            onClick={() => setLightboxAd(null)}
+          >
+            ✕
+          </span>
+          <img
+            src={`http://localhost:5000/api/banners/${lightboxAd.id}/image`}
+            alt="Advertisement"
+            className="max-w-[800px] max-h-[80vh] rounded-lg"
+            style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}
+          />
+        </div>
+      )}
+    </>
+  );
+}
 
 const talukaHighlights = [
   { name: 'मालवण', img: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop', headline: 'किल्ल्यावर विक्रमी गर्दी' },
@@ -34,63 +81,7 @@ const categories = [
   { name: 'गुन्हे', icon: '⚖️', count: '१२', color: '#6d4c41' },
 ];
 
-const latestArticles = [
-  {
-    id: 1,
-    title: 'काजू प्रक्रिया उद्योगासाठी नवीन योजना जाहीर',
-    tag: 'मासेमारी-शेती',
-    meta: 'वैभववाडी · १ तासापूर्वी',
-    img: 'https://images.unsplash.com/photo-1534073828943-f801091bb18c?w=300&h=200&fit=crop',
-  },
-  {
-    id: 2,
-    title: 'ग्रामपंचायत निवडणुकीची घोषणा, उमेदवारी अर्ज सुरू',
-    tag: 'राजकारण',
-    meta: 'कणकवली · ३ तासांपूर्वी',
-    img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop',
-  },
-  {
-    id: 3,
-    title: 'देवगडमध्ये दशावतार महोत्सवाची तयारी सुरू',
-    tag: 'संस्कृती',
-    meta: 'देवगड · ५ तासांपूर्वी',
-    img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop',
-  },
-  {
-    id: 4,
-    title: 'वेंगुर्ला किनाऱ्यावर सांस्कृतिक कार्यक्रमाचे आयोजन',
-    tag: 'संस्कृती',
-    meta: 'वेंगुर्ला · १ दिवसापूर्वी',
-    img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=300&h=200&fit=crop',
-  },
-  {
-    id: 5,
-    title: 'दोडामार्गमध्ये अवैध वृक्षतोडीविरोधात कारवाई',
-    tag: 'गुन्हे',
-    meta: 'दोडामार्ग · १ दिवसापूर्वी',
-    img: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=300&h=200&fit=crop',
-  },
-  {
-    id: 6,
-    title: 'सावंतवाडी लाकडी खेळणी उद्योगाला नवसंजीवनी',
-    tag: 'संस्कृती',
-    meta: 'सावंतवाडी · २ दिवसांपूर्वी',
-    img: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=300&h=200&fit=crop',
-  },
-];
 
-// New Sections Data
-const entertainment = [
-  { id: 1, title: 'मालवणी कविता: पावसाची चाहूल', author: 'सुहास कुबल', type: 'कविता', img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop' },
-  { id: 2, title: 'कथा: कोकणचा निसर्ग', author: 'स्मिता देसाई', type: 'लेख', img: 'https://images.unsplash.com/photo-1505322022379-7c3353ee6291?w=300&h=200&fit=crop' },
-  { id: 3, title: 'विनोद: मालवणी माणसाची हुशारी', author: 'प्रशांत गावडे', type: 'विनोद', img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=200&fit=crop' }
-];
-
-const festivalsPrograms = [
-  { id: 1, title: 'दशावतार नाटक - वालावल', date: '२५ जुलै', location: 'वालावल, कुडाळ', img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop' },
-  { id: 2, title: 'गणेशोत्सव मंडळ बैठक', date: '२८ जुलै', location: 'मालवण', img: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=300&h=200&fit=crop' },
-  { id: 3, title: 'जत्रा आणि भजन', date: '२ ऑगस्ट', location: 'देवगड', img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=300&h=200&fit=crop' }
-];
 
 const timetables = [
   { id: 1, type: 'रेल्वे', name: 'कोकण कन्या एक्सप्रेस', time: 'रात्री ८:००', route: 'मुंबई ते मडगाव', icon: '🚆' },
@@ -103,114 +94,251 @@ const advertisementImg = 'https://images.unsplash.com/photo-1542744173-8e7e53415
 const calendarEvent = { day: '१९', month: 'जुलै', year: '२०२६', tithi: 'आषाढ शुक्ल पक्ष, एकादशी' };
 const cricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करत आहे' };
 
-const photoGallery = [
-  { id: 1, title: 'सिंधुदुर्ग किल्ला', img: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=200&fit=crop' },
-  { id: 2, title: 'तारकर्ली बीच', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=200&h=200&fit=crop' },
-  { id: 3, title: 'आंबोली घाट', img: 'https://images.unsplash.com/photo-1505322022379-7c3353ee6291?w=200&h=200&fit=crop' },
-  { id: 4, title: 'विजयदुर्ग', img: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=200&h=200&fit=crop' },
-  { id: 5, title: 'रत्नागिरी', img: 'https://images.unsplash.com/photo-1534073828943-f801091bb18c?w=200&h=200&fit=crop' },
-  { id: 6, title: 'देवगड', img: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=200&h=200&fit=crop' }
-];
 
-export default function HomePage({ onNavigate }) {
+export default function HomePage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('सर्व');
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+  const stripHtml = (html) => {
+    if (!html) return '';
+    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
+  };
+
+  const { data = {}, isLoading } = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => fetchPosts()
+  });
+  const posts = data.posts || [];
+
+  const { data: dbCategories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => fetchCategories()
+  });
+
+  const { data: dbDistricts = [] } = useQuery({
+    queryKey: ['districts'],
+    queryFn: () => fetchDistricts()
+  });
+
+  const { data: ads = [] } = useQuery({
+    queryKey: ['ads'],
+    queryFn: fetchAds
+  });
+
+  const { data: dbEntertainment = [] } = useQuery({
+    queryKey: ['entertainment'],
+    queryFn: fetchEntertainment
+  });
+
+  const { data: dbEvents = [] } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents
+  });
+
+  const { data: dbGallery = [] } = useQuery({
+    queryKey: ['gallery'],
+    queryFn: fetchGallery
+  });
+
+  const dynamicTalukaHighlights = dbDistricts.map(district => {
+    const latestPost = posts.find(p => p.districtName === district.name);
+    return {
+      name: district.name,
+      img: latestPost && (latestPost.image || latestPost.image_type)
+        ? `http://localhost:5000/api/posts/${latestPost.id}/image`
+        : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop',
+      headline: latestPost ? latestPost.title : 'सध्या बातमी उपलब्ध नाही'
+    };
+  });
 
   const filteredLatest = activeTab === 'सर्व'
-    ? latestArticles
-    : latestArticles.filter((a) => a.tag === activeTab);
+    ? posts
+    : posts.filter((a) => a.categoryName === activeTab);
+
+  // Dynamic breaking news from database
+  const breakingNewsData = posts.filter(p => p.is_breaking === 1 || p.is_breaking === true);
+
+  // Rotate hero article if multiple breaking news exist
+  useEffect(() => {
+    if (breakingNewsData.length <= 1) return;
+    const intervalId = setInterval(() => {
+      setCurrentHeroIndex((prevIndex) => (prevIndex + 1) % breakingNewsData.length);
+    }, 4000); // 4 seconds rotation
+    return () => clearInterval(intervalId);
+  }, [breakingNewsData.length]);
+
+  const activeHero = breakingNewsData.length > 0
+    ? breakingNewsData[currentHeroIndex]
+    : (posts.length > 0 ? posts[0] : null);
 
   return (
     <div>
       {/* 1. Breaking news ticker */}
-      <div
-        className="overflow-hidden py-2 px-4"
-        style={{ background: 'var(--maroon)', borderBottom: '2px solid var(--gold)' }}
-      >
-        <div className="flex items-center gap-4">
-          <span
-            className="flex-shrink-0 font-poppins font-bold text-[10px] uppercase tracking-[.12em] text-navy px-3 py-1 rounded-full"
-            style={{ background: 'var(--gold)' }}
-          >
-            ताज्या बातम्या
-          </span>
-          <div className="overflow-hidden flex-1">
-            <div className="ticker-inner font-poppins text-[12.5px] text-[#fbe8c9]">
-              {breakingNews.join('   ◆   ')}
+      {breakingNewsData.length > 0 && (
+        <div
+          className="overflow-hidden py-2 px-4"
+          style={{ background: 'var(--maroon)', borderBottom: '2px solid var(--gold)' }}
+        >
+          <div className="flex items-center gap-4">
+            <span
+              className="flex-shrink-0 font-poppins font-bold text-[10px] uppercase tracking-[.12em] text-navy px-3 py-1 rounded-full"
+              style={{ background: 'var(--gold)' }}
+            >
+              ताज्या बातम्या
+            </span>
+            <div className="overflow-hidden flex-1">
+              <div className="ticker-inner font-poppins text-[12.5px] text-[#fbe8c9] whitespace-nowrap flex items-center">
+                {breakingNewsData.map((b, index) => (
+                  <span key={b.id} className=" items-center">
+                    <span
+                      onClick={() => navigate(`/article/${b.id}`)}
+                      className="cursor-pointer hover:underline transition-all"
+                    >
+                      {b.title}
+                    </span>
+                    {index < breakingNewsData.length - 1 && <span className="mx-4" style={{ color: 'var(--gold)' }}>◆</span>}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="max-w-[1180px] mx-auto px-6 pb-12">
 
-        {/* 1. HERO - Highlighted News */}
-        <div className="py-6">
-          <div
-            className="hero-inner flex gap-6 bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-transform hover:-translate-y-1"
-            onClick={() => onNavigate('article')}
-            style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}
-          >
-            <img
-              src={heroArticle.img}
-              alt={heroArticle.title}
-              className="w-[55%] h-[340px] object-cover flex-shrink-0 block"
-            />
-            <div className="flex flex-col justify-center pr-8 py-8">
-              <span
-                className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
-                style={{ background: 'var(--maroon)' }}
+        {breakingNewsData.length > 0 ? (
+          <div className="py-6">
+            <div className="relative overflow-hidden rounded-xl h-[420px] md:h-[340px]" style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}>
+              <div
+                className="flex flex-col transition-transform duration-700 ease-in-out h-full w-full"
+                style={{ transform: `translateY(-${currentHeroIndex * 100}%)` }}
               >
-                {heroArticle.tag}
-              </span>
-              <h2 className="font-tiro text-[28px] leading-[1.35] text-ink mb-4">
-                {heroArticle.title}
-              </h2>
-              <p className="font-mukta text-[16px] leading-relaxed mb-4" style={{ color: '#5a4c3a' }}>
-                {heroArticle.excerpt}
-              </p>
-              <div className="font-poppins text-[12px] text-grey">{heroArticle.meta}</div>
-              <button
-                className="mt-5 self-start font-poppins font-semibold text-[13px] px-5 py-2.5 rounded-lg transition-colors hover:bg-opacity-90"
-                style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
-                onClick={(e) => { e.stopPropagation(); onNavigate('article'); }}
-              >
-                पूर्ण बातमी वाचा →
-              </button>
+                {breakingNewsData.map((hero) => (
+                  <div
+                    key={hero.id}
+                    className="hero-inner flex flex-col md:flex-row gap-0 md:gap-6 bg-white h-[420px] md:h-[340px] flex-shrink-0 cursor-pointer w-full group overflow-hidden"
+                    onClick={() => navigate(`/article/${hero.id}`)}
+                  >
+                    <img
+                      src={(hero.image || hero.image_type) ? `http://localhost:5000/api/posts/${hero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                      alt={hero.title}
+                      className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
+                    />
+                    <div className="flex flex-col justify-center px-4 md:pr-8 py-4 md:py-8 w-full md:w-[45%] h-[240px] md:h-full">
+                      <span
+                        className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
+                        style={{ background: 'var(--maroon)' }}
+                      >
+                        ब्रेकिंग न्यूज
+                      </span>
+                      <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 group-hover:text-teal transition-colors line-clamp-2 md:line-clamp-none">
+                        {hero.title}
+                      </h2>
+                      {/* <p className="font-mukta text-[14px] md:text-[16px] leading-relaxed mb-2 md:mb-4 line-clamp-2 md:line-clamp-3" style={{ color: '#5a4c3a' }}>
+                        {stripHtml(hero.content)}
+                      </p> */}
+                      <div className="font-poppins text-[12px] text-grey">
+                        {hero.districtName || 'सिंधुदुर्ग'} · {new Date(hero.createdAt).toLocaleDateString('mr-IN')}
+                      </div>
+                      <button
+                        className="mt-5 self-start font-poppins font-semibold text-[13px] px-5 py-2.5 rounded-lg transition-colors hover:bg-opacity-90"
+                        style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
+                        onClick={(e) => { e.stopPropagation(); navigate(`/article/${hero.id}`); }}
+                      >
+                        पूर्ण बातमी वाचा →
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Dots indicator for rotation */}
+            {breakingNewsData.length > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
+                {breakingNewsData.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentHeroIndex(i)}
+                    className={`w-2.5 h-2.5 rounded-full transition-colors ${currentHeroIndex === i ? 'bg-maroon-deep' : 'bg-line'}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : activeHero ? (
+          <div className="py-6">
+            <div
+              className="hero-inner flex flex-col md:flex-row gap-0 md:gap-6 bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-transform duration-300 hover:-translate-y-1 h-[420px] md:h-auto"
+              onClick={() => navigate(`/article/${activeHero.id}`)}
+              style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}
+            >
+              <img
+                src={(activeHero.image || activeHero.image_type) ? `http://localhost:5000/api/posts/${activeHero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                alt={activeHero.title}
+                className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
+              />
+              <div className="flex flex-col justify-center px-4 md:pr-8 py-4 md:py-8 w-full md:w-[45%] h-[240px] md:h-full">
+                <span
+                  className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
+                  style={{ background: 'var(--maroon)' }}
+                >
+                  {activeHero.categoryName || 'ताज्या बातम्या'}
+                </span>
+                <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 line-clamp-2 md:line-clamp-none">
+                  {activeHero.title}
+                </h2>
+                <p className="font-mukta text-[14px] md:text-[16px] leading-relaxed mb-2 md:mb-4 line-clamp-2 md:line-clamp-3" style={{ color: '#5a4c3a' }}>
+                  {stripHtml(activeHero.content)}
+                </p>
+                <div className="font-poppins text-[12px] text-grey">
+                  {activeHero.districtName || 'सिंधुदुर्ग'} · {new Date(activeHero.createdAt).toLocaleDateString('mr-IN')}
+                </div>
+                <button
+                  className="mt-5 self-start font-poppins font-semibold text-[13px] px-5 py-2.5 rounded-lg transition-colors hover:bg-opacity-90"
+                  style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
+                  onClick={(e) => { e.stopPropagation(); navigate(`/article/${activeHero.id}`); }}
+                >
+                  पूर्ण बातमी वाचा →
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="py-6"></div>
+        )}
 
         {/* 2. Taluka Highlights */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-tiro text-[24px] text-maroon-deep">तालुका बातम्या</h2>
           </div>
-          <div className="grid grid-cols-6 gap-3">
-            {talukaHighlights.map((t) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {dynamicTalukaHighlights.map((t) => (
               <div
                 key={t.name}
-                onClick={() => onNavigate('listing', { taluka: t.name })}
-                className="rounded-xl overflow-hidden relative cursor-pointer transition-transform hover:-translate-y-1 shadow-sm"
+                onClick={() => navigate('/listing', { state: { taluka: t.name } })}
+                className="rounded-xl p-4 cursor-pointer transition-transform hover:-translate-y-1 shadow-sm bg-white flex flex-col justify-center items-center text-center h-[110px] border-b-4 border-teal"
+                style={{ borderTop: '1px solid var(--line)', borderLeft: '1px solid var(--line)', borderRight: '1px solid var(--line)' }}
               >
-                <img src={t.img} alt={t.name} className="w-full h-[110px] object-cover block" />
-                <div
-                  className="absolute inset-0 flex flex-col justify-end p-2.5"
-                  style={{ background: 'linear-gradient(0deg, rgba(14,42,71,.88) 0%, transparent 55%)' }}
-                >
-                  <div className="font-poppins font-bold text-[12px] text-white">{t.name}</div>
-                  <div className="font-mukta text-[11px] leading-snug mt-0.5" style={{ color: '#E8C169' }}>{t.headline}</div>
-                </div>
+                <div className="font-tiro font-bold text-[18px] text-maroon-deep mb-1">{t.name}</div>
+                <div className="font-mukta text-[11px] leading-snug text-grey line-clamp-2">{t.headline}</div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Dynamic Advertisement 1 */}
+        <AdCarousel ads={ads} />
 
         {/* 3. Latest Articles - includes other district & national and other news */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-tiro text-[24px] text-maroon-deep">ताज्या बातम्या</h2>
             <button
-              onClick={() => onNavigate('listing')}
+              onClick={() => navigate('/listing')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
               सर्व बघा →
@@ -219,11 +347,11 @@ export default function HomePage({ onNavigate }) {
 
           {/* Filter tabs */}
           <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
-            {['सर्व', 'राजकारण', 'पर्यटन', 'मासेमारी-शेती', 'संस्कृती'].map((t) => (
+            {['सर्व', ...dbCategories.map(c => c.name)].map((t) => (
               <span
                 key={t}
                 onClick={() => setActiveTab(t)}
-                className="flex-shrink-0 font-poppins text-[12.5px] px-4 py-1.5 rounded-full cursor-pointer border-[1.5px] nav-transition"
+                className="flex-shrink-0 font-poppins text-[12.5px] px-4 py-1.5 rounded-full cursor-pointer border-[1.5px] nav-transition whitespace-nowrap"
                 style={activeTab === t
                   ? { background: 'var(--maroon)', color: '#fbe8c9', borderColor: 'var(--maroon)' }
                   : { background: '#fff', color: 'var(--teal)', borderColor: 'var(--line)' }
@@ -234,20 +362,22 @@ export default function HomePage({ onNavigate }) {
             ))}
           </div>
 
-          <div className="home-latest-grid grid grid-cols-3 gap-5">
-            {filteredLatest.length > 0 ? (
-              filteredLatest.map((a) => (
+          <div className="home-latest-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {isLoading ? (
+              <div className="col-span-3 text-center py-10 font-poppins text-grey">बातम्या लोड होत आहेत...</div>
+            ) : filteredLatest.length > 0 ? (
+              filteredLatest.slice(0, 8).map((a) => (
                 <div
                   key={a.id}
-                  onClick={() => onNavigate('article')}
+                  onClick={() => navigate(`/article/${a.id}`)}
                   className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1"
                   style={{ border: '1px solid var(--line)' }}
                 >
-                  <img src={a.img} alt={a.title} className="w-full h-[160px] object-cover block" />
+                  <img src={(a.image || a.image_type) ? `http://localhost:5000/api/posts/${a.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
                   <div className="p-4">
-                    <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.tag}</span>
-                    <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2">{a.title}</h3>
-                    <div className="font-poppins text-[11px] text-grey">{a.meta}</div>
+                    <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.categoryName || 'बातमी'}</span>
+                    <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2 line-clamp-2">{a.title}</h3>
+                    <div className="font-poppins text-[11px] text-grey">{a.districtName || 'सिंधुदुर्ग'} · {new Date(a.createdAt).toLocaleDateString('mr-IN')}</div>
                   </div>
                 </div>
               ))
@@ -263,7 +393,7 @@ export default function HomePage({ onNavigate }) {
         {/* 4. Category Cards */}
         <div className="mb-10">
           <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">विभागानुसार बातम्या</h2>
-          <div className="home-cat-grid grid grid-cols-6 gap-3">
+          <div className="home-cat-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {categories.map((cat) => {
               const categoryMapping = {
                 'राजकारण': 'rajkaran',
@@ -276,7 +406,7 @@ export default function HomePage({ onNavigate }) {
               return (
                 <button
                   key={cat.name}
-                  onClick={() => onNavigate(targetKey)}
+                  onClick={() => navigate(`/${targetKey}`)}
                   className="bg-white rounded-xl p-4 text-center shadow-sm transition-transform hover:-translate-y-1"
                   style={{ border: '1.5px solid var(--line)' }}
                 >
@@ -299,56 +429,71 @@ export default function HomePage({ onNavigate }) {
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-tiro text-[24px] text-maroon-deep">कविता, लेख आणि मनोरंजन</h2>
             <button
-              onClick={() => onNavigate('listing')}
+              onClick={() => navigate('/entertainment')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
               अधिक वाचा →
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {entertainment.map((item) => (
+            {dbEntertainment.length > 0 ? dbEntertainment.slice(0, 3).map((item) => (
               <div
                 key={item.id}
-                onClick={() => onNavigate('article')}
+                onClick={() => navigate(`/entertainment/${item.id}`)}
                 className="bg-cream rounded-xl overflow-hidden shadow-sm cursor-pointer flex transition-transform hover:-translate-y-1"
                 style={{ border: '1px solid var(--line)' }}
               >
-                <img src={item.img} alt={item.title} className="w-[100px] h-[100px] object-cover block" />
-                <div className="p-3 flex flex-col justify-center">
+                <img src={item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop'} alt={item.title} className="w-[100px] h-[100px] object-cover block flex-shrink-0" />
+                <div className="p-3 flex flex-col justify-center w-full overflow-hidden">
                   <span className="font-poppins text-[10px] text-amber font-bold uppercase tracking-wide">{item.type}</span>
-                  <h3 className="font-tiro text-[15px] leading-tight text-ink mt-1 mb-1">{item.title}</h3>
-                  <div className="font-poppins text-[11px] text-grey">लेखक: {item.author}</div>
+                  <h3 className="font-tiro text-[15px] leading-tight text-ink mt-1 mb-1 truncate">{item.title}</h3>
+                  <div className="font-poppins text-[11px] text-grey truncate">लेखक: {item.author || '-'}</div>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="col-span-3 text-center py-5 font-poppins text-grey text-sm border border-dashed border-line rounded-xl">कोणतीही माहिती उपलब्ध नाही</div>
+            )}
           </div>
         </div>
 
+        {/* Dynamic Advertisement 2 */}
+        <AdCarousel ads={ads} />
+
         {/* 6. Gavatle San Utsav, Programs */}
-        <div className="mb-10">
-          <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">गावचे सण, उत्सव आणि कार्यक्रम</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {festivalsPrograms.map((prog) => (
-              <div
-                key={prog.id}
-                onClick={() => onNavigate('article')}
-                className="bg-white rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-1 border-l-4"
-                style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
+        {dbEvents.length > 0 && (
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-tiro text-[24px] text-maroon-deep">गावचे सण, उत्सव आणि कार्यक्रम</h2>
+              <button
+                onClick={() => navigate('/events')}
+                className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
               >
-                <div className="flex items-center gap-4">
-                  <img src={prog.img} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
-                  <div>
-                    <h3 className="font-tiro text-[16px] text-navy mb-1">{prog.title}</h3>
-                    <div className="font-poppins text-[12px] text-grey flex items-center gap-2">
-                      <span>📅 {prog.date}</span>
-                      <span>📍 {prog.location}</span>
+                अधिक वाचा →
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {dbEvents.slice(0, 3).map((prog) => (
+                <div
+                  key={prog.id}
+                  onClick={() => navigate('/events')}
+                  className="bg-white rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-1 border-l-4"
+                  style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
+                >
+                  <div className="flex items-center gap-4">
+                    <img src={prog.image_type ? `http://localhost:5000/api/events/${prog.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
+                    <div>
+                      <h3 className="font-tiro text-[16px] text-navy mb-1 line-clamp-1">{prog.title}</h3>
+                      <div className="font-poppins text-[12px] text-grey flex items-center gap-2">
+                        <span>📅 {prog.event_date}</span>
+                        <span className="truncate">📍 {prog.location}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 7. Railway, ST Bus, Private Vehical Timetable */}
         <div className="mb-10">
@@ -366,13 +511,6 @@ export default function HomePage({ onNavigate }) {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* 8. Advertisement */}
-        <div className="mb-10">
-          <a href="#" className="block rounded-xl overflow-hidden shadow-sm transition-opacity hover:opacity-95">
-            <img src={advertisementImg} alt="Advertisement" className="w-full h-[120px] md:h-[150px] object-cover" />
-          </a>
         </div>
 
         {/* 9. Calender, Cricket Score */}
@@ -409,34 +547,43 @@ export default function HomePage({ onNavigate }) {
         </div>
 
         {/* 10. Image, Photography Section */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-tiro text-[24px] text-maroon-deep">छायाचित्रे / गॅलरी</h2>
-            <button
-              onClick={() => onNavigate('gallery')}
-              className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
-            >
-              सर्व गॅलरी पहा →
-            </button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-            {photoGallery.map((photo) => (
-              <div
-                key={photo.id}
-                onClick={() => onNavigate('gallery')}
-                className="rounded-xl overflow-hidden relative cursor-pointer group shadow-sm"
+        {dbGallery.length > 0 && (
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-tiro text-[24px] text-maroon-deep">छायाचित्रे / गॅलरी</h2>
+              <button
+                onClick={() => navigate('/gallery')}
+                className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
               >
-                <img src={photo.img} alt={photo.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
+                सर्व गॅलरी पहा →
+              </button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+              {dbGallery.slice(0, 6).map((item) => (
                 <div
-                  className="absolute inset-0 flex flex-col justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ background: 'linear-gradient(0deg, rgba(0,0,0,.7) 0%, transparent 60%)' }}
+                  key={item.id}
+                  onClick={() => navigate('/gallery')}
+                  className="rounded-xl overflow-hidden relative cursor-pointer group shadow-sm bg-black"
                 >
-                  <div className="font-mukta font-medium text-[12px] text-white text-center">{photo.title}</div>
+                  {item.is_video === 1 ? (
+                    <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full h-[120px] object-cover opacity-80" muted />
+                  ) : (
+                    <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
+                  )}
+                  {item.is_video === 1 && (
+                    <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-[10px] px-2 py-0.5 rounded">▶</div>
+                  )}
+                  <div
+                    className="absolute inset-0 flex flex-col justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: 'linear-gradient(0deg, rgba(0,0,0,.7) 0%, transparent 60%)' }}
+                  >
+                    <div className="font-mukta font-medium text-[12px] text-white text-center line-clamp-2">{item.title}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Chatbot CTA banner */}
         <div
@@ -455,7 +602,7 @@ export default function HomePage({ onNavigate }) {
             </p>
           </div>
           <button
-            onClick={() => onNavigate('chatbot')}
+            onClick={() => navigate('/chatbot')}
             className="flex-shrink-0 font-poppins font-bold text-[14px] px-7 py-4 rounded-xl flex items-center gap-3 transition-transform hover:scale-105"
             style={{ background: 'var(--gold)', color: 'var(--navy)' }}
           >

@@ -1,116 +1,86 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { fetchPostById, fetchPosts } from '../../api/posts.js';
+import { fetchAds } from '../../api/ads.js';
 
-const relatedArticles = [
-  { img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=250&h=150&fit=crop', title: 'वेंगुर्ला किनाऱ्यावर सांस्कृतिक कार्यक्रमाचे आयोजन', meta: '१ दिवसापूर्वी · वेंगुर्ला', key: 'vengurla' },
-  { img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=250&h=150&fit=crop', title: 'मालवणी जत्रेत यंदा पारंपरिक खाद्यमहोत्सव', meta: '१ दिवसापूर्वी · मालवण', key: 'food_fest' },
-  { img: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=250&h=150&fit=crop', title: 'सावंतवाडी लाकडी खेळणी उद्योगाला नवसंजीवनी', meta: '५ तासांपूर्वी · सावंतवाडी', key: 'sawantwadi' },
-  { img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=250&h=150&fit=crop', title: 'कुडाळात गणेशोत्सवाची जय्यत तयारी सुरू', meta: '४ तासांपूर्वी · कुडाळ', key: 'kudal' },
-];
 
-const articlesData = {
-  main: {
-    tag: 'पर्यटन · मालवण',
-    title: 'सिंधुदुर्ग किल्ल्यावर पर्यटकांची विक्रमी गर्दी, स्थानिक व्यावसायिकांना दिलासा',
-    author: 'सारिका पवार',
-    authorInitial: 'SP',
-    time: '१८ जुलै २०२६ · सकाळी ९:४० · ४ मिनिटे वाचन',
-    img: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop',
-    imgCaption: 'सिंधुदुर्ग किल्ल्यावर आज सकाळपासून पर्यटकांची गर्दी — छायाचित्र: मायबोली मालवणी',
-    body: [
-      'आज सकाळपासून सिंधुदुर्ग किल्ल्यावर पर्यटकांची मोठी गर्दी दिसान इली. सुट्टीच्या दिवसामुळे राज्याच्या विविध भागांतून तसेच गोव्यातून पर्यटक मोठ्या संख्येने आले होते. किल्ल्याच्या प्रवेशद्वारापासूनच रांगा लागल्याचे चित्र होते.',
-      'स्थानिक बोटचालक व दुकानदारांनी सांगितले की, गेल्या दोन वर्षांत इतकी गर्दी पहिल्यांदाच पाहायला मिळाली. मालवण बंदरातून किल्ल्यावर जाणाऱ्या बोटींच्या फेऱ्याही वाढवाव्या लागल्या.',
-      'जिल्हा पर्यटन विभागाने या वाढत्या गर्दीच्या पार्श्वभूमीवर सुरक्षेच्या दृष्टीने अतिरिक्त कर्मचारी तैनात केले आहेत. पिण्याच्या पाण्याची व स्वच्छतागृहांची व्यवस्थाही वाढवण्यात आली आहे.',
-      'स्थानिक व्यावसायिकांनी या गर्दीचे स्वागत केले असून, यामुळे किल्ल्याच्या परिसरातील छोट्या व्यावसायिकांना मोठा आर्थिक दिलासा मिळाल्याचे सांगितले.'
-    ],
-    quote: '"आज दिवसभरात जवळपास ३,००० पर्यटक किल्ल्यावर आले — हा या हंगामातला सगळ्यात मोठा आकडा हाय." — बोटचालक संघटना, मालवण',
-    tags: ['#सिंधुदुर्ग', '#पर्यटन', '#मालवण', '#किल्ला']
-  },
-  vengurla: {
-    tag: 'संस्कृती · वेंगुर्ला',
-    title: 'वेंगुर्ला किनाऱ्यावर सांस्कृतिक कार्यक्रमाचे आयोजन',
-    author: 'मीना जाधव',
-    authorInitial: 'MJ',
-    time: '१७ जुलै २०२६ · संध्याकाळी ५:२० · ३ मिनिटे वाचन',
-    img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=1000&h=560&fit=crop',
-    imgCaption: 'वेंगुर्ला किनाऱ्यावर पार पडलेला भव्य सांस्कृतिक सोहळा — छायाचित्र: मायबोली मालवणी',
-    body: [
-      'वेंगुर्ला येथील सागरकिनाऱ्यावर काल संध्याकाळी एका दिमाखदार सांस्कृतिक सोहळ्याचे आयोजन करण्यात आले होते. कोकणातील विविध पारंपारिक लोककलांचे सादरीकरण या कार्यक्रमाचे प्रमुख आकर्षण होते.',
-      'स्थानिक कलाकारांनी नमन, गोफ आणि पारंपारिक कोळी नृत्ये सादर करून उपस्थितांची मने जिंकली. पर्यटकांनीही या सोहळ्याला प्रचंड प्रतिसाद दिला.',
-      'आयोजकांनी सांगितले की, अशा उपक्रमांमुळे कोकणातील समृद्ध संस्कृतीचे दर्शन थेट पर्यटकांना घडते आणि स्थानिक कलेला राजाश्रय मिळतो.'
-    ],
-    quote: '"असे सांस्कृतिक कार्यक्रम दर आठवड्याला राबवल्यास वेंगुर्ल्याचा पर्यटन व्यवसाय आणखी वाढेल." — स्थानिक पर्यटन समिती सदस्य',
-    tags: ['#वेंगुर्ला', '#संस्कृती', '#कोकण', '#कला']
-  },
-  food_fest: {
-    tag: 'पर्यटन · मालवण',
-    title: 'मालवणी जत्रेत यंदा पारंपरिक खाद्यमहोत्सव',
-    author: 'मीना जाधव',
-    authorInitial: 'MJ',
-    time: '१७ जुलै २०२६ · दुपारी ३:१५ · ५ मिनिटे वाचन',
-    img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=1000&h=560&fit=crop',
-    imgCaption: 'खाद्यमहोत्सवात सजलेली मालवणी जेवणाची थाळी — छायाचित्र: मायबोली मालवणी',
-    body: [
-      'मालवणच्या वार्षिक जत्रोत्सवाच्या निमित्ताने यंदा विशेष मालवणी खाद्यमहोत्सवाचे आयोजन करण्यात आले आहे. यामध्ये अस्सल मालवणी पद्धतीचे मासे, मटण आणि शाकाहारी पदार्थ चाखण्याची संधी खवय्यांना मिळत आहे.',
-      'खास करून कोळंबी फ्राय, सुरमई थाळी, घावणे-चटणी आणि सोलकढीच्या स्टॉल्सवर खवय्यांची मोठी गर्दी पाहायला मिळत आहे.',
-      'स्थानिक महिला बचत गटांनी यात मोठ्या संख्येने सहभाग घेतला असून, त्यांच्या मालाला चांगला प्रतिसाद मिळत असल्याने समाधान व्यक्त केले आहे.'
-    ],
-    quote: '"अस्सल घरगुती मालवणी चव एकाच छताखाली मिळाल्यामुळे पर्यटकांची पावले आपोआप इकडे वळत आहेत." — खाद्यमहोत्सव समन्वयक',
-    tags: ['#मालवण', '#खाद्यमहोत्सव', '#सोलकढी', '#कोकणीजेवण']
-  },
-  sawantwadi: {
-    tag: 'पर्यटन · सावंतवाडी',
-    title: 'सावंतवाडी लाकडी खेळणी उद्योगाला नवसंजीवनी',
-    author: 'राजेश कदम',
-    authorInitial: 'RK',
-    time: '१८ जुलै २०२६ · सकाळी ११:०० · ५ मिनिटे वाचन',
-    img: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1000&h=560&fit=crop',
-    imgCaption: 'चितारअळीतील खेळणी बनवणारे कसबी कारागीर — छायाचित्र: मायबोली मालवणी',
-    body: [
-      'सावंतवाडीची जगप्रसिद्ध लाकडी खेळणी बनवणाऱ्या कलाकारांसाठी शासनाने नवीन अनुदान आणि विपणन सहाय्य योजना जाहीर केली आहे. यामुळे अडचणीत आलेल्या या पारंपारिक उद्योगाला नवी उभारी मिळण्याची शक्यता आहे.',
-      'चितारअळीतील जुन्या कारागिरांनी या निर्णयाचे मनापासून स्वागत केले आहे. नवीन तंत्रज्ञानाचा वापर करून आणि आकर्षक डिझाइन्स आणून खेळण्यांना आधुनिक बाज देण्याचा त्यांचा प्रयत्न आहे.',
-      'शासकीय मदतीमुळे कच्च्या मालाचा पुरवठा आणि बाजारपेठ मिळवणे सोपे होणार असल्याचे सांगण्यात आले.'
-    ],
-    quote: '"लाकडी खेळणी हे सावंतवाडीचे वैभव असून ते टिकवण्यासाठी आणि वृद्धिंगत करण्यासाठी आम्ही कटिबद्ध आहोत." — स्थानिक कारागीर संघ',
-    tags: ['#सावंतवाडी', '#लाकडीखेळणी', '#कोकणहस्तकला', '#पारंपारिककला']
-  },
-  kudal: {
-    tag: 'संस्कृती · कुडाळ',
-    title: 'कुडाळात गणेशोत्सवाची जय्यत तयारी सुरू',
-    author: 'राजेश कदम',
-    authorInitial: 'RK',
-    time: '१८ जुलै २०२६ · दुपारी १२:३० · ४ मिनिटे वाचन',
-    img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=1000&h=560&fit=crop',
-    imgCaption: 'कुडाळ शहरातील मूर्तिकार गणेशमूर्तींना शेवटचा हात देताना — छायाचित्र: मायबोली मालवणी',
-    body: [
-      'कोकणचा लाडका सण असलेल्या गणेशोत्सवासाठी कुडाळ शहरात मूर्तिकार आणि सार्वजनिक गणेशोत्सव मंडळांची पूर्वतयारी वेगाने सुरू आहे. कारखान्यांमध्ये सुंदर गणेशमूर्ती घडवण्याचे काम अंतिम टप्प्यात आले आहे.',
-      'यंदा पर्यावरणपूरक शाडूच्या मूर्तींना भाविकांची सर्वाधिक पसंती मिळत असल्याचे मूर्तिकारांनी सांगितले.',
-      'कुडाळातील बाजारपेठही गणेशोत्सवाच्या खरेदीसाठी हळूहळू सजायला लागली आहे.'
-    ],
-    quote: '"यंदाही पर्यावरणपूरक उत्सव साजरा करण्यावर आमचा भर असून शाडूच्या मूर्तींची नोंदणी वाढली आहे." — कुडाळ मूर्तिकार संघटना',
-    tags: ['#कुडाळ', '#गणेशोत्सव', '#बाप्पा', '#शाडूचीमूर्ती']
-  }
-};
+export default function ArticlePage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [activeMedia, setActiveMedia] = useState('photo'); // 'photo' | 'video'
+  const [currentAdIndex, setCurrentAdIndex] = useState(0);
+  const [lightboxAd, setLightboxAd] = useState(null);
 
-export default function ArticlePage({ onNavigate }) {
-  const [currentArticleKey, setCurrentArticleKey] = useState('main');
-  const data = articlesData[currentArticleKey] || articlesData['main'];
+  const { data: post, isLoading, isError } = useQuery({
+    queryKey: ['post', id],
+    queryFn: () => fetchPostById(id)
+  });
 
-  const handleRelatedClick = (key) => {
-    setCurrentArticleKey(key);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const { data: postsData = {} } = useQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts
+  });
+  const allPosts = postsData.posts || [];
+
+  const { data: ads = [] } = useQuery({
+    queryKey: ['ads'],
+    queryFn: fetchAds
+  });
+
+  // Cycle through ads every 5 seconds
+  useEffect(() => {
+    if (ads.length <= 1) return;
+    const intervalId = setInterval(() => {
+      setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [ads.length]);
+
+  if (isLoading) return <div className="py-20 text-center font-poppins text-grey">बातमी लोड होत आहे...</div>;
+  if (isError || !post) return <div className="py-20 text-center font-poppins text-maroon">बातमी सापडली नाही.</div>;
+
+  const data = {
+    tag: post.categoryName || 'बातमी',
+    title: post.title,
+    author: post.authorName || 'संपादक',
+    authorInitial: post.authorName ? post.authorName[0] : 'स',
+    time: `${new Date(post.createdAt).toLocaleDateString('mr-IN')}`,
+    img: (post.image || post.image_type) ? `http://localhost:5000/api/posts/${post.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop',
+    hasVideo: !!post.video_type,
+    videoUrl: post.video_type ? `http://localhost:5000/api/posts/${post.id}/video` : null,
+    imgCaption: '',
+    quote: '',
+    tags: [`#${post.categoryName || 'बातमी'}`, `#${post.districtName || 'सिंधुदुर्ग'}`]
   };
 
+  const relatedArticles = allPosts
+    .filter(p => p.id !== parseInt(id) && p.categoryName === post.categoryName)
+    .slice(0, 4);
+
   const handleSocialShare = (platform) => {
-    alert(`ही बातमी ${platform} वर शेअर केल्याबद्दल धन्यवाद!`);
+    if (platform === 'link') {
+      navigator.clipboard.writeText(window.location.href);
+      alert('लिंक कॉपी केली!');
+    } else {
+      alert(`ही बातमी ${platform} वर शेअर केल्याबद्दल धन्यवाद!`);
+    }
+  };
+
+  const handleAdClick = (e, ad) => {
+    if (!ad?.link_url) {
+      e.preventDefault();
+      setLightboxAd(ad);
+    }
   };
 
   return (
     <div>
       <div className="max-w-[1180px] mx-auto px-6">
         {/* Breadcrumb */}
-        <div className="font-poppins text-[12px] text-grey pt-5">
-          <button onClick={() => onNavigate && onNavigate('home')} className="text-teal">होम</button> /{' '}
-          <button onClick={() => onNavigate && onNavigate('listing')} className="text-teal">पर्यटन</button> / {data.title}
+        <div className="font-poppins font-medium text-[12.5px] text-grey mb-4">
+          <button onClick={() => navigate('/')} className="text-teal">होम</button> /{' '}
+          <button onClick={() => navigate('/listing')} className="text-teal">{data.tag}</button> / <span className="line-clamp-1 inline-block align-bottom">{data.title}</span>
         </div>
 
         {/* Article Head */}
@@ -137,36 +107,61 @@ export default function ArticlePage({ onNavigate }) {
                 <div className="text-[11px] text-grey">{data.time}</div>
               </div>
             </div>
-            <div className="flex gap-2.5 ml-auto">
+            <div className="flex gap-1.5 ml-auto">
+              {['whatsapp', 'facebook', 'twitter'].map((platform) => (
+                <button
+                  key={platform}
+                  onClick={() => handleSocialShare(platform)}
+                  className="w-8 h-8 rounded-full border border-line flex items-center justify-center transition-colors hover:bg-gray-50 text-[14px]"
+                >
+                  {platform === 'whatsapp' ? '💬' : platform === 'facebook' ? 'f' : '𝕏'}
+                </button>
+              ))}
               <button
-                onClick={() => handleSocialShare('Copy Link')}
-                className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-sm text-teal bg-white border-[1.5px] border-line cursor-pointer hover:bg-grey-light"
+                onClick={() => handleSocialShare('link')}
+                className="w-8 h-8 rounded-full border border-line flex items-center justify-center transition-colors hover:bg-gray-50 text-[14px] text-grey"
+                title="लिंक कॉपी करा"
               >
                 🔗
-              </button>
-              <button
-                onClick={() => handleSocialShare('WhatsApp')}
-                className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-sm text-teal bg-white border-[1.5px] border-line cursor-pointer hover:bg-grey-light"
-              >
-                📱
-              </button>
-              <button
-                onClick={() => handleSocialShare('Facebook')}
-                className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-sm font-bold text-teal bg-white border-[1.5px] border-line cursor-pointer hover:bg-grey-light"
-              >
-                f
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Hero Image */}
-      <img
-        src={data.img}
-        alt={data.title}
-        className="w-full max-w-[900px] h-[420px] object-cover rounded-[10px] mx-auto block mb-2 shadow-sm"
-      />
+      {/* Media Toggle */}
+      {data.hasVideo && (
+        <div className="flex justify-center gap-2 mb-4">
+          <button
+            onClick={() => setActiveMedia('photo')}
+            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors ${activeMedia === 'photo' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
+          >
+            📷 फोटो
+          </button>
+          <button
+            onClick={() => setActiveMedia('video')}
+            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors ${activeMedia === 'video' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
+          >
+            🎥 व्हिडिओ
+          </button>
+        </div>
+      )}
+
+      {/* Hero Image / Video */}
+      {activeMedia === 'video' && data.hasVideo ? (
+        <video
+          src={data.videoUrl}
+          controls
+          className="w-full max-w-[900px] h-auto max-h-[500px] object-contain rounded-[10px] mx-auto block mb-2 shadow-sm bg-black/5"
+        />
+      ) : (
+        <img
+          src={data.img}
+          alt={data.title}
+          className="w-full max-w-[900px] h-auto max-h-[500px] object-contain rounded-[10px] mx-auto block mb-2 shadow-sm bg-black/5"
+        />
+      )}
+      
       <div className="max-w-[900px] mx-auto mb-8 font-poppins text-[11.5px] text-grey text-center">
         {data.imgCaption}
       </div>
@@ -176,11 +171,7 @@ export default function ArticlePage({ onNavigate }) {
         className="max-w-[760px] mx-auto mb-10 font-mukta text-[18px] leading-[2] px-6"
         style={{ color: '#3a2e20' }}
       >
-        {data.body.map((para, index) => (
-          <p key={index} className="mb-5">
-            {para}
-          </p>
-        ))}
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
         {data.quote && (
           <div
             className="border-l-4 border-gold pl-5 my-7 font-tiro text-[23px] italic text-maroon-deep leading-[1.5]"
@@ -203,27 +194,68 @@ export default function ArticlePage({ onNavigate }) {
       </div>
 
       {/* Related */}
-      <div className="bg-white pt-10 pb-12 mt-2">
-        <div className="max-w-[1180px] mx-auto px-6">
-          <h2 className="font-tiro text-[24px] text-maroon-deep mb-5">संबंधित बातम्या</h2>
-          <div className="related-grid grid grid-cols-2 md:grid-cols-4 gap-4">
-            {relatedArticles.map((r) => (
-              <div
-                key={r.title}
-                onClick={() => handleRelatedClick(r.key)}
-                className="rounded-[10px] overflow-hidden cursor-pointer transition-transform hover:-translate-y-0.5"
-                style={{ background: 'var(--cream)' }}
-              >
-                <img src={r.img} alt={r.title} className="w-full h-[110px] object-cover block" />
-                <div className="p-3">
-                  <h3 className="font-tiro text-[14.5px] leading-snug text-ink">{r.title}</h3>
-                  <div className="font-poppins text-[10px] text-grey mt-2">{r.meta}</div>
+      {relatedArticles.length > 0 && (
+        <div className="bg-white pt-10 pb-12 mt-2">
+          <div className="max-w-[1180px] mx-auto px-6">
+            <h2 className="font-tiro text-[24px] text-maroon-deep mb-5">संबंधित बातम्या</h2>
+            <div className="related-grid grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedArticles.map((r) => (
+                <div
+                  key={r.id}
+                  onClick={() => { navigate(`/article/${r.id}`); window.scrollTo(0,0); }}
+                  className="rounded-[10px] overflow-hidden cursor-pointer transition-transform hover:-translate-y-0.5"
+                  style={{ background: 'var(--cream)' }}
+                >
+                  <img src={(r.image || r.image_type) ? `http://localhost:5000/api/posts/${r.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={r.title} className="w-full h-[110px] object-cover block" />
+                  <div className="p-3">
+                    <h3 className="font-tiro text-[14.5px] leading-snug text-ink line-clamp-2">{r.title}</h3>
+                    <div className="font-poppins text-[10px] text-grey mt-2">{r.districtName || 'सिंधुदुर्ग'} · {new Date(r.createdAt).toLocaleDateString('mr-IN')}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Ad Section at the bottom */}
+      {ads.length > 0 && (
+        <div className="max-w-[1180px] mx-auto px-6 py-8 flex justify-center">
+          <div className="bg-white border-2 border-line rounded-lg w-[900px] max-w-full overflow-hidden shadow-md flex items-center justify-center bg-gray-50 transition-all duration-500">
+            <a 
+              href={ads[currentAdIndex]?.link_url || '#'} 
+              target={ads[currentAdIndex]?.link_url ? "_blank" : "_self"} 
+              rel="noopener noreferrer" 
+              className="w-full flex justify-center"
+              onClick={(e) => handleAdClick(e, ads[currentAdIndex])}
+            >
+              <img src={`http://localhost:5000/api/banners/${ads[currentAdIndex]?.id}/image`} alt="Advertisement" className="max-w-full h-auto object-contain max-h-[250px]" />
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox for Ad */}
+      {lightboxAd && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6"
+          style={{ background: 'rgba(14,42,71,.92)' }}
+          onClick={() => setLightboxAd(null)}
+        >
+          <span
+            className="absolute top-6 right-8 text-white text-[26px] cursor-pointer font-poppins"
+            onClick={() => setLightboxAd(null)}
+          >
+            ✕
+          </span>
+          <img
+            src={`http://localhost:5000/api/banners/${lightboxAd.id}/image`}
+            alt="Advertisement"
+            className="max-w-[800px] max-h-[80vh] rounded-lg"
+            style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}
+          />
+        </div>
+      )}
     </div>
   );
 }

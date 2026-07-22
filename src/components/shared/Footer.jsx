@@ -1,4 +1,8 @@
-export default function Footer({ onNavigate, onAdminLogin }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function Footer() {
+  const navigate = useNavigate();
+  const handleNavigate = (key) => navigate(key === 'home' ? '/' : `/${key}`);
   return (
     <footer style={{ background: 'var(--navy)', borderTop: '3px solid var(--gold)' }} className="py-8 mt-12 text-[#cfd9e4]">
       <div className="max-w-[1180px] mx-auto px-6">
@@ -7,7 +11,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
           <div>
             <div
               className="mb-2 cursor-pointer"
-              onClick={() => onNavigate && onNavigate('home')}
+              onClick={() => handleNavigate('home')}
             >
               <img src="/logo.jpg" alt="मायबोली मालवणी" className="h-[48px] object-contain rounded-lg border border-white/20" />
             </div>
@@ -29,7 +33,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
               ].map(({ label, key }) => (
                 <button
                   key={key}
-                  onClick={() => onNavigate && onNavigate(key)}
+                  onClick={() => handleNavigate(key)}
                   className="block font-mukta text-[13.5px] text-left hover:text-white transition-colors"
                   style={{ color: '#8fa0b3' }}
                 >
@@ -46,7 +50,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
               {['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'].map((t) => (
                 <button
                   key={t}
-                  onClick={() => onNavigate && onNavigate('listing')}
+                  onClick={() => handleNavigate('listing')}
                   className="block font-mukta text-[13.5px] text-left hover:text-white transition-colors"
                   style={{ color: '#8fa0b3' }}
                 >
@@ -67,21 +71,19 @@ export default function Footer({ onNavigate, onAdminLogin }) {
               ].map(({ label, key }) => (
                 <button
                   key={key}
-                  onClick={() => onNavigate && onNavigate(key)}
+                  onClick={() => handleNavigate(key)}
                   className="block font-mukta text-[13.5px] text-left hover:text-white transition-colors"
                   style={{ color: '#8fa0b3' }}
                 >
                   {label}
                 </button>
               ))}
-              {onAdminLogin && (
-                <button
-                  onClick={onAdminLogin}
-                  className="block font-mukta text-[13.5px] text-left text-gold-light hover:text-white transition-colors mt-2"
-                >
-                  संपादक लॉगिन →
-                </button>
-              )}
+              <button
+                onClick={() => navigate('/admin-login')}
+                className="block font-mukta text-[13.5px] text-left text-gold-light hover:text-white transition-colors mt-2"
+              >
+                संपादक लॉगिन →
+              </button>
             </div>
           </div>
         </div>

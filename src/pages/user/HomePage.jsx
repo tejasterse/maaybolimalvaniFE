@@ -64,12 +64,12 @@ function AdCarousel({ ads }) {
 }
 
 const talukaHighlights = [
-  { name: 'मालवण', img: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop', headline: 'किल्ल्यावर विक्रमी गर्दी' },
-  { name: 'कणकवली', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=200&h=140&fit=crop', headline: 'निवडणूक घोषणा' },
-  { name: 'देवगड', img: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=200&h=140&fit=crop', headline: 'आंबा हंगाम चर्चा' },
-  { name: 'सावंतवाडी', img: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=200&h=140&fit=crop', headline: 'खेळणी उद्योगाला प्रोत्साहन' },
-  { name: 'वेंगुर्ला', img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=200&h=140&fit=crop', headline: 'किनारपट्टी विकास' },
-  { name: 'कुडाळ', img: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=200&h=140&fit=crop', headline: 'गणेशोत्सव तयारी' },
+  { name: 'मालवण', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop', headline: 'किल्ल्यावर विक्रमी गर्दी' },
+  { name: 'कणकवली', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop', headline: 'निवडणूक घोषणा' },
+  { name: 'देवगड', img: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=300&h=200&fit=crop', headline: 'आंबा हंगाम चर्चा' },
+  { name: 'सावंतवाडी', img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop', headline: 'खेळणी उद्योगाला प्रोत्साहन' },
+  { name: 'वेंगुर्ला', img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=300&h=200&fit=crop', headline: 'किनारपट्टी विकास' },
+  { name: 'कुडाळ', img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=200&fit=crop', headline: 'गणेशोत्सव तयारी' },
 ];
 
 const categories = [
@@ -401,6 +401,7 @@ export default function HomePage() {
                 'मासेमारी-शेती': 'maasemari',
                 'संस्कृती': 'sanskriti',
                 'क्रीडा': 'krida',
+                'गुन्हे': 'gunhe',
               };
               const targetKey = categoryMapping[cat.name] || 'listing';
               return (
@@ -424,7 +425,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 5. Poems, Writings, Other Entertainment */}
+        {/* 5. Poems, Writings, Other Entertainment (With Images & Icons) */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-tiro text-[24px] text-maroon-deep">कविता, लेख आणि मनोरंजन</h2>
@@ -432,7 +433,7 @@ export default function HomePage() {
               onClick={() => navigate('/entertainment')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
-              अधिक वाचा →
+              सर्व साहित्य बघा →
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

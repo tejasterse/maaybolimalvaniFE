@@ -36,7 +36,7 @@ export default function Sidebar({ onLogout }) {
         className="flex items-center gap-2.5 px-5 pb-5"
         style={{ borderBottom: '1px solid rgba(255,255,255,.08)' }}
       >
-        <img src="/logo.jpg" alt="मायबोली मालवणी" className="w-[50px] h-[50px] object-contain rounded-lg border border-white/20 shadow-md animate-fade-in" />
+        <img src="/logo.png" alt="मायबोली मालवणी" className="w-[65px] h-[65px] object-contain drop-shadow-md animate-fade-in" />
         <div>
           <span className="block font-tiro text-[14px] text-white font-bold leading-tight">मायबोली मालवणी</span>
           <span className="block font-poppins text-[8.5px] tracking-[.1em] text-gold-light mt-0.5">ADMIN PANEL</span>

@@ -12,12 +12,15 @@ const navItems = [
   { key: 'paryatan', label: 'पर्यटन' },
   { key: 'sanskriti', label: 'संस्कृती' },
   { key: 'krida', label: 'क्रीडा' },
+  { key: 'gunhe', label: 'गुन्हे' },
+  { key: 'kavita-lekh', label: 'कविता-लेख-विनोद' },
+  { key: 'utsav', label: 'सण व उत्सव' },
   { key: 'gallery', label: 'गॅलरी' },
   { key: 'search', label: 'शोधा' },
 ];
 
 // Category pages all use ListingPage with different labels
-const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida'];
+const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'];
 
 export default function UserReaderLayout() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -55,18 +58,17 @@ export default function UserReaderLayout() {
                 style={{ background: '#F0EAD9', border: '1px solid var(--line)' }}
                 onClick={() => handleNavigate('search')}
               >
-                <span className="font-poppins text-[12.5px] text-grey">🔍 बातम्या शोधा…</span>
-              </div>
-            </div>
-            {/* Mobile hamburger */}
+                {label}
+              </button>
+            ))}
             <button
-              className="md:hidden text-[22px] text-ink"
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              onClick={() => navigate('search')}
+              className="p-2 rounded-lg text-gold-light hover:bg-maroon-deep text-[14px] ml-1"
+              title="शोधा"
             >
-              {showMobileMenu ? '✕' : '☰'}
+              🔍
             </button>
-          </div>
-        </div>
+          </nav>
 
         {/* Primary Nav — desktop */}
         <nav style={{ background: 'var(--maroon)', marginTop: 14 }}>
@@ -89,7 +91,7 @@ export default function UserReaderLayout() {
 
         {/* Mobile menu */}
         {showMobileMenu && (
-          <div className="md:hidden" style={{ background: 'var(--maroon-deep)', borderTop: '1px solid rgba(255,255,255,.1)' }}>
+          <div className="lg:hidden" style={{ background: 'var(--maroon-deep)', borderTop: '1px solid rgba(255,255,255,.1)' }}>
             {navItems.map(({ key, label }) => (
               <button
                 key={key}
@@ -103,6 +105,27 @@ export default function UserReaderLayout() {
           </div>
         )}
       </header>
+
+      {/* Back Navigation Bar for opened inner pages */}
+      {activePage !== 'home' && (
+        <div className="bg-[#F6F1E5] border-b border-gold/30 py-2.5 px-6 shadow-inner">
+          <div className="max-w-[1240px] mx-auto flex items-center justify-between">
+            <button
+              onClick={goBack}
+              className="flex items-center gap-2 font-poppins font-bold text-[13px] text-maroon hover:text-maroon-deep bg-white border border-gold/50 px-4 py-1.5 rounded-full shadow-sm hover:shadow transition-all"
+            >
+              <span className="text-base">←</span>
+              <span>मागे जा (Go Back)</span>
+            </button>
+            <button
+              onClick={() => navigate('home')}
+              className="font-poppins text-[12px] font-semibold text-teal hover:underline flex items-center gap-1"
+            >
+              <span>🏠 मुख्य पानावर जा</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="flex-1">
         <Outlet />

@@ -35,6 +35,8 @@ export default function UserReaderLayout() {
   };
 
   const activeNavKey = location.pathname.substring(1) || 'home';
+  const activePage = activeNavKey;
+  const goBack = () => navigate(-1);
 
   return (
     <div style={{ background: 'var(--cream)', color: 'var(--ink)', fontFamily: "'Mukta', sans-serif", minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -58,17 +60,18 @@ export default function UserReaderLayout() {
                 style={{ background: '#F0EAD9', border: '1px solid var(--line)' }}
                 onClick={() => handleNavigate('search')}
               >
-                {label}
-              </button>
-            ))}
+                <span className="font-poppins text-[12.5px] text-grey">🔍 बातम्या शोधा…</span>
+              </div>
+            </div>
+            {/* Mobile hamburger */}
             <button
-              onClick={() => navigate('search')}
-              className="p-2 rounded-lg text-gold-light hover:bg-maroon-deep text-[14px] ml-1"
-              title="शोधा"
+              className="md:hidden text-[22px] text-ink"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
             >
-              🔍
+              {showMobileMenu ? '✕' : '☰'}
             </button>
-          </nav>
+          </div>
+        </div>
 
         {/* Primary Nav — desktop */}
         <nav style={{ background: 'var(--maroon)', marginTop: 14 }}>

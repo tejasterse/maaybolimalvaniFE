@@ -66,6 +66,11 @@ button { font-family: 'Poppins', sans-serif; cursor: pointer; border: none; }
 /* ── Smooth transitions ── */
 .nav-transition { transition: background .15s, color .15s; }
 
+/* ── Quill Editor Content Alignment ── */
+.ql-align-center { text-align: center; }
+.ql-align-right { text-align: right; }
+.ql-align-justify { text-align: justify; }
+
 /* ──────────────────────────────────────────
    RESPONSIVE MEDIA QUERIES
 ────────────────────────────────────────── */

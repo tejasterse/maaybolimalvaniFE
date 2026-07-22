@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { listingArticles } from '../../constants/data.jsx';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { fetchPosts } from '../../api/posts.js';
 
 const talukaFilters = ['सर्व तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
 
@@ -12,8 +14,19 @@ const categoryDetails = {
   krida: { title: 'क्रीडा', desc: 'सिंधुदुर्ग व कोकण परिसरातील क्रीडा विश्वातील घडामोडी', count: 'एकूण १७ लेख' }
 };
 
-export default function ListingPage({ onNavigate, categoryKey, initialTaluka }) {
-  const [selectedTaluka, setSelectedTaluka] = useState(initialTaluka || 'सर्व तालुके');
+export default function ListingPage({ categoryKey: propCategoryKey, initialTaluka }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
+
+  const stripHtml = (html) => {
+    if (!html) return '';
+    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
+  };
+  
+  const categoryKey = propCategoryKey || params.categoryKey || 'listing';
+  
+  const [selectedTaluka, setSelectedTaluka] = useState(location.state?.taluka || initialTaluka || 'सर्व तालुके');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('latest');
   const detail = categoryDetails[categoryKey] || categoryDetails['paryatan'];
@@ -30,9 +43,24 @@ export default function ListingPage({ onNavigate, categoryKey, initialTaluka }) 
     setCurrentPage(1);
   }, [selectedTaluka]);
 
-  const filteredArticles = listingArticles.filter((art) => {
-    const matchesCategory = categoryKey === 'listing' || art.categoryKey === categoryKey;
-    const matchesTaluka = selectedTaluka === 'सर्व तालुके' || art.taluka === selectedTaluka;
+  const { data = {}, isLoading } = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => fetchPosts()
+  });
+  const posts = data.posts || [];
+
+  const categoryMappingReverse = {
+    'rajkaran': 'राजकारण',
+    'paryatan': 'पर्यटन',
+    'maasemari': 'मासेमारी-शेती',
+    'sanskriti': 'संस्कृती',
+    'krida': 'क्रीडा',
+  };
+
+  const filteredArticles = posts.filter((art) => {
+    const expectedCatName = categoryMappingReverse[categoryKey];
+    const matchesCategory = categoryKey === 'listing' || art.categoryName === expectedCatName;
+    const matchesTaluka = selectedTaluka === 'सर्व तालुके' || (art.districtName && art.districtName === selectedTaluka);
     return matchesCategory && matchesTaluka;
   });
 
@@ -113,27 +141,31 @@ export default function ListingPage({ onNavigate, categoryKey, initialTaluka }) 
         </div>
 
         {/* Listing */}
-        {paginatedArticles.length > 0 ? (
+        {isLoading ? (
+          <div className="py-10 text-center font-poppins text-grey">बातम्या लोड होत आहेत...</div>
+        ) : paginatedArticles.length > 0 ? (
           paginatedArticles.map((item) => (
             <div
-              key={item.title}
-              onClick={() => onNavigate && onNavigate('article')}
+              key={item.id}
+              onClick={() => navigate(`/article/${item.id}`)}
               className="listing-item-inner flex gap-5 bg-white rounded-[10px] p-4 mb-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-0.5"
             >
               <img
-                src={item.img}
+                src={(item.image || item.image_type) ? `http://localhost:5000/api/posts/${item.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
                 alt={item.title}
                 className="w-[200px] h-[130px] object-cover rounded-lg flex-shrink-0 hidden sm:block"
               />
               <div>
                 <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-[.05em]">
-                  {item.tag}
+                  {item.categoryName || 'बातमी'}
                 </span>
                 <h3 className="font-tiro text-[19px] text-ink my-2 leading-snug">{item.title}</h3>
-                <p className="font-mukta text-[14.5px] leading-relaxed mb-2.5" style={{ color: '#5a4c3a' }}>
-                  {item.excerpt}
+                <p className="font-mukta text-[15px] leading-relaxed mb-3 text-grey line-clamp-3">
+                  {item.content ? stripHtml(item.content).substring(0, 150) + '...' : ''}
                 </p>
-                <div className="font-poppins text-[11px] text-grey">{item.meta}</div>
+                <div className="font-poppins text-[11px] text-grey">
+                  {item.districtName || 'सिंधुदुर्ग'} · {new Date(item.createdAt).toLocaleDateString('mr-IN')}
+                </div>
               </div>
             </div>
           ))

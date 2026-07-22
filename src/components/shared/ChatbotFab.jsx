@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom';
+
 // Chatbot floating action button
-export default function ChatbotFab({ onClick }) {
+export default function ChatbotFab() {
+  const navigate = useNavigate();
   return (
     <div
-      onClick={onClick}
+      onClick={() => navigate('/chatbot')}
       className="fixed bottom-6 right-6 font-poppins font-semibold text-[13.5px] px-5 py-3.5 rounded-[30px] flex items-center gap-2.5 cursor-pointer z-40"
       style={{
         background: 'var(--navy)',

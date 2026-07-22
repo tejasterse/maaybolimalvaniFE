@@ -1,19 +1,105 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ToggleSwitch from '../../components/admin/ToggleSwitch.jsx';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { createPost, updatePost } from '../../api/posts.js';
+import { fetchCategories } from '../../api/categories.js';
+import { fetchDistricts } from '../../api/districts.js';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const talukaOptions = ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
 
-export default function ArticleEditorPage({ article, onBack }) {
+const quillModules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link', 'image'],
+    ['clean']
+  ],
+};
+
+export default function ArticleEditorPage({ onBack }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const article = location.state?.article || null;
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate('/admin/articles');
+    }
+  };
+
   const [title, setTitle] = useState(article?.title || '');
-  const [body, setBody] = useState(article?.excerpt || '');
-  const [selectedTaluka, setSelectedTaluka] = useState(article?.taluka || 'मालवण');
-  const [category, setCategory] = useState(article?.category || 'पर्यटन');
-  const [pubDate, setPubDate] = useState('2026-07-18');
-  const [author, setAuthor] = useState(article?.author || 'सारिका पवार');
-  const [breakingOn, setBreakingOn] = useState(article?.status === 'published' ? true : false);
+  const [body, setBody] = useState(article?.content || article?.excerpt || '');
+  const [imageFile, setImageFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [existingImage, setExistingImage] = useState(null);
+  const [existingVideo, setExistingVideo] = useState(false);
+  const [selectedTaluka, setSelectedTaluka] = useState(article?.taluka || article?.districtName || 'मालवण');
+  const [category, setCategory] = useState(article?.category || article?.categoryName || 'पर्यटन');
+  const [pubDate, setPubDate] = useState(article?.createdAt ? new Date(article.createdAt).toISOString().split('T')[0] : '2026-07-18');
+  const [author, setAuthor] = useState(article?.author || article?.authorName || 'सारिका पवार');
+  const [breakingOn, setBreakingOn] = useState(article?.is_breaking ? true : false);
   const [featureOn, setFeatureOn] = useState(false);
   const [originalText, setOriginalText] = useState(article?.excerpt || '');
   const [aiDraft, setAiDraft] = useState('');
+
+  useEffect(() => {
+    if (article) {
+      setTitle(article.title || '');
+      setBody(article.content || '');
+      setBreakingOn(article.is_breaking === 1);
+      setCategory(article.categoryName || '');
+      setSelectedTaluka(article.districtName || '');
+      if (article.image_type) {
+        setExistingImage(`http://localhost:5000/api/posts/${article.id}/image`);
+      }
+      if (article.video_type) {
+        setExistingVideo(true);
+      }
+    }
+  }, [article]);
+
+  const { data: categoriesData = [] } = useQuery({ queryKey: ['categories'], queryFn: fetchCategories });
+  const { data: districtsData = [] } = useQuery({ queryKey: ['districts'], queryFn: fetchDistricts });
+
+  const saveMutation = useMutation({
+    mutationFn: (formData) => article ? updatePost({ id: article.id, formData }) : createPost(formData),
+    onSuccess: () => {
+      alert(article ? 'लेख यशस्वीरित्या अपडेट केला गेला आहे!' : 'लेख यशस्वीरित्या प्रकाशित केला गेला आहे!');
+      handleBack();
+    },
+    onError: (err) => {
+      if (err.response?.status === 401) {
+        alert('सत्र कालबाह्य झाले आहे (Session Expired). तुमचा डेटा सुरक्षित आहे. कृपया नवीन टॅबमध्ये लॉग इन करा आणि नंतर या टॅबमध्ये परत येऊन "प्रकाशित करा" वर क्लिक करा.');
+      } else {
+        alert('Error saving post: ' + (err.response?.data?.message || err.message));
+      }
+    }
+  });
+
+  const handlePublish = (status) => {
+    const cat = categoriesData.find(c => c.name === category);
+    const dist = districtsData.find(d => d.name === selectedTaluka);
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', body);
+    if (cat) formData.append('category_id', cat.id);
+    if (dist) formData.append('district_id', dist.id);
+    formData.append('is_breaking', breakingOn);
+    formData.append('status', status);
+    if (imageFile) formData.append('image', imageFile);
+    if (videoFile) formData.append('video', videoFile);
+
+    saveMutation.mutate(formData);
+  };
 
   const handleInsert = () => {
     if (aiDraft.trim() && aiDraft !== "भाषांतर होत आहे...") {
@@ -36,8 +122,6 @@ export default function ArticleEditorPage({ article, onBack }) {
     }
   };
 
-  const toolbarBtns = ['B', 'I', 'H2', '" "', '🔗', '🖼️'];
-
   return (
     <div>
       {/* Topbar */}
@@ -47,7 +131,7 @@ export default function ArticleEditorPage({ article, onBack }) {
       >
         <div className="flex items-center gap-3.5">
           <span
-            onClick={onBack}
+            onClick={handleBack}
             className="font-poppins text-[13px] text-gold-light cursor-pointer"
           >
             ← लेखांकडे परत
@@ -63,25 +147,28 @@ export default function ArticleEditorPage({ article, onBack }) {
         </div>
         <div className="flex gap-2.5">
           <button
-            onClick={() => { alert('लेख ड्राफ्ट म्हणून यशस्वीरित्या जतन केला गेला आहे!'); onBack(); }}
-            className="font-poppins font-semibold text-[12.5px] px-4 py-2 rounded-[7px] bg-transparent border border-white/25 transition-colors hover:bg-white/10"
+            onClick={() => handlePublish('DRAFT')}
+            disabled={saveMutation.isPending}
+            className="font-poppins font-semibold text-[12.5px] px-4 py-2 rounded-[7px] bg-transparent border border-white/25 transition-colors hover:bg-white/10 disabled:opacity-50"
             style={{ color: '#d9c9a8' }}
           >
             ड्राफ्ट जतन करा
           </button>
           <button
-            onClick={() => { alert('लेख रिव्ह्यूसाठी यशस्वीरित्या सादर केला गेला आहे!'); onBack(); }}
-            className="font-poppins font-semibold text-[12.5px] px-4 py-2 rounded-[7px] text-white transition-colors hover:opacity-90"
+            onClick={() => handlePublish('PENDING_REVIEW')}
+            disabled={saveMutation.isPending}
+            className="font-poppins font-semibold text-[12.5px] px-4 py-2 rounded-[7px] text-white transition-colors hover:opacity-90 disabled:opacity-50"
             style={{ background: 'var(--teal)' }}
           >
             रिव्ह्यूसाठी सादर करा
           </button>
           <button
-            onClick={() => { alert('लेख यशस्वीरित्या प्रकाशित केला गेला आहे!'); onBack(); }}
-            className="font-poppins font-semibold text-[12.5px] px-4 py-2 rounded-[7px] transition-colors hover:opacity-90"
+            onClick={() => handlePublish('PUBLISHED')}
+            disabled={saveMutation.isPending}
+            className="font-poppins font-semibold text-[12.5px] px-4 py-2 rounded-[7px] transition-colors hover:opacity-90 disabled:opacity-50"
             style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
           >
-            प्रकाशित करा
+            {saveMutation.isPending ? 'प्रतीक्षा करा...' : (article ? 'अपडेट करा' : 'प्रकाशित करा')}
           </button>
         </div>
       </div>
@@ -107,30 +194,103 @@ export default function ArticleEditorPage({ article, onBack }) {
               }}
             />
 
-            {/* Toolbar */}
-            <div
-              className="flex gap-1.5 pb-3.5 mb-4"
-              style={{ borderBottom: '1px solid var(--line)' }}
-            >
-              {toolbarBtns.map((b) => (
-                <button
-                  key={b}
-                  className="font-poppins font-semibold text-[12.5px] text-grey px-3 py-[7px] rounded-[6px]"
-                  style={{ background: '#F6F1E6' }}
-                >
-                  {b}
-                </button>
-              ))}
+            {/* Body - React Quill */}
+            <div className="quill-editor-container">
+              <ReactQuill
+                theme="snow"
+                value={body}
+                onChange={setBody}
+                modules={quillModules}
+                placeholder="मालवणी भाषेत लेख इथे लिहा…"
+                className="w-full font-mukta text-[17px] text-ink"
+                style={{ minHeight: 340 }}
+              />
             </div>
 
-            {/* Body */}
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="मालवणी भाषेत लेख इथे लिहा…"
-              className="w-full font-mukta text-[17px] leading-[1.9] text-ink outline-none resize-y"
-              style={{ border: 'none', minHeight: 340, background: 'transparent' }}
-            />
+            <style>{`
+              .quill-editor-container .ql-editor {
+                min-height: 300px;
+                font-size: 17px;
+                font-family: inherit;
+                line-height: 1.9;
+              }
+              .quill-editor-container .ql-toolbar {
+                border-top: none;
+                border-left: none;
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+                margin-bottom: 15px;
+                padding-left: 0;
+                padding-right: 0;
+              }
+              .quill-editor-container .ql-container {
+                border: none;
+              }
+            `}</style>
+          </div>
+
+          {/* Media Uploads */}
+          <div className="bg-white rounded-[10px] p-5 shadow-sm border border-line mt-5">
+            <h2 className="font-poppins font-semibold text-[14.5px] text-ink mb-4">फीचर्ड इमेज आणि व्हिडिओ (Featured Image & Video)</h2>
+
+            <div className="mb-4">
+              <label className="block font-poppins text-[12.5px] font-medium text-grey mb-1.5">फोटो (पर्यायी)</label>
+              <div className="border-2 border-dashed border-line rounded-[8px] p-5 text-center bg-[#fafafa]">
+                {existingImage && !imageFile && (
+                  <div className="mb-3">
+                    <img src={existingImage} alt="Current" className="max-h-[150px] mx-auto rounded-[6px]" />
+                  </div>
+                )}
+                {imageFile && (
+                  <div className="mb-3 font-poppins text-sm text-teal">
+                    नवीन फोटो निवडला: {imageFile.name}
+                  </div>
+                )}
+                <div className="font-poppins text-[12px] text-grey mb-2.5">किमान 1200x630px चा फोटो अपलोड करा</div>
+                <input
+                  type="file"
+                  id="featured-image"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => setImageFile(e.target.files[0])}
+                />
+                <label
+                  htmlFor="featured-image"
+                  className="inline-block font-poppins text-[12px] font-medium px-4 py-2 rounded-[6px] border border-line bg-white cursor-pointer hover:bg-grey-light transition-colors"
+                >
+                  इमेज निवडा
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-poppins text-[12.5px] font-medium text-grey mb-1.5">व्हिडिओ (पर्यायी - कमाल 50MB)</label>
+              <div className="border-2 border-dashed border-line rounded-[8px] p-5 text-center bg-[#fafafa]">
+                {existingVideo && !videoFile && (
+                  <div className="mb-3 font-poppins text-[12.5px] text-green-600">
+                    ✅ पूर्वी अपलोड केलेला व्हिडिओ उपलब्ध आहे
+                  </div>
+                )}
+                {videoFile && (
+                  <div className="mb-3 font-poppins text-sm text-teal">
+                    नवीन व्हिडिओ निवडला: {videoFile.name}
+                  </div>
+                )}
+                <input
+                  type="file"
+                  id="featured-video"
+                  accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo,video/x-matroska"
+                  className="hidden"
+                  onChange={(e) => setVideoFile(e.target.files[0])}
+                />
+                <label
+                  htmlFor="featured-video"
+                  className="inline-block font-poppins text-[12px] font-medium px-4 py-2 rounded-[6px] border border-line bg-white cursor-pointer hover:bg-grey-light transition-colors"
+                >
+                  व्हिडिओ निवडा
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* AI Translation Assist */}
@@ -219,26 +379,26 @@ export default function ArticleEditorPage({ article, onBack }) {
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-2.5 py-2 border border-line rounded-[6px] font-poppins text-[13px] text-ink bg-white cursor-pointer"
               >
-                {['पर्यटन', 'राजकारण', 'मासेमारी-शेती', 'संस्कृती', 'क्रीडा'].map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                {categoriesData.map((c) => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
                 ))}
               </select>
             </div>
             <div className="mb-3.5">
               <label className="block font-poppins text-[11.5px] text-grey mb-1.5">तालुका</label>
               <div className="flex flex-wrap gap-1.5">
-                {talukaOptions.map((t) => (
+                {districtsData.map((t) => (
                   <span
-                    key={t}
-                    onClick={() => setSelectedTaluka(t)}
+                    key={t.id}
+                    onClick={() => setSelectedTaluka(t.name)}
                     className="font-poppins text-[11.5px] px-2.5 py-1 rounded-[14px] cursor-pointer transition-colors"
                     style={
-                      selectedTaluka === t
+                      selectedTaluka === t.name
                         ? { background: 'var(--teal)', color: '#fff' }
                         : { background: '#F6F1E6', color: 'var(--teal)' }
                     }
                   >
-                    {t}
+                    {t.name}
                   </span>
                 ))}
               </div>
@@ -268,20 +428,7 @@ export default function ArticleEditorPage({ article, onBack }) {
             </div>
           </div>
 
-          {/* Featured Image */}
-          <div className="bg-white rounded-[10px] p-4 shadow-sm">
-            <h4 className="font-poppins text-[12px] font-bold uppercase tracking-[.06em] text-grey mb-3.5">
-              फीचर्ड इमेज
-            </h4>
-            <div
-              className="border-[1.5px] border-dashed border-line rounded-lg px-2.5 py-6 text-center font-poppins text-[12px] text-grey cursor-pointer"
-            >
-              <span className="block text-[22px] mb-2">🖼️</span>
-              फोटो अपलोड करण्यासाठी क्लिक करा किंवा ड्रॅग करा
-              <br />
-              <span className="opacity-70">JPG/PNG, कमाल 5MB</span>
-            </div>
-          </div>
+
 
           {/* Author */}
           <div className="bg-white rounded-[10px] p-4 shadow-sm">

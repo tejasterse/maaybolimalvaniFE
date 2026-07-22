@@ -1,4 +1,7 @@
-export default function UtilityBar({ onNavigate, onAdminLogin }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function UtilityBar() {
+  const navigate = useNavigate();
   const handleSocialClick = (platform) => {
     alert(`${platform} वर मायबोली मालवणीला कनेक्ट केल्याबद्दल धन्यवाद!`);
   };
@@ -24,20 +27,18 @@ export default function UtilityBar({ onNavigate, onAdminLogin }) {
             Facebook
           </button>
           <button
-            onClick={() => onNavigate && onNavigate('about-us')}
+            onClick={() => navigate('/about-us')}
             className="hidden sm:inline opacity-90 ml-3 hover:text-white transition-colors"
           >
             आमच्याबद्दल
           </button>
-          {onAdminLogin && (
-            <button
-              onClick={onAdminLogin}
-              className="ml-3 font-poppins font-semibold text-[11px] px-3 py-1 rounded-full hover:bg-white/20 transition-colors"
-              style={{ background: 'rgba(255,255,255,.12)', color: '#cfd9e4', border: '1px solid rgba(255,255,255,.2)' }}
-            >
-              संपादक लॉगिन
-            </button>
-          )}
+          <button
+            onClick={() => navigate('/admin-login')}
+            className="ml-3 font-poppins font-semibold text-[11px] px-3 py-1 rounded-full hover:bg-white/20 transition-colors"
+            style={{ background: 'rgba(255,255,255,.12)', color: '#cfd9e4', border: '1px solid rgba(255,255,255,.2)' }}
+          >
+            संपादक लॉगिन
+          </button>
         </div>
       </div>
     </div>

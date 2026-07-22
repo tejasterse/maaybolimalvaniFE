@@ -1,10 +1,27 @@
-export default function Sidebar({ activePage, onNavigate, onLogout }) {
+import { useNavigate, useLocation } from 'react-router-dom';
+
+export default function Sidebar({ onLogout }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavigate = (key) => {
+    if (key === 'dashboard') navigate('/admin');
+    else navigate(`/admin/${key}`);
+  };
+
+  // Determine active page from URL
+  const pathParts = location.pathname.split('/');
+  const activePage = pathParts[2] || 'dashboard';
   const navItems = [
     { key: 'dashboard', label: 'डॅशबोर्ड', icon: '📊' },
     { key: 'articles',  label: 'लेख', icon: '📝' },
     { key: 'media',     label: 'मीडिया लायब्ररी', icon: '🖼️' },
     { key: 'review',    label: 'रिव्ह्यू क्यू', icon: '✅' },
     { key: 'taluka',    label: 'विभाग व तालुका', icon: '🗺️' },
+    { key: 'ads',       label: 'जाहिराती', icon: '📢' },
+    { key: 'entertainment', label: 'मनोरंजन', icon: '🎭' },
+    { key: 'events',    label: 'सण व उत्सव', icon: '🎪' },
+    { key: 'gallery',   label: 'गॅलरी', icon: '🖼️' },
     { key: 'users',     label: 'युजर्स व भूमिका', icon: '👥' },
     { key: 'settings',  label: 'सेटिंग्ज', icon: '⚙️' },
   ];
@@ -31,7 +48,7 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
         {navItems.map(({ key, label, icon }) => (
           <div
             key={key}
-            onClick={() => onNavigate(key)}
+            onClick={() => handleNavigate(key)}
             className={`flex items-center gap-3 px-5 py-[11px] font-poppins text-[13px] font-medium cursor-pointer nav-transition
               ${activePage === key ? 'sidebar-item-active' : 'sidebar-item text-[#a9b8c8] hover:bg-navy-light hover:text-white'}`}
           >

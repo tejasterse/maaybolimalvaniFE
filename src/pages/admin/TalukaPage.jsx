@@ -1,54 +1,93 @@
 import { useState } from 'react';
-import { categories, talukas } from '../../constants/data.jsx';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchCategories, createCategory, updateCategory, deleteCategory } from '../../api/categories.js';
+import { fetchDistricts, createDistrict, updateDistrict, deleteDistrict } from '../../api/districts.js';
 
 export default function TalukaPage() {
-  const [cats, setCats] = useState(categories);
-  const [talks, setTalks] = useState(talukas);
+  const queryClient = useQueryClient();
   const [newCat, setNewCat] = useState('');
   const [newTaluka, setNewTaluka] = useState('');
 
+  const { data: cats = [] } = useQuery({ queryKey: ['categories'], queryFn: fetchCategories });
+  const { data: talks = [] } = useQuery({ queryKey: ['districts'], queryFn: fetchDistricts });
+
   // Custom modal states
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editTarget, setEditTarget] = useState(null); // { type: 'cat' | 'taluka', index }
+  const [editTarget, setEditTarget] = useState(null); // { type: 'cat' | 'taluka', id }
   const [editNameInput, setEditNameInput] = useState('');
 
+  const createCatMutation = useMutation({
+    mutationFn: createCategory,
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['categories'] }); setNewCat(''); },
+    onError: (err) => alert(err.response?.data?.message || err.message)
+  });
+
+  const createTalukaMutation = useMutation({
+    mutationFn: createDistrict,
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['districts'] }); setNewTaluka(''); },
+    onError: (err) => alert(err.response?.data?.message || err.message)
+  });
+  
+  const updateCatMutation = useMutation({
+    mutationFn: updateCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      setShowEditModal(false);
+    },
+    onError: (err) => alert(err.response?.data?.message || err.message)
+  });
+
+  const updateTalukaMutation = useMutation({
+    mutationFn: updateDistrict,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['districts'] });
+      setShowEditModal(false);
+    },
+    onError: (err) => alert(err.response?.data?.message || err.message)
+  });
+
+  const deleteCatMutation = useMutation({
+    mutationFn: deleteCategory,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['categories'] }),
+    onError: (err) => alert(err.response?.data?.message || err.message)
+  });
+
+  const deleteTalukaMutation = useMutation({
+    mutationFn: deleteDistrict,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['districts'] }),
+    onError: (err) => alert(err.response?.data?.message || err.message)
+  });
+
   const addCat = () => {
-    if (newCat.trim()) {
-      setCats([...cats, { name: newCat, count: '0 लेख' }]);
-      setNewCat('');
-    }
+    if (newCat.trim()) createCatMutation.mutate({ name: newCat });
   };
 
   const addTaluka = () => {
-    if (newTaluka.trim()) {
-      setTalks([...talks, { name: newTaluka, count: '0 लेख' }]);
-      setNewTaluka('');
-    }
+    if (newTaluka.trim()) createTalukaMutation.mutate({ name: newTaluka });
   };
 
-  const triggerRename = (type, index, currentName) => {
-    setEditTarget({ type, index });
+  const triggerRename = (type, id, currentName) => {
+    setEditTarget({ type, id });
     setEditNameInput(currentName);
     setShowEditModal(true);
   };
+  
+  const triggerDelete = (type, id) => {
+    if (window.confirm('तुम्हाला खात्री आहे का की तुम्ही हा घटक काढून टाकू इच्छिता?')) {
+        if (type === 'cat') deleteCatMutation.mutate(id);
+        else deleteTalukaMutation.mutate(id);
+    }
+  }
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
     if (!editNameInput.trim() || !editTarget) return;
 
     if (editTarget.type === 'cat') {
-      const updated = [...cats];
-      updated[editTarget.index].name = editNameInput.trim();
-      setCats(updated);
+      updateCatMutation.mutate({ id: editTarget.id, name: editNameInput.trim() });
     } else if (editTarget.type === 'taluka') {
-      const updated = [...talks];
-      updated[editTarget.index].name = editNameInput.trim();
-      setTalks(updated);
+      updateTalukaMutation.mutate({ id: editTarget.id, name: editNameInput.trim() });
     }
-
-    setShowEditModal(false);
-    setEditTarget(null);
-    setEditNameInput('');
   };
 
   const renderList = (items, newVal, setNew, onAdd, type, placeholder) => (
@@ -60,20 +99,27 @@ export default function TalukaPage() {
       </h3>
       {items.map((item, i) => (
         <div
-          key={item.name}
+          key={item.id}
           className="flex justify-between items-center py-[11px] font-mukta text-[15px]"
           style={{ borderBottom: i < items.length - 1 ? '1px solid var(--line)' : 'none' }}
         >
           <span>
-            {item.name}{' '}
-            <span className="font-poppins text-[11px] text-grey ml-2">{item.count}</span>
+            {item.name}
           </span>
-          <button
-            onClick={() => triggerRename(type, i, item.name)}
-            className="font-poppins text-[11.5px] text-teal font-semibold cursor-pointer hover:underline animate-fade-in"
-          >
-            संपादित करा
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => triggerRename(type, item.id, item.name)}
+              className="font-poppins text-[11.5px] text-teal font-semibold cursor-pointer hover:underline animate-fade-in"
+            >
+              संपादित करा
+            </button>
+            <button
+              onClick={() => triggerDelete(type, item.id)}
+              className="font-poppins text-[11.5px] text-red-500 font-semibold cursor-pointer hover:underline animate-fade-in"
+            >
+              काढून टाका
+            </button>
+          </div>
         </div>
       ))}
       <div className="flex gap-2 mt-3.5">
@@ -136,7 +182,8 @@ export default function TalukaPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-[#fbe8c9] transition-colors"
+                  disabled={updateCatMutation.isPending || updateTalukaMutation.isPending}
+                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-[#fbe8c9] transition-colors disabled:opacity-50"
                   style={{ background: 'var(--maroon)' }}
                 >
                   जतन करा

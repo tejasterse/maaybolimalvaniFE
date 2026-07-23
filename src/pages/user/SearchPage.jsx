@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { searchResults } from '../../constants/data.jsx';
 
-export default function SearchPage({ onNavigate }) {
+export default function SearchPage() {
+  const navigate = useNavigate();
   const [showEmpty, setShowEmpty] = useState(false);
 
   return (

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { activities } from '../../constants/data.jsx';
 
 const stats = [
@@ -7,7 +8,8 @@ const stats = [
   { color: 'var(--teal)',   label: 'AI बॉट',       num: '२४२', desc: 'या आठवड्यातील प्रश्न' },
 ];
 
-export default function DashboardPage({ onNavigate }) {
+export default function DashboardPage() {
+  const navigate = useNavigate();
   const quickActions = [
     { label: '✏️ नवीन लेख लिहा',          action: 'articles' },
     { label: '🖼️ फोटो/व्हिडिओ अपलोड करा', action: 'media' },
@@ -71,7 +73,7 @@ export default function DashboardPage({ onNavigate }) {
           {quickActions.map(({ label, action }) => (
             <button
               key={label}
-              onClick={() => onNavigate && onNavigate(action)}
+              onClick={() => navigate(action === 'articles' ? '/admin/articles' : `/admin/${action}`)}
               className="block w-full text-left font-poppins font-semibold text-[13px] text-maroon-deep px-4 py-4 rounded-lg mb-3 border border-dashed border-gold nav-transition hover:bg-maroon hover:text-[#fbe8c9]"
               style={{ background: 'var(--cream)' }}
             >

@@ -1,4 +1,7 @@
-export default function AdminTopbar({ onNewArticle, onMenuToggle }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function AdminTopbar({ onMenuToggle }) {
+  const navigate = useNavigate();
   return (
     <div
       className="bg-white flex items-center justify-between px-4 md:px-7 py-3 flex-shrink-0"
@@ -30,7 +33,7 @@ export default function AdminTopbar({ onNewArticle, onMenuToggle }) {
           />
         </div>
         <button
-          onClick={onNewArticle}
+          onClick={() => navigate('/admin/articles/new')}
           className="font-poppins font-semibold text-[12px] md:text-[13px] px-3 md:px-[18px] py-2 md:py-2.5 rounded-[7px] text-[#fbe8c9] whitespace-nowrap"
           style={{ background: 'var(--maroon)' }}
         >

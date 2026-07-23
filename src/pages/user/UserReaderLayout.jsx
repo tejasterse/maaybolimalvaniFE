@@ -1,16 +1,8 @@
-import { useState } from 'react';
+import { Outlet, useNavigate, useLocation, } from 'react-router-dom';
 import UtilityBar from '../../components/shared/UtilityBar.jsx';
 import ChatbotFab from '../../components/shared/ChatbotFab.jsx';
 import Footer from '../../components/shared/Footer.jsx';
-import HomePage from './HomePage.jsx';
-import ArticlePage from './ArticlePage.jsx';
-import ListingPage from './ListingPage.jsx';
-import SearchPage from './SearchPage.jsx';
-import GalleryPage from './GalleryPage.jsx';
-import ChatbotPage from './ChatbotPage.jsx';
-import KavitaLekhPage from './KavitaLekhPage.jsx';
-import FestivalsPage from './FestivalsPage.jsx';
-import { AboutUsPage, TermsPage, PrivacyPage } from './StaticPages.jsx';
+import { useState } from 'react';
 
 const navItems = [
   { key: 'home', label: 'होम' },
@@ -30,80 +22,41 @@ const navItems = [
 // Category pages all use ListingPage with different labels
 const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'];
 
-export default function UserReaderLayout({ onAdminLogin }) {
-  const [activePage, setActivePage] = useState('home');
-  const [pageHistory, setPageHistory] = useState(['home']);
-  const [pageParams, setPageParams] = useState(null);
+export default function UserReaderLayout() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const navigate = (key, params = null) => {
-    if (key !== activePage) {
-      setPageHistory((prev) => [...prev, key]);
-    }
-    setActivePage(key);
-    setPageParams(params);
+  const handleNavigate = (key) => {
     setShowMobileMenu(false);
     window.scrollTo(0, 0);
+    if (key === 'home') navigate('/');
+    else navigate(`/${key}`);
   };
 
-  const goBack = () => {
-    if (pageHistory.length > 1) {
-      const updatedHistory = [...pageHistory];
-      updatedHistory.pop(); // remove current page
-      const previous = updatedHistory[updatedHistory.length - 1] || 'home';
-      setPageHistory(updatedHistory);
-      setActivePage(previous);
-    } else {
-      setActivePage('home');
-    }
-    window.scrollTo(0, 0);
-  };
-
-  const renderPage = () => {
-    if (activePage === 'home') return <HomePage onNavigate={navigate} />;
-    if (activePage === 'article') return <ArticlePage onNavigate={navigate} onGoBack={goBack} articleData={pageParams} />;
-    if (activePage === 'listing' || categoryPages.includes(activePage))
-      return <ListingPage onNavigate={navigate} onGoBack={goBack} categoryKey={activePage} initialTaluka={pageParams?.taluka} />;
-    if (activePage === 'kavita-lekh') return <KavitaLekhPage onNavigate={navigate} onGoBack={goBack} initialSection={pageParams?.section || 'kavita'} />;
-    if (activePage === 'utsav') return <FestivalsPage onNavigate={navigate} onGoBack={goBack} />;
-    if (activePage === 'search') return <SearchPage onNavigate={navigate} onGoBack={goBack} />;
-    if (activePage === 'gallery') return <GalleryPage onNavigate={navigate} onGoBack={goBack} initialTab={pageParams?.tab || 'सर्व'} />;
-    if (activePage === 'chatbot') return <ChatbotPage onNavigate={navigate} onGoBack={goBack} />;
-    if (activePage === 'about-us') return <AboutUsPage onNavigate={navigate} onGoBack={goBack} />;
-    if (activePage === 'terms') return <TermsPage onNavigate={navigate} onGoBack={goBack} />;
-    if (activePage === 'privacy') return <PrivacyPage onNavigate={navigate} onGoBack={goBack} />;
-    return <HomePage onNavigate={navigate} />;
-  };
-
-  const activeNavKey = categoryPages.includes(activePage) ? activePage : activePage;
+  const activeNavKey = location.pathname.substring(1) || 'home';
 
   return (
     <div style={{ background: 'var(--cream)', color: 'var(--ink)', fontFamily: "'Mukta', sans-serif", minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
-      <UtilityBar onAdminLogin={onAdminLogin} onNavigate={navigate} />
+      <UtilityBar />
 
-      {/* Header with Logo on Left and Navbar on Right */}
-      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }}>
-        <div className="max-w-[1240px] mx-auto px-4 flex items-center justify-between gap-3 py-1">
-          {/* Logo */}
-          <div
-            className="cursor-pointer flex-shrink-0 p-0 m-0 leading-none flex items-center"
-            onClick={() => navigate('home')}
-          >
-            <img src="/logo.png" alt="मायबोली मालवणी" className="h-[80px] md:h-[95px] object-contain drop-shadow-md transition-transform hover:scale-105 p-0 m-0 block" />
-          </div>
-
-          {/* Primary Nav — positioned directly on right side of logo */}
-          <nav className="hidden lg:flex items-center flex-1 justify-end gap-1 bg-maroon p-1.5 rounded-xl border border-gold/40 shadow-sm overflow-x-auto">
-            {navItems.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => navigate(key)}
-                className={`px-3 py-2 rounded-lg font-poppins text-[12.5px] font-semibold transition-all whitespace-nowrap ${
-                  activeNavKey === key
-                    ? 'bg-maroon-deep text-gold-light shadow'
-                    : 'text-[#fbe8c9] hover:bg-maroon-deep hover:text-gold-light'
-                }`}
+      {/* Masthead */}
+      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)', paddingTop: 16 }}>
+        <div className="max-w-[1180px] mx-auto px-6">
+          <div className="flex items-center justify-between">
+            <div
+              className="cursor-pointer"
+              onClick={() => handleNavigate('home')}
+            >
+              <img src="/logo.jpg" alt="मायबोली मालवणी" className="h-[60px] md:h-[70px] object-contain rounded-lg border border-gold" />
+            </div>
+            {/* Search bar in header */}
+            <div className="hidden md:flex items-center gap-2">
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer"
+                style={{ background: '#F0EAD9', border: '1px solid var(--line)' }}
+                onClick={() => handleNavigate('search')}
               >
                 {label}
               </button>
@@ -117,14 +70,24 @@ export default function UserReaderLayout({ onAdminLogin }) {
             </button>
           </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            className="lg:hidden text-[24px] text-maroon bg-white px-3 py-1.5 rounded-xl border border-line shadow-sm"
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-          >
-            {showMobileMenu ? '✕' : '☰'}
-          </button>
-        </div>
+        {/* Primary Nav — desktop */}
+        <nav style={{ background: 'var(--maroon)', marginTop: 14 }}>
+          <div className="max-w-[1180px] mx-auto px-6">
+            <ul className="hidden md:flex list-none justify-center flex-wrap gap-0.5 overflow-x-auto">
+              {navItems.map(({ key, label }) => (
+                <li key={key}>
+                  <button
+                    onClick={() => handleNavigate(key)}
+                    className={`block px-4 py-3 font-poppins text-[13px] font-medium border-r border-white/[0.08] nav-transition
+                      ${activeNavKey === key ? 'bg-maroon-deep text-gold-light' : 'text-[#fbe8c9] hover:bg-maroon-deep hover:text-gold-light'}`}
+                  >
+                    {label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
 
         {/* Mobile menu */}
         {showMobileMenu && (
@@ -132,7 +95,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
             {navItems.map(({ key, label }) => (
               <button
                 key={key}
-                onClick={() => navigate(key)}
+                onClick={() => handleNavigate(key)}
                 className="block w-full text-left px-6 py-3 font-poppins text-[14px] font-medium border-b border-white/10"
                 style={{ color: activeNavKey === key ? 'var(--gold-light)' : '#fbe8c9' }}
               >
@@ -165,12 +128,12 @@ export default function UserReaderLayout({ onAdminLogin }) {
       )}
 
       <div className="flex-1">
-        {renderPage()}
+        <Outlet />
       </div>
 
-      <Footer onNavigate={navigate} onAdminLogin={onAdminLogin} />
+      <Footer />
 
-      <ChatbotFab onClick={() => navigate('chatbot')} />
+      <ChatbotFab />
     </div>
   );
 }

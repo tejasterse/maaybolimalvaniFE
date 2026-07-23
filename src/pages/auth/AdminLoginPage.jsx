@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight, AlertTriangle } from 'lucide-react';
 import apiClient from '../../api/apiClient.js';
 import { useMutation } from '@tanstack/react-query';
 
@@ -123,7 +124,7 @@ export default function AdminLoginPage() {
               color: 'var(--navy)',
             }}
           >
-            {loginMutation.isPending ? 'प्रतीक्षा करा...' : 'Admin म्हणून प्रवेश करा →'}
+            {loginMutation.isPending ? 'प्रतीक्षा करा...' : <span className="flex items-center justify-center">Admin म्हणून प्रवेश करा <ArrowRight size={14} className="ml-1" /></span>}
           </button>
 
           {/* Demo hint */}
@@ -144,7 +145,7 @@ export default function AdminLoginPage() {
           className="font-poppins font-semibold text-[12.5px] px-4 py-1.5 rounded-lg"
           style={{ background: 'rgba(255,255,255,.1)', color: '#E8C169', border: '1.5px solid rgba(255,255,255,.2)' }}
         >
-          वाचक लॉगिन →
+          वाचक लॉगिन <ArrowRight size={14} className="inline ml-1" />
         </button>
       </div>
 

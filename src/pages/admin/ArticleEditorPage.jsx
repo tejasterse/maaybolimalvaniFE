@@ -7,6 +7,7 @@ import { fetchDistricts } from '../../api/districts.js';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ArrowLeft, CheckCircle, Globe, ArrowRight } from 'lucide-react';
 
 const talukaOptions = ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
 
@@ -58,7 +59,7 @@ export default function ArticleEditorPage({ onBack }) {
       setCategory(article.categoryName || '');
       setSelectedTaluka(article.districtName || '');
       if (article.image_type) {
-        setExistingImage(`http://localhost:5000/api/posts/${article.id}/image`);
+        setExistingImage(`https://maayboli-backend.yuktiyantra.com/api/posts/${article.id}/image`);
       }
       if (article.video_type) {
         setExistingVideo(true);
@@ -132,9 +133,9 @@ export default function ArticleEditorPage({ onBack }) {
         <div className="flex items-center gap-3.5">
           <span
             onClick={handleBack}
-            className="font-poppins text-[13px] text-gold-light cursor-pointer"
+            className="font-poppins text-[13px] text-gold-light cursor-pointer flex items-center gap-1"
           >
-            ← लेखांकडे परत
+            <ArrowLeft size={14} /> लेखांकडे परत
           </span>
           <span className="font-tiro text-[15px] text-white">मायबोली मालवणी</span>
         </div>
@@ -267,8 +268,8 @@ export default function ArticleEditorPage({ onBack }) {
               <label className="block font-poppins text-[12.5px] font-medium text-grey mb-1.5">व्हिडिओ (पर्यायी - कमाल 50MB)</label>
               <div className="border-2 border-dashed border-line rounded-[8px] p-5 text-center bg-[#fafafa]">
                 {existingVideo && !videoFile && (
-                  <div className="mb-3 font-poppins text-[12.5px] text-green-600">
-                    ✅ पूर्वी अपलोड केलेला व्हिडिओ उपलब्ध आहे
+                  <div className="mb-3 font-poppins text-[12.5px] text-green-600 flex items-center justify-center gap-1">
+                    <CheckCircle size={14} /> पूर्वी अपलोड केलेला व्हिडिओ उपलब्ध आहे
                   </div>
                 )}
                 {videoFile && (
@@ -300,7 +301,7 @@ export default function ArticleEditorPage({ onBack }) {
           >
             <div className="flex items-center justify-between mb-3.5">
               <h3 className="font-poppins text-[13.5px] font-bold text-maroon-deep flex items-center gap-2">
-                🌐 AI भाषांतर सहाय्य
+                <Globe size={16} className="inline mr-1" /> AI भाषांतर सहाय्य
                 <span
                   className="font-poppins text-[9.5px] px-2 py-0.5 rounded-[10px] font-bold"
                   style={{ background: 'var(--gold)', color: 'var(--navy)' }}
@@ -359,7 +360,7 @@ export default function ArticleEditorPage({ onBack }) {
                 className="font-poppins font-semibold text-[12.5px] px-4 py-2 rounded-[7px] transition-colors hover:opacity-90"
                 style={{ background: 'var(--maroon-deep)', color: '#fbe8c9' }}
               >
-                लेखात समाविष्ट करा →
+                लेखात समाविष्ट करा <ArrowRight size={14} className="inline ml-1" />
               </button>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchGallery } from '../../api/gallery.js';
 
@@ -68,9 +69,9 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             >
               <div className="relative">
                 {item.is_video === 1 ? (
-                  <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full block" muted />
+                  <video src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} className="w-full block" muted />
                 ) : (
-                  <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full block" />
+                  <img src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} alt={item.title} className="w-full block" />
                 )}
                 {item.is_video === 1 && (
                   <div
@@ -104,11 +105,11 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             className="lb-close absolute top-6 right-8 text-white text-[26px] cursor-pointer font-poppins"
             onClick={closeLB}
           >
-            ✕
+            <X size={24} />
           </span>
           {lightbox.is_video === 1 ? (
             <video
-              src={`http://localhost:5000/api/gallery/${lightbox.id}/media`}
+              src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${lightbox.id}/media`}
               controls
               autoPlay
               className="max-w-[800px] max-h-[80vh] rounded-lg"
@@ -116,7 +117,7 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             />
           ) : (
             <img
-              src={`http://localhost:5000/api/gallery/${lightbox.id}/media`}
+              src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${lightbox.id}/media`}
               alt={lightbox.title}
               className="max-w-[800px] max-h-[80vh] rounded-lg"
               style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}

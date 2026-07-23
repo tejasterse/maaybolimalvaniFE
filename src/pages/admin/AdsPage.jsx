@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Plus, X } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchAds, createAd, deleteAd } from '../../api/ads.js';
 
@@ -82,13 +83,13 @@ export default function AdsPage() {
             onClick={() => setShowModal(true)}
             className="border-[1.5px] border-dashed border-gold rounded-lg flex flex-col items-center justify-center min-h-[180px] font-poppins text-[11.5px] font-semibold text-maroon-deep cursor-pointer hover:bg-white/40 transition-colors"
           >
-            <span className="text-[22px] mb-2">＋</span>
+            <span className="mb-2"><Plus size={24} /></span>
             अपलोड करा
           </div>
 
           {ads.map((ad) => (
             <div key={ad.id} className="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col justify-between transition-transform hover:-translate-y-0.5 relative group">
-              <img src={`http://localhost:5000/api/banners/${ad.id}/image`} alt="Ad" className="w-full h-[150px] object-cover block" />
+              <img src={`https://maayboli-backend.yuktiyantra.com/api/banners/${ad.id}/image`} alt="Ad" className="w-full h-[150px] object-cover block" />
               <div className="px-2.5 py-3">
                 <div className="font-poppins text-[11px] text-ink font-semibold truncate mb-1">
                   {ad.link_url ? <a href={ad.link_url} target="_blank" rel="noreferrer" className="text-teal hover:underline">{ad.link_url}</a> : 'कोणतीही लिंक नाही'}
@@ -102,7 +103,7 @@ export default function AdsPage() {
                 className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                 title="Delete Ad"
               >
-                ✕
+                <X size={14} />
               </button>
             </div>
           ))}

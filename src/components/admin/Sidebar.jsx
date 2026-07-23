@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { BarChart2, FileText, Image as ImageIcon, CheckSquare, MapPin, Megaphone, Film, Tent, Images, Users, Settings, LogOut } from 'lucide-react';
 
 export default function Sidebar({ onLogout }) {
   const navigate = useNavigate();
@@ -13,17 +14,17 @@ export default function Sidebar({ onLogout }) {
   const pathParts = location.pathname.split('/');
   const activePage = pathParts[2] || 'dashboard';
   const navItems = [
-    { key: 'dashboard', label: 'डॅशबोर्ड', icon: '📊' },
-    { key: 'articles',  label: 'लेख', icon: '📝' },
-    { key: 'media',     label: 'मीडिया लायब्ररी', icon: '🖼️' },
-    { key: 'review',    label: 'रिव्ह्यू क्यू', icon: '✅' },
-    { key: 'taluka',    label: 'विभाग व तालुका', icon: '🗺️' },
-    { key: 'ads',       label: 'जाहिराती', icon: '📢' },
-    { key: 'entertainment', label: 'मनोरंजन', icon: '🎭' },
-    { key: 'events',    label: 'सण व उत्सव', icon: '🎪' },
-    { key: 'gallery',   label: 'गॅलरी', icon: '🖼️' },
-    { key: 'users',     label: 'युजर्स व भूमिका', icon: '👥' },
-    { key: 'settings',  label: 'सेटिंग्ज', icon: '⚙️' },
+    { key: 'dashboard', label: 'डॅशबोर्ड', icon: <BarChart2 size={18} /> },
+    { key: 'articles',  label: 'लेख', icon: <FileText size={18} /> },
+    { key: 'media',     label: 'मीडिया लायब्ररी', icon: <ImageIcon size={18} /> },
+    { key: 'review',    label: 'रिव्ह्यू क्यू', icon: <CheckSquare size={18} /> },
+    { key: 'taluka',    label: 'विभाग व तालुका', icon: <MapPin size={18} /> },
+    { key: 'ads',       label: 'जाहिराती', icon: <Megaphone size={18} /> },
+    { key: 'entertainment', label: 'मनोरंजन', icon: <Film size={18} /> },
+    { key: 'events',    label: 'सण व उत्सव', icon: <Tent size={18} /> },
+    { key: 'gallery',   label: 'गॅलरी', icon: <Images size={18} /> },
+    { key: 'users',     label: 'युजर्स व भूमिका', icon: <Users size={18} /> },
+    { key: 'settings',  label: 'सेटिंग्ज', icon: <Settings size={18} /> },
   ];
 
   return (
@@ -84,7 +85,7 @@ export default function Sidebar({ onLogout }) {
               display: 'block',
             }}
           >
-            🚪 लॉगआउट
+            <LogOut size={16} className="inline mr-2" /> लॉगआउट
           </button>
         )}
       </div>

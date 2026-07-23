@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api', // Backend base URL
+  baseURL: `\https://maayboli-backend.yuktiyantra.com/api`, // Backend base URL
   withCredentials: true, // Allow sending cookies
 });
 

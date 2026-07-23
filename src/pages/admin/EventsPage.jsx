@@ -48,7 +48,7 @@ export default function EventsPage() {
       setTitle(item.title);
       setEventDate(item.event_date);
       setLocation(item.location);
-      setExistingImage(item.image_type ? `http://localhost:5000/api/events/${item.id}/image` : null);
+      setExistingImage(item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/events/${item.id}/image` : null);
     } else {
       setEditingItem(null);
       setTitle('');
@@ -120,7 +120,7 @@ export default function EventsPage() {
               <tr key={item.id} className="border-b border-line hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
                   {item.image_type ? (
-                    <img src={`http://localhost:5000/api/events/${item.id}/image`} alt={item.title} className="w-16 h-12 object-cover rounded" />
+                    <img src={`https://maayboli-backend.yuktiyantra.com/api/events/${item.id}/image`} alt={item.title} className="w-16 h-12 object-cover rounded" />
                   ) : (
                     <div className="w-16 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
                   )}

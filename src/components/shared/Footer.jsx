@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Footer() {
@@ -85,7 +86,7 @@ export default function Footer() {
                 onClick={() => navigate('/admin-login')}
                 className="block font-mukta text-[13.5px] text-left text-gold-light hover:text-white transition-colors mt-2"
               >
-                संपादक लॉगिन →
+                संपादक लॉगिन <ArrowRight size={14} className="inline ml-1" />
               </button>
             </div>
           </div>

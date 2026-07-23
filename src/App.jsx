@@ -9,7 +9,6 @@ import ArticlePage from './pages/user/ArticlePage.jsx';
 import ListingPage from './pages/user/ListingPage.jsx';
 import SearchPage from './pages/user/SearchPage.jsx';
 import GalleryPage from './pages/user/GalleryPage.jsx';
-import ChatbotPage from './pages/user/ChatbotPage.jsx';
 import EntertainmentListingPage from './pages/user/EntertainmentListingPage.jsx';
 import EntertainmentArticlePage from './pages/user/EntertainmentArticlePage.jsx';
 import EventsListingPage from './pages/user/EventsListingPage.jsx';
@@ -48,7 +47,7 @@ export default function App() {
         <Route path="entertainment" element={<EntertainmentListingPage />} />
         <Route path="entertainment/:id" element={<EntertainmentArticlePage />} />
         <Route path="events" element={<EventsListingPage />} />
-        <Route path="chatbot" element={<ChatbotPage />} />
+        <Route path="chatbot" element={<Navigate to="/" replace />} />
         <Route path="about-us" element={<AboutUsPage />} />
         <Route path="terms" element={<TermsPage />} />
         <Route path="privacy" element={<PrivacyPage />} />

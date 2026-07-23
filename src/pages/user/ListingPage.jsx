@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { Search, ArrowRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPosts } from '../../api/posts.js';
 
@@ -152,7 +153,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
               className="listing-item-inner flex gap-5 bg-white rounded-[10px] p-4 mb-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-0.5"
             >
               <img
-                src={(item.image || item.image_type) ? `http://localhost:5000/api/posts/${item.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
+                src={(item.image || item.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${item.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
                 alt={item.title}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -176,7 +177,9 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
           ))
         ) : (
           <div className="bg-white rounded-[10px] p-10 text-center shadow-sm">
-            <span className="text-[28px] block mb-2">🔍</span>
+            <div className="flex justify-center mb-2">
+              <Search size={32} className="text-grey" />
+            </div>
             <div className="font-tiro text-[18px] text-ink font-semibold">या तालुक्यात सध्या कोणतीही बातमी उपलब्ध नाही.</div>
           </div>
         )}
@@ -206,7 +209,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
                 onClick={() => setCurrentPage(safePageIndex + 1)}
                 className="font-poppins text-[13px] font-semibold w-9 h-9 rounded-lg flex items-center justify-center border-[1.5px] nav-transition bg-white text-teal border-line"
               >
-                →
+                <ArrowRight size={16} />
               </button>
             )}
           </div>

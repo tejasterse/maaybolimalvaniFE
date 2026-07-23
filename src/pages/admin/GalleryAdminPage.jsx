@@ -46,7 +46,7 @@ export default function GalleryAdminPage() {
       setEditingItem(item);
       setTitle(item.title);
       setMeta(item.meta || '');
-      setExistingMedia(`http://localhost:5000/api/gallery/${item.id}/media`);
+      setExistingMedia(`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`);
       setExistingIsVideo(item.is_video);
     } else {
       setEditingItem(null);
@@ -107,9 +107,9 @@ export default function GalleryAdminPage() {
           <div key={item.id} className="bg-white rounded-xl shadow-sm border border-line overflow-hidden flex flex-col group">
             <div className="relative h-[160px] bg-black">
               {item.is_video === 1 ? (
-                <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full h-full object-cover opacity-80" muted />
+                <video src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} className="w-full h-full object-cover opacity-80" muted />
               ) : (
-                <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-full object-cover" />
+                <img src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-full object-cover" />
               )}
               {item.is_video === 1 && (
                 <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-[10px] px-2 py-1 rounded">VIDEO</div>

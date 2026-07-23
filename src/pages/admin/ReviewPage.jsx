@@ -51,7 +51,7 @@ export default function ReviewPage() {
             className="review-card-inner bg-white rounded-[10px] p-5 shadow-sm mb-3.5 flex gap-4 transition-all"
           >
             <img
-              src={(item.image || item.image_type) ? `http://localhost:5000/api/posts/${item.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
+              src={(item.image || item.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${item.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
               alt={item.title}
               className="w-[120px] h-[90px] object-cover rounded-[6px] flex-shrink-0"
             />

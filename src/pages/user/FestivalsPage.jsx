@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Calendar, CheckCircle } from 'lucide-react';
 import { upcomingFestivals, pastFestivals } from '../../constants/data.jsx';
 
 export default function FestivalsPage({ onNavigate, onGoBack }) {
@@ -35,7 +36,7 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
                   : 'text-white hover:bg-white/10'
               }`}
             >
-              <span>📅 आगामी कार्यक्रम</span>
+              <span className="flex items-center gap-1"><Calendar size={14} /> आगामी कार्यक्रम</span>
               <span className="bg-navy/20 px-2 py-0.5 rounded-full text-[11px]">{upcomingFestivals.length}</span>
             </button>
             <button
@@ -46,7 +47,7 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
                   : 'text-white hover:bg-white/10'
               }`}
             >
-              <span>✅ संपन्न झालेले</span>
+              <span className="flex items-center gap-1"><CheckCircle size={14} /> संपन्न झालेले</span>
               <span className="bg-navy/20 px-2 py-0.5 rounded-full text-[11px]">{pastFestivals.length}</span>
             </button>
           </div>

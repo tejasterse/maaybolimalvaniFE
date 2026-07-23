@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ArrowRight, X, Newspaper, Calendar, Landmark, Palmtree, Fish, Film, Trophy, Scale, Train, Bus, Car, Bot } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPosts } from '../../api/posts.js';
@@ -30,11 +31,11 @@ function AdCarousel({ ads }) {
       <div className="mb-10 w-full rounded-xl overflow-hidden shadow-sm transition-opacity hover:opacity-95 bg-white flex justify-center items-center border border-line">
         {currentAd.link_url ? (
           <a href={currentAd.link_url} target="_blank" rel="noreferrer" className="w-full block text-center">
-            <img src={`http://localhost:5000/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto" />
+            <img src={`https://maayboli-backend.yuktiyantra.com/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto" />
           </a>
         ) : (
           <div className="w-full block text-center cursor-pointer" onClick={() => setLightboxAd(currentAd)}>
-            <img src={`http://localhost:5000/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto block" />
+            <img src={`https://maayboli-backend.yuktiyantra.com/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto block" />
           </div>
         )}
       </div>
@@ -49,10 +50,10 @@ function AdCarousel({ ads }) {
             className="absolute top-6 right-8 text-white text-[26px] cursor-pointer font-poppins"
             onClick={() => setLightboxAd(null)}
           >
-            ✕
+            <X size={24} />
           </span>
           <img
-            src={`http://localhost:5000/api/banners/${lightboxAd.id}/image`}
+            src={`https://maayboli-backend.yuktiyantra.com/api/banners/${lightboxAd.id}/image`}
             alt="Advertisement"
             className="max-w-[800px] max-h-[80vh] rounded-lg"
             style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}
@@ -73,20 +74,20 @@ const talukaHighlights = [
 ];
 
 const categories = [
-  { name: 'राजकारण', icon: '🏛️', count: '५६', color: 'var(--navy)' },
-  { name: 'पर्यटन', icon: '🏖️', count: '२९', color: 'var(--teal)' },
-  { name: 'मासेमारी-शेती', icon: '🐟', count: '३८', color: '#2e7d4f' },
-  { name: 'संस्कृती', icon: '🎭', count: '४१', color: 'var(--maroon)' },
-  { name: 'क्रीडा', icon: '⚽', count: '१७', color: 'var(--amber)' },
-  { name: 'गुन्हे', icon: '⚖️', count: '१२', color: '#6d4c41' },
+  { name: 'राजकारण', icon: <Landmark size={28} />, count: '५६', color: 'var(--navy)' },
+  { name: 'पर्यटन', icon: <Palmtree size={28} />, count: '२९', color: 'var(--teal)' },
+  { name: 'मासेमारी-शेती', icon: <Fish size={28} />, count: '३८', color: '#2e7d4f' },
+  { name: 'संस्कृती', icon: <Film size={28} />, count: '४१', color: 'var(--maroon)' },
+  { name: 'क्रीडा', icon: <Trophy size={28} />, count: '१७', color: 'var(--amber)' },
+  { name: 'गुन्हे', icon: <Scale size={28} />, count: '१२', color: '#6d4c41' },
 ];
 
 
 
 const timetables = [
-  { id: 1, type: 'रेल्वे', name: 'कोकण कन्या एक्सप्रेस', time: 'रात्री ८:००', route: 'मुंबई ते मडगाव', icon: '🚆' },
-  { id: 2, type: 'एसटी', name: 'मालवण - पुणे', time: 'संध्याकाळी ५:३०', route: 'मालवण - कोल्हापूर - पुणे', icon: '🚌' },
-  { id: 3, type: 'खाजगी', name: 'पावलो ट्रॅव्हल्स', time: 'रात्री ९:१५', route: 'सावंतवाडी ते मुंबई', icon: '🚐' }
+  { id: 1, type: 'रेल्वे', name: 'कोकण कन्या एक्सप्रेस', time: 'रात्री ८:००', route: 'मुंबई ते मडगाव', icon: <Train size={24} /> },
+  { id: 2, type: 'एसटी', name: 'मालवण - पुणे', time: 'संध्याकाळी ५:३०', route: 'मालवण - कोल्हापूर - पुणे', icon: <Bus size={24} /> },
+  { id: 3, type: 'खाजगी', name: 'पावलो ट्रॅव्हल्स', time: 'रात्री ९:१५', route: 'सावंतवाडी ते मुंबई', icon: <Car size={24} /> }
 ];
 
 const advertisementImg = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1180&h=200&fit=crop';
@@ -109,44 +110,50 @@ export default function HomePage() {
     queryKey: ['posts'],
     queryFn: () => fetchPosts()
   });
-  const posts = data.posts || [];
+  const posts = Array.isArray(data.posts) ? data.posts : [];
 
-  const { data: dbCategories = [] } = useQuery({
+  const { data: dbCategoriesData } = useQuery({
     queryKey: ['categories'],
     queryFn: () => fetchCategories()
   });
+  const dbCategories = Array.isArray(dbCategoriesData) ? dbCategoriesData : [];
 
-  const { data: dbDistricts = [] } = useQuery({
+  const { data: dbDistrictsData } = useQuery({
     queryKey: ['districts'],
     queryFn: () => fetchDistricts()
   });
+  const dbDistricts = Array.isArray(dbDistrictsData) ? dbDistrictsData : [];
 
-  const { data: ads = [] } = useQuery({
+  const { data: adsData } = useQuery({
     queryKey: ['ads'],
     queryFn: fetchAds
   });
+  const ads = Array.isArray(adsData) ? adsData : [];
 
-  const { data: dbEntertainment = [] } = useQuery({
+  const { data: dbEntertainmentData } = useQuery({
     queryKey: ['entertainment'],
     queryFn: fetchEntertainment
   });
+  const dbEntertainment = Array.isArray(dbEntertainmentData) ? dbEntertainmentData : [];
 
-  const { data: dbEvents = [] } = useQuery({
+  const { data: dbEventsData } = useQuery({
     queryKey: ['events'],
     queryFn: fetchEvents
   });
+  const dbEvents = Array.isArray(dbEventsData) ? dbEventsData : [];
 
-  const { data: dbGallery = [] } = useQuery({
+  const { data: dbGalleryData } = useQuery({
     queryKey: ['gallery'],
     queryFn: fetchGallery
   });
+  const dbGallery = Array.isArray(dbGalleryData) ? dbGalleryData : [];
 
   const dynamicTalukaHighlights = dbDistricts.map(district => {
     const latestPost = posts.find(p => p.districtName === district.name);
     return {
       name: district.name,
       img: latestPost && (latestPost.image || latestPost.image_type)
-        ? `http://localhost:5000/api/posts/${latestPost.id}/image`
+        ? `https://maayboli-backend.yuktiyantra.com/api/posts/${latestPost.id}/image`
         : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop',
       headline: latestPost ? latestPost.title : 'सध्या बातमी उपलब्ध नाही'
     };
@@ -222,7 +229,7 @@ export default function HomePage() {
                     onClick={() => navigate(`/article/${hero.id}`)}
                   >
                     <img
-                      src={(hero.image || hero.image_type) ? `http://localhost:5000/api/posts/${hero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                      src={(hero.image || hero.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${hero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
                       alt={hero.title}
                       className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
                     />
@@ -247,7 +254,7 @@ export default function HomePage() {
                         style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
                         onClick={(e) => { e.stopPropagation(); navigate(`/article/${hero.id}`); }}
                       >
-                        पूर्ण बातमी वाचा →
+                        पूर्ण बातमी वाचा <ArrowRight size={14} className="inline ml-1" />
                       </button>
                     </div>
                   </div>
@@ -276,7 +283,7 @@ export default function HomePage() {
               style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}
             >
               <img
-                src={(activeHero.image || activeHero.image_type) ? `http://localhost:5000/api/posts/${activeHero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                src={(activeHero.image || activeHero.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${activeHero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
                 alt={activeHero.title}
                 className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
               />
@@ -301,7 +308,7 @@ export default function HomePage() {
                   style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
                   onClick={(e) => { e.stopPropagation(); navigate(`/article/${activeHero.id}`); }}
                 >
-                  पूर्ण बातमी वाचा →
+                  पूर्ण बातमी वाचा <ArrowRight size={14} className="inline ml-1" />
                 </button>
               </div>
             </div>
@@ -341,7 +348,7 @@ export default function HomePage() {
               onClick={() => navigate('/listing')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
-              सर्व बघा →
+              सर्व बघा <ArrowRight size={14} className="inline ml-1" />
             </button>
           </div>
 
@@ -373,7 +380,7 @@ export default function HomePage() {
                   className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1"
                   style={{ border: '1px solid var(--line)' }}
                 >
-                  <img src={(a.image || a.image_type) ? `http://localhost:5000/api/posts/${a.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
+                  <img src={(a.image || a.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${a.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
                   <div className="p-4">
                     <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.categoryName || 'बातमी'}</span>
                     <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2 line-clamp-2">{a.title}</h3>
@@ -383,7 +390,7 @@ export default function HomePage() {
               ))
             ) : (
               <div className="col-span-3 bg-white rounded-xl p-8 text-center shadow-sm" style={{ border: '1px solid var(--line)' }}>
-                <span className="text-[24px] block mb-1">📰</span>
+                <span className="flex justify-center mb-2"><Newspaper size={32} className="text-grey" /></span>
                 <div className="font-tiro text-[16px] text-ink font-semibold">या विभागात सध्या कोणतीही बातमी उपलब्ध नाही.</div>
               </div>
             )}
@@ -411,7 +418,7 @@ export default function HomePage() {
                   className="bg-white rounded-xl p-4 text-center shadow-sm transition-transform hover:-translate-y-1"
                   style={{ border: '1.5px solid var(--line)' }}
                 >
-                  <div className="text-[28px] mb-2">{cat.icon}</div>
+                  <div className="flex justify-center mb-2">{cat.icon}</div>
                   <div className="font-tiro text-[15px] text-ink mb-1">{cat.name}</div>
                   <div
                     className="font-poppins text-[10px] font-bold px-2 py-0.5 rounded-full inline-block"
@@ -433,7 +440,7 @@ export default function HomePage() {
               onClick={() => navigate('/entertainment')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
-              सर्व साहित्य बघा →
+              सर्व साहित्य बघा <ArrowRight size={14} className="inline ml-1" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -444,7 +451,7 @@ export default function HomePage() {
                 className="bg-cream rounded-xl overflow-hidden shadow-sm cursor-pointer flex transition-transform hover:-translate-y-1"
                 style={{ border: '1px solid var(--line)' }}
               >
-                <img src={item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop'} alt={item.title} className="w-[100px] h-[100px] object-cover block flex-shrink-0" />
+                <img src={item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop'} alt={item.title} className="w-[100px] h-[100px] object-cover block flex-shrink-0" />
                 <div className="p-3 flex flex-col justify-center w-full overflow-hidden">
                   <span className="font-poppins text-[10px] text-amber font-bold uppercase tracking-wide">{item.type}</span>
                   <h3 className="font-tiro text-[15px] leading-tight text-ink mt-1 mb-1 truncate">{item.title}</h3>
@@ -469,7 +476,7 @@ export default function HomePage() {
                 onClick={() => navigate('/events')}
                 className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
               >
-                अधिक वाचा →
+                अधिक वाचा <ArrowRight size={14} className="inline ml-1" />
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -481,11 +488,11 @@ export default function HomePage() {
                   style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
                 >
                   <div className="flex items-center gap-4">
-                    <img src={prog.image_type ? `http://localhost:5000/api/events/${prog.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
+                    <img src={prog.image_type ? `https://maayboli-backend.yuktiyantra.com/api/events/${prog.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
                     <div>
                       <h3 className="font-tiro text-[16px] text-navy mb-1 line-clamp-1">{prog.title}</h3>
                       <div className="font-poppins text-[12px] text-grey flex items-center gap-2">
-                        <span>📅 {prog.event_date}</span>
+                        <span className="flex items-center gap-1"><Calendar size={14} /> {prog.event_date}</span>
                         <span className="truncate">📍 {prog.location}</span>
                       </div>
                     </div>
@@ -503,7 +510,7 @@ export default function HomePage() {
             {timetables.map((t) => (
               <div key={t.id} className="bg-white rounded-xl p-4 shadow-sm border transition-transform hover:-translate-y-1 cursor-pointer" style={{ borderColor: 'var(--line)' }}>
                 <div className="flex justify-between items-start mb-2">
-                  <div className="text-[24px] bg-cream p-2 rounded-lg">{t.icon}</div>
+                  <div className="bg-cream p-2 rounded-lg text-teal flex items-center justify-center">{t.icon}</div>
                   <span className="font-poppins text-[11px] font-bold text-teal bg-teal bg-opacity-10 px-2 py-1 rounded-full">{t.type}</span>
                 </div>
                 <h3 className="font-tiro text-[18px] text-ink mb-1">{t.name}</h3>
@@ -537,7 +544,7 @@ export default function HomePage() {
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
                 Live Score
               </span>
-              <span className="text-xl">🏏</span>
+              <Trophy size={20} className="text-teal" />
             </div>
             <h3 className="font-poppins text-[18px] font-bold text-navy mb-1">
               {cricketScore.team1} vs {cricketScore.team2}
@@ -556,7 +563,7 @@ export default function HomePage() {
                 onClick={() => navigate('/gallery')}
                 className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
               >
-                सर्व गॅलरी पहा →
+                सर्व गॅलरी पहा <ArrowRight size={14} className="inline ml-1" />
               </button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
@@ -567,9 +574,9 @@ export default function HomePage() {
                   className="rounded-xl overflow-hidden relative cursor-pointer group shadow-sm bg-black"
                 >
                   {item.is_video === 1 ? (
-                    <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full h-[120px] object-cover opacity-80" muted />
+                    <video src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} className="w-full h-[120px] object-cover opacity-80" muted />
                   ) : (
-                    <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
+                    <img src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
                   )}
                   {item.is_video === 1 && (
                     <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-[10px] px-2 py-0.5 rounded">▶</div>
@@ -603,11 +610,11 @@ export default function HomePage() {
             </p>
           </div>
           <button
-            onClick={() => navigate('/chatbot')}
+            onClick={() => window.dispatchEvent(new Event('open-chatbot'))}
             className="flex-shrink-0 font-poppins font-bold text-[14px] px-7 py-4 rounded-xl flex items-center gap-3 transition-transform hover:scale-105"
             style={{ background: 'var(--gold)', color: 'var(--navy)' }}
           >
-            <span className="text-[20px]">🤖</span>
+            <Bot size={20} />
             AI ला विचारा
           </button>
         </div>

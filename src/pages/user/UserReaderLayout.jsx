@@ -1,4 +1,5 @@
 import { Outlet, useNavigate, useLocation, } from 'react-router-dom';
+import { Search, ArrowLeft, Home, X, Menu } from 'lucide-react';
 import UtilityBar from '../../components/shared/UtilityBar.jsx';
 import ChatbotFab from '../../components/shared/ChatbotFab.jsx';
 import Footer from '../../components/shared/Footer.jsx';
@@ -60,7 +61,8 @@ export default function UserReaderLayout() {
                 style={{ background: '#F0EAD9', border: '1px solid var(--line)' }}
                 onClick={() => handleNavigate('search')}
               >
-                <span className="font-poppins text-[12.5px] text-grey">🔍 बातम्या शोधा…</span>
+                <Search size={14} className="text-grey" />
+                <span className="font-poppins text-[12.5px] text-grey">बातम्या शोधा…</span>
               </div>
             </div>
             {/* Mobile hamburger */}
@@ -68,7 +70,7 @@ export default function UserReaderLayout() {
               className="md:hidden text-[22px] text-ink"
               onClick={() => setShowMobileMenu(!showMobileMenu)}
             >
-              {showMobileMenu ? '✕' : '☰'}
+              {showMobileMenu ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -117,14 +119,15 @@ export default function UserReaderLayout() {
               onClick={goBack}
               className="flex items-center gap-2 font-poppins font-bold text-[13px] text-maroon hover:text-maroon-deep bg-white border border-gold/50 px-4 py-1.5 rounded-full shadow-sm hover:shadow transition-all"
             >
-              <span className="text-base">←</span>
+              <ArrowLeft size={16} />
               <span>मागे जा (Go Back)</span>
             </button>
             <button
               onClick={() => navigate('home')}
               className="font-poppins text-[12px] font-semibold text-teal hover:underline flex items-center gap-1"
             >
-              <span>🏠 मुख्य पानावर जा</span>
+              <Home size={14} />
+              <span>मुख्य पानावर जा</span>
             </button>
           </div>
         </div>

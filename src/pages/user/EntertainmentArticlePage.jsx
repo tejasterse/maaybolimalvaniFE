@@ -26,7 +26,7 @@ export default function EntertainmentArticlePage() {
     );
   }
 
-  const imageUrl = item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&h=500&fit=crop';
+  const imageUrl = item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&h=500&fit=crop';
 
   return (
     <div className="bg-[#fafafa] min-h-screen pb-16 pt-8">

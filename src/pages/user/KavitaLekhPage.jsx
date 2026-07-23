@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ArrowRight, X, Scroll, PenTool, Smile, Heart, Share2 } from 'lucide-react';
 import { kavitaList, lekhList, vinodList } from '../../constants/data.jsx';
 
 export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, onGoBack }) {
@@ -6,9 +7,9 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
   const [selectedItem, setSelectedItem] = useState(null);
 
   const tabs = [
-    { key: 'kavita', label: '📜 कविता', title: 'मालवणी कविता', desc: 'कोकणातील कवींच्या हृदयस्पर्शी आणि मालवणी बोलीतील सुरेल कविता' },
-    { key: 'lekh', label: '✍️ लेख व विचार', title: 'लेख व विचार', desc: 'कोकणचा इतिहास, संस्कृती, निसर्ग आणि खाद्यसंस्कृतीवर वैचारिक लेख' },
-    { key: 'vinod', label: '😂 मालवणी विनोद', title: 'मालवणी विनोद', desc: 'अस्सल मालवणी ठसक्याचे खमंग व खळाळून हसवणारे विनोद' },
+    { key: 'kavita', label: <><Scroll size={16} className="inline mr-1" /> कविता</>, title: 'मालवणी कविता', desc: 'कोकणातील कवींच्या हृदयस्पर्शी आणि मालवणी बोलीतील सुरेल कविता' },
+    { key: 'lekh', label: <><PenTool size={16} className="inline mr-1" /> लेख व विचार</>, title: 'लेख व विचार', desc: 'कोकणचा इतिहास, संस्कृती, निसर्ग आणि खाद्यसंस्कृतीवर वैचारिक लेख' },
+    { key: 'vinod', label: <><Smile size={16} className="inline mr-1" /> मालवणी विनोद</>, title: 'मालवणी विनोद', desc: 'अस्सल मालवणी ठसक्याचे खमंग व खळाळून हसवणारे विनोद' },
   ];
 
   const currentTabInfo = tabs.find((t) => t.key === activeTab) || tabs[0];
@@ -79,7 +80,7 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
                       <span className="font-poppins text-[11px] font-bold text-white bg-maroon/90 px-3 py-1 rounded-full flex items-center gap-1">
-                        <span>{item.icon}</span> {item.category}
+                        <Scroll size={12} /> {item.category}
                       </span>
                     </div>
                   </div>
@@ -100,13 +101,13 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
                   <span className="font-poppins text-[12px] text-grey flex items-center gap-1">
-                    ❤️ {item.likes} लाईक्स
+                    <Heart size={14} className="text-red-500" fill="currentColor" /> {item.likes} लाईक्स
                   </span>
                   <button
                     onClick={() => setSelectedItem(item)}
                     className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline"
                   >
-                    पूर्ण कविता वाचा →
+                    पूर्ण कविता वाचा <ArrowRight size={14} className="inline ml-1" />
                   </button>
                 </div>
               </div>
@@ -135,7 +136,7 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
                       <span className="font-poppins text-[11px] font-bold text-white bg-teal/90 px-3 py-1 rounded-full flex items-center gap-1">
-                        <span>{item.icon}</span> {item.readTime}
+                        <PenTool size={12} /> {item.readTime}
                       </span>
                     </div>
                   </div>
@@ -153,7 +154,7 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                     onClick={() => setSelectedItem(item)}
                     className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline"
                   >
-                    संपूर्ण लेख वाचा →
+                    संपूर्ण लेख वाचा <ArrowRight size={14} className="inline ml-1" />
                   </button>
                 </div>
               </div>
@@ -182,7 +183,7 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
                       <span className="font-poppins text-[11px] font-bold text-navy bg-gold px-3 py-1 rounded-full flex items-center gap-1 shadow">
-                        <span>{item.icon}</span> मालवणी विनोद
+                        <Smile size={12} /> मालवणी विनोद
                       </span>
                     </div>
                   </div>
@@ -199,7 +200,7 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                     onClick={() => handleShare(item.title)}
                     className="font-poppins text-[12px] font-semibold text-teal hover:bg-teal/10 px-3 py-1.5 rounded-lg border border-teal/30"
                   >
-                    📲 शेअर करा
+                    <Share2 size={14} className="inline mr-1" /> शेअर करा
                   </button>
                 </div>
               </div>
@@ -223,10 +224,12 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
               onClick={() => setSelectedItem(null)}
               className="absolute top-4 right-4 text-grey hover:text-navy text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-grey-light"
             >
-              ✕
+              <X size={24} />
             </button>
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl p-2 bg-cream rounded-xl">{selectedItem.icon}</span>
+              <span className="text-xl p-2 bg-cream rounded-xl text-maroon">
+                {activeTab === 'kavita' ? <Scroll size={24} /> : activeTab === 'lekh' ? <PenTool size={24} /> : <Smile size={24} />}
+              </span>
               <div>
                 <h2 className="font-tiro text-[26px] text-navy leading-tight">{selectedItem.title}</h2>
                 <div className="font-poppins text-[12.5px] text-teal font-medium">{selectedItem.author} · {selectedItem.date}</div>

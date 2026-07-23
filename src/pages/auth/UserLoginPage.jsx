@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 export default function UserLoginPage({ onLogin, onGoAdmin }) {
   const [email, setEmail] = useState('');
@@ -107,7 +108,7 @@ export default function UserLoginPage({ onLogin, onGoAdmin }) {
               color: '#fbe8c9',
             }}
           >
-            लॉगिन करा →
+            लॉगिन करा <ArrowRight size={14} className="inline ml-1" />
           </button>
 
           {/* Demo hint */}
@@ -127,7 +128,7 @@ export default function UserLoginPage({ onLogin, onGoAdmin }) {
           onClick={onGoAdmin}
           className="font-poppins font-semibold text-[12.5px] px-4 py-1.5 rounded-lg border-[1.5px] border-teal text-teal bg-white"
         >
-          Admin लॉगिन →
+          Admin लॉगिन <ArrowRight size={14} className="inline ml-1" />
         </button>
       </div>
 

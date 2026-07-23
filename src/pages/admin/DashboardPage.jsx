@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Pen, Image as ImageIcon, CheckSquare } from 'lucide-react';
 import { activities } from '../../constants/data.jsx';
 
 const stats = [
@@ -11,9 +12,9 @@ const stats = [
 export default function DashboardPage() {
   const navigate = useNavigate();
   const quickActions = [
-    { label: '✏️ नवीन लेख लिहा',          action: 'articles' },
-    { label: '🖼️ फोटो/व्हिडिओ अपलोड करा', action: 'media' },
-    { label: '✅ रिव्ह्यू क्यू तपासा (३)',  action: 'review' },
+    { label: <><Pen size={14} className="inline mr-1" /> नवीन लेख लिहा</>,          action: 'articles' },
+    { label: <><ImageIcon size={14} className="inline mr-1" /> फोटो/व्हिडिओ अपलोड करा</>, action: 'media' },
+    { label: <><CheckSquare size={14} className="inline mr-1" /> रिव्ह्यू क्यू तपासा (३)</>,  action: 'review' },
   ];
 
   return (

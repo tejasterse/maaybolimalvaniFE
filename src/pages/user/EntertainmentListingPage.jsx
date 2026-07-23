@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { FileText } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEntertainment } from '../../api/entertainment.js';
 
@@ -40,7 +41,7 @@ export default function EntertainmentListingPage() {
               style={{ border: '1px solid var(--line)' }}
             >
               <img 
-                src={item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop'} 
+                src={item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop'} 
                 alt={item.title} 
                 className="w-full h-[180px] object-cover block flex-shrink-0" 
               />
@@ -59,7 +60,7 @@ export default function EntertainmentListingPage() {
           ))}
           {items.length === 0 && (
             <div className="col-span-1 md:col-span-4 text-center py-12 bg-white rounded-xl border border-line shadow-sm">
-              <span className="text-[32px] block mb-3">📝</span>
+              <div className="flex justify-center mb-3"><FileText size={32} className="text-grey" /></div>
               <div className="font-tiro text-[18px] text-ink font-semibold">सध्या कोणतेही साहित्य उपलब्ध नाही.</div>
             </div>
           )}

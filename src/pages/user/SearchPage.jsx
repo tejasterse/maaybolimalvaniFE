@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Search, RefreshCw } from 'lucide-react';
 import { searchResults } from '../../constants/data.jsx';
 
 export default function SearchPage() {
@@ -59,7 +60,7 @@ export default function SearchPage() {
               onClick={() => setShowEmpty(!showEmpty)}
               className="font-poppins text-[11.5px] text-teal underline cursor-pointer block mb-4"
             >
-              ↻ रिकाम्या परिणामांचे उदाहरण बघा
+              <RefreshCw size={14} className="inline mr-1" /> रिकाम्या परिणामांचे उदाहरण बघा
             </button>
 
             {!showEmpty ? (
@@ -98,7 +99,9 @@ export default function SearchPage() {
                   <b className="text-ink">०</b> परिणाम सापडले "<b className="text-ink">राजापूर तालुका बातम्या</b>" साठी
                 </div>
                 <div className="bg-white rounded-[10px] px-7 py-14 text-center shadow-sm">
-                  <div className="text-[36px] mb-4">🔍</div>
+                <div className="flex justify-center mb-4">
+                  <Search size={48} className="text-grey" />
+                </div>
                   <h3 className="font-tiro text-[20px] text-ink mb-2">काही सापडले नाही</h3>
                   <p className="font-poppins text-[13px] text-grey mb-1.5">तुमच्या शोधाशी जुळणारी कोणतीही बातमी सापडली नाही.</p>
                   <p className="font-poppins text-[13px] text-grey">शब्दलेखन तपासा किंवा वेगळे शब्द वापरून पुन्हा शोधा.</p>

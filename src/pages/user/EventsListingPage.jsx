@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+import { Calendar, Tent } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from '../../api/events.js';
 
@@ -36,7 +38,7 @@ export default function EventsListingPage() {
               style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
             >
               <img 
-                src={item.image_type ? `http://localhost:5000/api/events/${item.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&h=300&fit=crop'} 
+                src={item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/events/${item.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&h=300&fit=crop'} 
                 alt={item.title} 
                 className="w-full h-[160px] object-cover block flex-shrink-0" 
               />
@@ -46,7 +48,7 @@ export default function EventsListingPage() {
                 </h3>
                 <div className="font-poppins text-[13px] text-grey mt-auto space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-amber-500 text-lg leading-none">📅</span>
+                    <span className="text-amber-500"><Calendar size={18} /></span>
                     <span className="font-medium text-[#4a4a4a]">{item.event_date}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -59,7 +61,7 @@ export default function EventsListingPage() {
           ))}
           {items.length === 0 && (
             <div className="col-span-1 md:col-span-4 text-center py-12 bg-white rounded-xl border border-line shadow-sm">
-              <span className="text-[32px] block mb-3">🎪</span>
+              <div className="flex justify-center mb-3"><Tent size={32} className="text-grey" /></div>
               <div className="font-tiro text-[18px] text-ink font-semibold">सध्या कोणत्याही कार्यक्रमांची माहिती उपलब्ध नाही.</div>
             </div>
           )}

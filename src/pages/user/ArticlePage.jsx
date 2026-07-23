@@ -166,6 +166,9 @@ export default function ArticlePage() {
         {data.imgCaption}
       </div>
 
+      {/* Media Column (Only 2 options: Photos & Videos) — Placed at the top */}
+      <ArticleMediaSection onNavigate={onNavigate} />
+
       {/* Article Body */}
       <div
         className="max-w-[760px] mx-auto mb-10 font-mukta text-[18px] leading-[2] px-6"
@@ -259,3 +262,47 @@ export default function ArticlePage() {
     </div>
   );
 }
+
+// Media Column Sub-component: ONLY 2 Options (Photos & Videos)
+function ArticleMediaSection({ onNavigate }) {
+  return (
+    <div className="max-w-[760px] mx-auto mb-8 px-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* 1. Photos Option */}
+        <div
+          onClick={() => onNavigate && onNavigate('gallery', { tab: 'फोटो' })}
+          className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-teal group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-teal/10 text-teal flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              📷
+            </div>
+            <div>
+              <div className="font-tiro text-[20px] text-navy font-bold">फोटो (Photos)</div>
+              <div className="font-poppins text-[12px] text-grey">बातमीचे फोटो दालन उघडा</div>
+            </div>
+          </div>
+          <span className="font-poppins text-lg text-teal group-hover:translate-x-1 transition-transform">→</span>
+        </div>
+
+        {/* 2. Videos Option */}
+        <div
+          onClick={() => onNavigate && onNavigate('gallery', { tab: 'व्हिडिओ' })}
+          className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-maroon group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-maroon/10 text-maroon flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              🎥
+            </div>
+            <div>
+              <div className="font-tiro text-[20px] text-navy font-bold">व्हिडिओ (Videos)</div>
+              <div className="font-poppins text-[12px] text-grey">बातमीचे व्हिडिओ उघडा</div>
+            </div>
+          </div>
+          <span className="font-poppins text-lg text-maroon group-hover:translate-x-1 transition-transform">→</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+

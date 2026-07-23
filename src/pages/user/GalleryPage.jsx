@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchGallery } from '../../api/gallery.js';
 
-export default function GalleryPage() {
+export default function GalleryPage({ initialTab = 'सर्व', onNavigate, onGoBack }) {
   const [lightbox, setLightbox] = useState(null);
-  const [activeTab, setActiveTab] = useState('सर्व');
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   const { data: dbGallery = [], isLoading } = useQuery({
     queryKey: ['gallery'],

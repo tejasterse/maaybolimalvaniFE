@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { ArrowRight, X, Newspaper, Calendar, Landmark, Palmtree, Fish, Film, Trophy, Scale, Train, Bus, Car, Bot } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { X, Landmark, Palmtree, Fish, Film, Trophy, Scale, Train, Bus, Car, Bot, ArrowRight, Calendar, MapPin, Play, Newspaper } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
 import { fetchCategories } from '../../api/categories.js';
 import { fetchDistricts } from '../../api/districts.js';
@@ -31,11 +31,21 @@ function AdCarousel({ ads }) {
       <div className="mb-10 w-full rounded-xl overflow-hidden shadow-sm transition-opacity hover:opacity-95 bg-white flex justify-center items-center border border-line">
         {currentAd.link_url ? (
           <a href={currentAd.link_url} target="_blank" rel="noreferrer" className="w-full block text-center">
-            <img src={`https://maayboli-backend.yuktiyantra.com/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto" />
+            <img 
+              src={`http://localhost:5000/api/banners/${currentAd.id}/image`} 
+              alt="Promotion" 
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
+              className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto" 
+            />
           </a>
         ) : (
           <div className="w-full block text-center cursor-pointer" onClick={() => setLightboxAd(currentAd)}>
-            <img src={`https://maayboli-backend.yuktiyantra.com/api/banners/${currentAd.id}/image`} alt="Promotion" className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto block" />
+            <img 
+              src={`http://localhost:5000/api/banners/${currentAd.id}/image`} 
+              alt="Promotion" 
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
+              className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto block" 
+            />
           </div>
         )}
       </div>
@@ -47,14 +57,15 @@ function AdCarousel({ ads }) {
           onClick={() => setLightboxAd(null)}
         >
           <span
-            className="absolute top-6 right-8 text-white text-[26px] cursor-pointer font-poppins"
+            className="absolute top-6 right-8 text-white cursor-pointer font-poppins"
             onClick={() => setLightboxAd(null)}
           >
             <X size={24} />
           </span>
           <img
-            src={`https://maayboli-backend.yuktiyantra.com/api/banners/${lightboxAd.id}/image`}
+            src={`http://localhost:5000/api/banners/${lightboxAd.id}/image`}
             alt="Advertisement"
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
             className="max-w-[800px] max-h-[80vh] rounded-lg"
             style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}
           />
@@ -82,8 +93,6 @@ const categories = [
   { name: 'गुन्हे', icon: <Scale size={28} />, count: '१२', color: '#6d4c41' },
 ];
 
-
-
 const timetables = [
   { id: 1, type: 'रेल्वे', name: 'कोकण कन्या एक्सप्रेस', time: 'रात्री ८:००', route: 'मुंबई ते मडगाव', icon: <Train size={24} /> },
   { id: 2, type: 'एसटी', name: 'मालवण - पुणे', time: 'संध्याकाळी ५:३०', route: 'मालवण - कोल्हापूर - पुणे', icon: <Bus size={24} /> },
@@ -96,8 +105,34 @@ const calendarEvent = { day: '१९', month: 'जुलै', year: '२०२�
 const cricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करत आहे' };
 
 
-export default function HomePage() {
-  const navigate = useNavigate();
+export default function HomePage({ onNavigate }) {
+  const routerNavigate = useNavigate();
+  const navigate = (path) => {
+    if (onNavigate) {
+      if (path === '/listing' || path === '/rajkaran' || path === '/paryatan' || path === '/maasemari' || path === '/sanskriti' || path === '/krida' || path === '/gunhe') {
+        const key = path.replace('/', '');
+        onNavigate(key);
+      } else if (path.startsWith('/article/')) {
+        const id = path.split('/').pop();
+        onNavigate('article', id);
+      } else if (path === '/entertainment') {
+        onNavigate('entertainment');
+      } else if (path.startsWith('/entertainment/')) {
+        const id = path.split('/').pop();
+        onNavigate('entertainment-article', id);
+      } else if (path === '/events') {
+        onNavigate('events');
+      } else if (path === '/chatbot') {
+        onNavigate('chatbot');
+      } else if (path === '/gallery') {
+        onNavigate('gallery');
+      } else {
+        onNavigate('home');
+      }
+    } else {
+      routerNavigate(path);
+    }
+  };
   const [activeTab, setActiveTab] = useState('सर्व');
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
@@ -110,50 +145,44 @@ export default function HomePage() {
     queryKey: ['posts'],
     queryFn: () => fetchPosts()
   });
-  const posts = Array.isArray(data.posts) ? data.posts : [];
+  const posts = data.posts || [];
 
-  const { data: dbCategoriesData } = useQuery({
+  const { data: dbCategories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: () => fetchCategories()
   });
-  const dbCategories = Array.isArray(dbCategoriesData) ? dbCategoriesData : [];
 
-  const { data: dbDistrictsData } = useQuery({
+  const { data: dbDistricts = [] } = useQuery({
     queryKey: ['districts'],
     queryFn: () => fetchDistricts()
   });
-  const dbDistricts = Array.isArray(dbDistrictsData) ? dbDistrictsData : [];
 
-  const { data: adsData } = useQuery({
+  const { data: ads = [] } = useQuery({
     queryKey: ['ads'],
     queryFn: fetchAds
   });
-  const ads = Array.isArray(adsData) ? adsData : [];
 
-  const { data: dbEntertainmentData } = useQuery({
+  const { data: dbEntertainment = [] } = useQuery({
     queryKey: ['entertainment'],
     queryFn: fetchEntertainment
   });
-  const dbEntertainment = Array.isArray(dbEntertainmentData) ? dbEntertainmentData : [];
 
-  const { data: dbEventsData } = useQuery({
+  const { data: dbEvents = [] } = useQuery({
     queryKey: ['events'],
     queryFn: fetchEvents
   });
-  const dbEvents = Array.isArray(dbEventsData) ? dbEventsData : [];
 
-  const { data: dbGalleryData } = useQuery({
+  const { data: dbGallery = [] } = useQuery({
     queryKey: ['gallery'],
     queryFn: fetchGallery
   });
-  const dbGallery = Array.isArray(dbGalleryData) ? dbGalleryData : [];
 
   const dynamicTalukaHighlights = dbDistricts.map(district => {
     const latestPost = posts.find(p => p.districtName === district.name);
     return {
       name: district.name,
       img: latestPost && (latestPost.image || latestPost.image_type)
-        ? `https://maayboli-backend.yuktiyantra.com/api/posts/${latestPost.id}/image`
+        ? `http://localhost:5000/api/posts/${latestPost.id}/image`
         : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop',
       headline: latestPost ? latestPost.title : 'सध्या बातमी उपलब्ध नाही'
     };
@@ -229,7 +258,7 @@ export default function HomePage() {
                     onClick={() => navigate(`/article/${hero.id}`)}
                   >
                     <img
-                      src={(hero.image || hero.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${hero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                      src={(hero.image || hero.image_type) ? `http://localhost:5000/api/posts/${hero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
                       alt={hero.title}
                       className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
                     />
@@ -283,7 +312,7 @@ export default function HomePage() {
               style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}
             >
               <img
-                src={(activeHero.image || activeHero.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${activeHero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                src={(activeHero.image || activeHero.image_type) ? `http://localhost:5000/api/posts/${activeHero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
                 alt={activeHero.title}
                 className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
               />
@@ -380,7 +409,7 @@ export default function HomePage() {
                   className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1"
                   style={{ border: '1px solid var(--line)' }}
                 >
-                  <img src={(a.image || a.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${a.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
+                  <img src={(a.image || a.image_type) ? `http://localhost:5000/api/posts/${a.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
                   <div className="p-4">
                     <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.categoryName || 'बातमी'}</span>
                     <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2 line-clamp-2">{a.title}</h3>
@@ -451,7 +480,7 @@ export default function HomePage() {
                 className="bg-cream rounded-xl overflow-hidden shadow-sm cursor-pointer flex transition-transform hover:-translate-y-1"
                 style={{ border: '1px solid var(--line)' }}
               >
-                <img src={item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop'} alt={item.title} className="w-[100px] h-[100px] object-cover block flex-shrink-0" />
+                <img src={item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop'} alt={item.title} className="w-[100px] h-[100px] object-cover block flex-shrink-0" />
                 <div className="p-3 flex flex-col justify-center w-full overflow-hidden">
                   <span className="font-poppins text-[10px] text-amber font-bold uppercase tracking-wide">{item.type}</span>
                   <h3 className="font-tiro text-[15px] leading-tight text-ink mt-1 mb-1 truncate">{item.title}</h3>
@@ -488,11 +517,11 @@ export default function HomePage() {
                   style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
                 >
                   <div className="flex items-center gap-4">
-                    <img src={prog.image_type ? `https://maayboli-backend.yuktiyantra.com/api/events/${prog.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
+                    <img src={prog.image_type ? `http://localhost:5000/api/events/${prog.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
                     <div>
                       <h3 className="font-tiro text-[16px] text-navy mb-1 line-clamp-1">{prog.title}</h3>
-                      <div className="font-poppins text-[12px] text-grey flex items-center gap-2">
-                        <span className="flex items-center gap-1"><Calendar size={14} /> {prog.event_date}</span>
+                      <div className="font-poppins text-[12px] text-grey flex items-center gap-1.5">
+                        <span className="flex items-center gap-1"><Calendar size={13} /> {prog.event_date}</span>
                         <span className="truncate">📍 {prog.location}</span>
                       </div>
                     </div>
@@ -574,12 +603,14 @@ export default function HomePage() {
                   className="rounded-xl overflow-hidden relative cursor-pointer group shadow-sm bg-black"
                 >
                   {item.is_video === 1 ? (
-                    <video src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} className="w-full h-[120px] object-cover opacity-80" muted />
+                    <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full h-[120px] object-cover opacity-80" muted />
                   ) : (
-                    <img src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
+                    <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
                   )}
                   {item.is_video === 1 && (
-                    <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-[10px] px-2 py-0.5 rounded">▶</div>
+                    <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-[10px] px-2 py-0.5 rounded flex items-center justify-center">
+                      <Play size={8} fill="currentColor" />
+                    </div>
                   )}
                   <div
                     className="absolute inset-0 flex flex-col justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -610,7 +641,7 @@ export default function HomePage() {
             </p>
           </div>
           <button
-            onClick={() => window.dispatchEvent(new Event('open-chatbot'))}
+            onClick={() => navigate('/chatbot')}
             className="flex-shrink-0 font-poppins font-bold text-[14px] px-7 py-4 rounded-xl flex items-center gap-3 transition-transform hover:scale-105"
             style={{ background: 'var(--gold)', color: 'var(--navy)' }}
           >

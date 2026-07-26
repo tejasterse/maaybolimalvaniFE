@@ -3,8 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCw } from 'lucide-react';
 import { searchResults } from '../../constants/data.jsx';
 
-export default function SearchPage() {
-  const navigate = useNavigate();
+export default function SearchPage({ onNavigate, onGoBack }) {
+  const routerNavigate = useNavigate();
+  const navigate = (path) => {
+    if (onNavigate) {
+      if (path === '/') {
+        onNavigate('home');
+      } else {
+        onNavigate('home');
+      }
+    } else {
+      routerNavigate(path);
+    }
+  };
   const [showEmpty, setShowEmpty] = useState(false);
 
   return (

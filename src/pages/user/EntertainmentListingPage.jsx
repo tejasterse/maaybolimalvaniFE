@@ -3,8 +3,19 @@ import { FileText } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEntertainment } from '../../api/entertainment.js';
 
-export default function EntertainmentListingPage() {
-  const navigate = useNavigate();
+export default function EntertainmentListingPage({ onNavigate }) {
+  const routerNavigate = useNavigate();
+  const navigate = (key, params) => {
+    if (onNavigate) {
+      onNavigate(key, params);
+    } else {
+      if (key === 'entertainment-article') {
+        routerNavigate(`/entertainment/${params}`);
+      } else {
+        routerNavigate(key);
+      }
+    }
+  };
 
   const { data: items = [], isLoading, isError } = useQuery({
     queryKey: ['entertainment'],
@@ -36,12 +47,12 @@ export default function EntertainmentListingPage() {
           {items.map((item) => (
             <div
               key={item.id}
-              onClick={() => navigate(`/entertainment/${item.id}`)}
+              onClick={() => navigate('entertainment-article', item.id)}
               className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1 flex flex-col h-full"
               style={{ border: '1px solid var(--line)' }}
             >
               <img 
-                src={item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop'} 
+                src={item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop'} 
                 alt={item.title} 
                 className="w-full h-[180px] object-cover block flex-shrink-0" 
               />

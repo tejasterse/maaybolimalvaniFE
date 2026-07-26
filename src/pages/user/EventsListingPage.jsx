@@ -3,7 +3,16 @@ import { Calendar, Tent } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from '../../api/events.js';
 
-export default function EventsListingPage() {
+export default function EventsListingPage({ onNavigate }) {
+  const routerNavigate = useNavigate();
+  const navigate = (key, params) => {
+    if (onNavigate) {
+      onNavigate(key, params);
+    } else {
+      routerNavigate(key);
+    }
+  };
+
   const { data: items = [], isLoading, isError } = useQuery({
     queryKey: ['events'],
     queryFn: fetchEvents
@@ -38,7 +47,7 @@ export default function EventsListingPage() {
               style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
             >
               <img 
-                src={item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/events/${item.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&h=300&fit=crop'} 
+                src={item.image_type ? `http://localhost:5000/api/events/${item.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&h=300&fit=crop'} 
                 alt={item.title} 
                 className="w-full h-[160px] object-cover block flex-shrink-0" 
               />

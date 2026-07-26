@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Newspaper, Send, Check, X, MessageCircle } from 'lucide-react';
+import { Newspaper, Send, Bot, X, MessageCircle } from 'lucide-react';
 import { chatMessages } from '../../constants/data.jsx';
 
 const quickQuestions = ['आजच्या ब्रेकिंग न्यूज दाखवा', 'पर्यटन बातम्या', 'माझ्या तालुक्याची बातमी'];
@@ -92,7 +92,7 @@ export default function ChatbotFab() {
             
             <div className="flex items-center gap-3 relative z-10">
                <div className="w-10 h-10 rounded-full bg-gold flex items-center justify-center text-navy shadow-sm border border-white/20">
-                  <Check size={20} />
+                  <Bot size={20} />
                </div>
                <div>
                   <h3 className="font-tiro text-[20px] text-white leading-tight">मायबोली AI</h3>

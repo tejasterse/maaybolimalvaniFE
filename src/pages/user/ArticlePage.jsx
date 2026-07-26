@@ -1,14 +1,30 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, MessageCircle, X, ArrowRight } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { MessageCircle, X, ArrowRight, Camera, Video, Link2 } from 'lucide-react';
 import { fetchPostById, fetchPosts } from '../../api/posts.js';
 import { fetchAds } from '../../api/ads.js';
 
 
-export default function ArticlePage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
+  const { id: routeId } = useParams();
+  const id = articleData || routeId;
+  const routerNavigate = useNavigate();
+
+  const navigate = (path) => {
+    if (onNavigate) {
+      if (path === '/') {
+        onNavigate('home');
+      } else if (path.startsWith('/article/')) {
+        const targetId = path.split('/').pop();
+        onNavigate('article', targetId);
+      } else {
+        onNavigate('home');
+      }
+    } else {
+      routerNavigate(path);
+    }
+  };
   const [activeMedia, setActiveMedia] = useState('photo'); // 'photo' | 'video'
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [lightboxAd, setLightboxAd] = useState(null);
@@ -47,9 +63,9 @@ export default function ArticlePage() {
     author: post.authorName || 'संपादक',
     authorInitial: post.authorName ? post.authorName[0] : 'स',
     time: `${new Date(post.createdAt).toLocaleDateString('mr-IN')}`,
-    img: (post.image || post.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${post.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop',
+    img: (post.image || post.image_type) ? `http://localhost:5000/api/posts/${post.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop',
     hasVideo: !!post.video_type,
-    videoUrl: post.video_type ? `https://maayboli-backend.yuktiyantra.com/api/posts/${post.id}/video` : null,
+    videoUrl: post.video_type ? `http://localhost:5000/api/posts/${post.id}/video` : null,
     imgCaption: '',
     quote: '',
     tags: [`#${post.categoryName || 'बातमी'}`, `#${post.districtName || 'सिंधुदुर्ग'}`]
@@ -123,7 +139,7 @@ export default function ArticlePage() {
                 className="w-8 h-8 rounded-full border border-line flex items-center justify-center transition-colors hover:bg-gray-50 text-[14px] text-grey"
                 title="लिंक कॉपी करा"
               >
-                🔗
+                <Link2 size={16} />
               </button>
             </div>
           </div>
@@ -135,15 +151,15 @@ export default function ArticlePage() {
         <div className="flex justify-center gap-2 mb-4">
           <button
             onClick={() => setActiveMedia('photo')}
-            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors ${activeMedia === 'photo' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
+            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors flex items-center gap-1.5 ${activeMedia === 'photo' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
           >
-            📷 फोटो
+            <Camera size={14} /> फोटो
           </button>
           <button
             onClick={() => setActiveMedia('video')}
-            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors ${activeMedia === 'video' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
+            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors flex items-center gap-1.5 ${activeMedia === 'video' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
           >
-            🎥 व्हिडिओ
+            <Video size={14} /> व्हिडिओ
           </button>
         </div>
       )}
@@ -210,7 +226,7 @@ export default function ArticlePage() {
                   className="rounded-[10px] overflow-hidden cursor-pointer transition-transform hover:-translate-y-0.5"
                   style={{ background: 'var(--cream)' }}
                 >
-                  <img src={(r.image || r.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${r.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={r.title} className="w-full h-[110px] object-cover block" />
+                  <img src={(r.image || r.image_type) ? `http://localhost:5000/api/posts/${r.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={r.title} className="w-full h-[110px] object-cover block" />
                   <div className="p-3">
                     <h3 className="font-tiro text-[14.5px] leading-snug text-ink line-clamp-2">{r.title}</h3>
                     <div className="font-poppins text-[10px] text-grey mt-2">{r.districtName || 'सिंधुदुर्ग'} · {new Date(r.createdAt).toLocaleDateString('mr-IN')}</div>
@@ -233,7 +249,12 @@ export default function ArticlePage() {
               className="w-full flex justify-center"
               onClick={(e) => handleAdClick(e, ads[currentAdIndex])}
             >
-              <img src={`https://maayboli-backend.yuktiyantra.com/api/banners/${ads[currentAdIndex]?.id}/image`} alt="Advertisement" className="max-w-full h-auto object-contain max-h-[250px]" />
+              <img 
+                src={`http://localhost:5000/api/banners/${ads[currentAdIndex]?.id}/image`} 
+                alt="Advertisement" 
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
+                className="max-w-full h-auto object-contain max-h-[250px]" 
+              />
             </a>
           </div>
         </div>
@@ -247,14 +268,15 @@ export default function ArticlePage() {
           onClick={() => setLightboxAd(null)}
         >
           <span
-            className="absolute top-6 right-8 text-white text-[26px] cursor-pointer font-poppins"
+            className="absolute top-6 right-8 text-white cursor-pointer font-poppins"
             onClick={() => setLightboxAd(null)}
           >
             <X size={24} />
           </span>
           <img
-            src={`https://maayboli-backend.yuktiyantra.com/api/banners/${lightboxAd.id}/image`}
+            src={`http://localhost:5000/api/banners/${lightboxAd.id}/image`}
             alt="Advertisement"
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
             className="max-w-[800px] max-h-[80vh] rounded-lg"
             style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}
           />
@@ -275,15 +297,15 @@ function ArticleMediaSection({ onNavigate }) {
           className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-teal group"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-teal/10 text-teal flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-              📷
+            <div className="w-12 h-12 rounded-2xl bg-teal/10 text-teal flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Camera size={24} />
             </div>
             <div>
               <div className="font-tiro text-[20px] text-navy font-bold">फोटो (Photos)</div>
               <div className="font-poppins text-[12px] text-grey">बातमीचे फोटो दालन उघडा</div>
             </div>
           </div>
-          <span className="font-poppins text-lg text-teal group-hover:translate-x-1 transition-transform"><ArrowRight size={18} /></span>
+          <span className="font-poppins text-teal group-hover:translate-x-1 transition-transform flex items-center"><ArrowRight size={18} /></span>
         </div>
 
         {/* 2. Videos Option */}
@@ -292,15 +314,15 @@ function ArticleMediaSection({ onNavigate }) {
           className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-maroon group"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-maroon/10 text-maroon flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-              🎥
+            <div className="w-12 h-12 rounded-2xl bg-maroon/10 text-maroon flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Video size={24} />
             </div>
             <div>
               <div className="font-tiro text-[20px] text-navy font-bold">व्हिडिओ (Videos)</div>
               <div className="font-poppins text-[12px] text-grey">बातमीचे व्हिडिओ उघडा</div>
             </div>
           </div>
-          <span className="font-poppins text-lg text-maroon group-hover:translate-x-1 transition-transform"><ArrowRight size={18} /></span>
+          <span className="font-poppins text-maroon group-hover:translate-x-1 transition-transform flex items-center"><ArrowRight size={18} /></span>
         </div>
       </div>
     </div>

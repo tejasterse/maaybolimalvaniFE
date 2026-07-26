@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ArrowRight, X, Scroll, PenTool, Smile, Heart, Share2 } from 'lucide-react';
 import { kavitaList, lekhList, vinodList } from '../../constants/data.jsx';
+import { Scroll, PenTool, Smile, Heart, ArrowRight, Share2, X } from 'lucide-react';
 
 export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, onGoBack }) {
   const [activeTab, setActiveTab] = useState(initialSection);
@@ -105,7 +105,7 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                   </span>
                   <button
                     onClick={() => setSelectedItem(item)}
-                    className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline"
+                    className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
                   >
                     पूर्ण कविता वाचा <ArrowRight size={14} className="inline ml-1" />
                   </button>
@@ -152,7 +152,7 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                   <span className="font-poppins text-[11px] text-grey">{item.date}</span>
                   <button
                     onClick={() => setSelectedItem(item)}
-                    className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline"
+                    className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
                   >
                     संपूर्ण लेख वाचा <ArrowRight size={14} className="inline ml-1" />
                   </button>
@@ -198,9 +198,9 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
                   <span className="font-poppins text-[12px] text-grey">लेखक: {item.author}</span>
                   <button
                     onClick={() => handleShare(item.title)}
-                    className="font-poppins text-[12px] font-semibold text-teal hover:bg-teal/10 px-3 py-1.5 rounded-lg border border-teal/30"
+                    className="font-poppins text-[12px] font-semibold text-teal hover:bg-teal/10 px-3 py-1.5 rounded-lg border border-teal/30 flex items-center gap-1"
                   >
-                    <Share2 size={14} className="inline mr-1" /> शेअर करा
+                    <Share2 size={14} /> शेअर करा
                   </button>
                 </div>
               </div>

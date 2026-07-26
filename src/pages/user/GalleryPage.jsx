@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { X, Play } from 'lucide-react';
 import { fetchGallery } from '../../api/gallery.js';
 
 export default function GalleryPage({ initialTab = 'सर्व', onNavigate, onGoBack }) {
@@ -69,16 +69,16 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             >
               <div className="relative">
                 {item.is_video === 1 ? (
-                  <video src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} className="w-full block" muted />
+                  <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full block" muted />
                 ) : (
-                  <img src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} alt={item.title} className="w-full block" />
+                  <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full block" />
                 )}
                 {item.is_video === 1 && (
                   <div
-                    className="absolute top-2.5 right-2.5 w-[30px] h-[30px] rounded-full flex items-center justify-center text-[12px] text-white"
+                    className="absolute top-2.5 right-2.5 w-[30px] h-[30px] rounded-full flex items-center justify-center text-white"
                     style={{ background: 'rgba(14,42,71,.85)' }}
                   >
-                    ▶
+                    <Play size={12} fill="currentColor" />
                   </div>
                 )}
               </div>
@@ -102,14 +102,14 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
           onClick={closeLB}
         >
           <span
-            className="lb-close absolute top-6 right-8 text-white text-[26px] cursor-pointer font-poppins"
+            className="lb-close absolute top-6 right-8 text-white cursor-pointer font-poppins"
             onClick={closeLB}
           >
             <X size={24} />
           </span>
           {lightbox.is_video === 1 ? (
             <video
-              src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${lightbox.id}/media`}
+              src={`http://localhost:5000/api/gallery/${lightbox.id}/media`}
               controls
               autoPlay
               className="max-w-[800px] max-h-[80vh] rounded-lg"
@@ -117,7 +117,7 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             />
           ) : (
             <img
-              src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${lightbox.id}/media`}
+              src={`http://localhost:5000/api/gallery/${lightbox.id}/media`}
               alt={lightbox.title}
               className="max-w-[800px] max-h-[80vh] rounded-lg"
               style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}

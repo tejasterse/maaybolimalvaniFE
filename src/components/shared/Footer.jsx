@@ -1,9 +1,15 @@
-import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
-export default function Footer() {
+export default function Footer({ onNavigate, onAdminLogin }) {
   const navigate = useNavigate();
-  const handleNavigate = (key) => navigate(key === 'home' ? '/' : `/${key}`);
+  const handleNavigate = (key) => {
+    if (onNavigate) {
+      onNavigate(key);
+    } else {
+      navigate(key === 'home' ? '/' : `/${key}`);
+    }
+  };
   return (
     <footer style={{ background: 'var(--navy)', borderTop: '3px solid var(--gold)' }} className="py-8 mt-12 text-[#cfd9e4]">
       <div className="max-w-[1180px] mx-auto px-6">
@@ -54,7 +60,13 @@ export default function Footer() {
               {['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'].map((t) => (
                 <button
                   key={t}
-                  onClick={() => handleNavigate('listing')}
+                  onClick={() => {
+                    if (onNavigate) {
+                      onNavigate('listing', { taluka: t });
+                    } else {
+                      navigate('/listing', { state: { taluka: t } });
+                    }
+                  }}
                   className="block font-mukta text-[13.5px] text-left hover:text-white transition-colors"
                   style={{ color: '#8fa0b3' }}
                 >
@@ -83,7 +95,7 @@ export default function Footer() {
                 </button>
               ))}
               <button
-                onClick={() => navigate('/admin-login')}
+                onClick={() => onAdminLogin ? onAdminLogin() : navigate('/admin-login')}
                 className="block font-mukta text-[13.5px] text-left text-gold-light hover:text-white transition-colors mt-2"
               >
                 संपादक लॉगिन <ArrowRight size={14} className="inline ml-1" />

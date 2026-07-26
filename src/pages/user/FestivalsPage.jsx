@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, CheckCircle } from 'lucide-react';
+import { Calendar, CheckCircle, MapPin, Share2, Camera, Download } from 'lucide-react';
 import { upcomingFestivals, pastFestivals } from '../../constants/data.jsx';
 
 export default function FestivalsPage({ onNavigate, onGoBack }) {
@@ -89,8 +89,8 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
                     </div>
                     <div className="p-5">
                       <h3 className="font-tiro text-[21px] text-navy mb-2 leading-snug">{item.title}</h3>
-                      <div className="font-poppins text-[12px] text-grey mb-3 flex items-center gap-1">
-                        📍 {item.location}
+                      <div className="font-poppins text-[12px] text-grey mb-3 flex items-center gap-1.5">
+                        <MapPin size={13} className="text-grey" /> {item.location}
                       </div>
                       <p className="font-mukta text-[14px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3">
                         {item.description}
@@ -109,9 +109,9 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
                     <span>आयोजक: {item.organizer}</span>
                     <button
                       onClick={() => alert(`"${item.title}" कार्यक्रमाची माहिती शेअर केली!`)}
-                      className="font-poppins text-[12px] font-semibold text-teal hover:underline"
+                      className="font-poppins text-[12px] font-semibold text-teal hover:underline flex items-center gap-1"
                     >
-                      शेअर करा 📲
+                      शेअर करा <Share2 size={12} />
                     </button>
                   </div>
                 </div>
@@ -144,8 +144,8 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
                         }}
                         className="w-full h-full object-cover bg-gray-100"
                       />
-                      <div className="absolute top-2 right-2 bg-teal/90 text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-lg shadow">
-                        📸 {item.photosCount}
+                      <div className="absolute top-2 right-2 bg-teal/90 text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-lg shadow flex items-center gap-1">
+                        <Camera size={12} /> {item.photosCount}
                       </div>
                       <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-full flex items-center gap-1.5 border border-white/20">
                         <span>{item.icon}</span> <span>{item.heldDate}</span>
@@ -153,8 +153,8 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
                     </div>
                     <div className="p-5">
                       <h3 className="font-tiro text-[21px] text-navy mb-2 leading-snug">{item.title}</h3>
-                      <div className="font-poppins text-[12px] text-grey mb-3">
-                        📍 {item.location}
+                      <div className="font-poppins text-[12px] text-grey mb-3 flex items-center gap-1">
+                        <MapPin size={12} /> {item.location}
                       </div>
                       <p className="font-mukta text-[14px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3">
                         {item.summary}
@@ -172,9 +172,9 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
                   <div className="p-4 bg-gray-50 border-t border-line text-right">
                     <button
                       onClick={() => alert(`"${item.title}" चे फोटो डाऊनलोड झाले!`)}
-                      className="font-poppins text-[12px] font-semibold text-teal hover:underline"
+                      className="font-poppins text-[12px] font-semibold text-teal hover:underline inline-flex items-center gap-1"
                     >
-                      फोटो पाहा व डाऊनलोड करा 📥
+                      फोटो पाहा व डाऊनलोड करा <Download size={12} />
                     </button>
                   </div>
                 </div>

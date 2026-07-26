@@ -1,7 +1,26 @@
 import { useNavigate } from 'react-router-dom';
 
-export default function UtilityBar() {
-  const navigate = useNavigate();
+export default function UtilityBar({ onNavigate, onAdminLogin }) {
+  const routerNavigate = useNavigate();
+  const navigate = (path) => {
+    if (onNavigate) {
+      if (path === '/about-us') {
+        onNavigate('about-us');
+      } else if (path === '/admin-login') {
+        if (onAdminLogin) {
+          onAdminLogin();
+        } else {
+          routerNavigate('/admin-login');
+        }
+      }
+    } else {
+      if (path === '/admin-login' && onAdminLogin) {
+        onAdminLogin();
+      } else {
+        routerNavigate(path);
+      }
+    }
+  };
   const handleSocialClick = (platform) => {
     alert(`${platform} वर मायबोली मालवणीला कनेक्ट केल्याबद्दल धन्यवाद!`);
   };

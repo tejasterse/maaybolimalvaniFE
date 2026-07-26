@@ -16,16 +16,18 @@ export default function SearchPage({ onNavigate, onGoBack }) {
       routerNavigate(path);
     }
   };
-  const [showEmpty, setShowEmpty] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div>
       {/* Search Hero */}
       <div className="bg-white py-8" style={{ borderBottom: '1px solid var(--line)' }}>
-        <div className="max-w-[640px] mx-auto flex gap-2.5">
+        <div className="max-w-[640px] mx-auto flex gap-2.5 px-4">
           <input
             type="text"
-            defaultValue="सिंधुदुर्ग किल्ला"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="शोधायचे शब्द टाका..."
             className="flex-1 px-[18px] py-3.5 font-mukta text-[16px] text-ink rounded-[10px] outline-none"
             style={{ border: '2px solid var(--gold)' }}
           />
@@ -43,16 +45,16 @@ export default function SearchPage({ onNavigate, onGoBack }) {
           {/* Filters Sidebar */}
           <aside className="bg-white rounded-[10px] p-5 shadow-sm self-start">
             <h4 className="font-poppins text-[11.5px] uppercase tracking-[.06em] text-grey mb-2.5">विभाग</h4>
-            {['पर्यटन', 'राजकारण', 'संस्कृती', 'क्रीडा'].map((c, i) => (
+            {['पर्यटन', 'राजकारण', 'संस्कृती', 'क्रीडा'].map((c) => (
               <label key={c} className="flex items-center gap-2 font-mukta text-sm text-ink py-1 cursor-pointer">
-                <input type="checkbox" defaultChecked={i === 0} />
+                <input type="checkbox" />
                 {c}
               </label>
             ))}
             <h4 className="font-poppins text-[11.5px] uppercase tracking-[.06em] text-grey mt-4 mb-2.5">तालुका</h4>
-            {['मालवण', 'कणकवली', 'कुडाळ'].map((t, i) => (
+            {['मालवण', 'कणकवली', 'कुडाळ'].map((t) => (
               <label key={t} className="flex items-center gap-2 font-mukta text-sm text-ink py-1 cursor-pointer">
-                <input type="checkbox" defaultChecked={i === 0} />
+                <input type="checkbox" />
                 {t}
               </label>
             ))}
@@ -67,38 +69,17 @@ export default function SearchPage({ onNavigate, onGoBack }) {
 
           {/* Results */}
           <div>
-            <button
-              onClick={() => setShowEmpty(!showEmpty)}
-              className="font-poppins text-[11.5px] text-teal underline cursor-pointer block mb-4"
-            >
-              <RefreshCw size={14} className="inline mr-1" /> रिकाम्या परिणामांचे उदाहरण बघा
-            </button>
-
-            {!showEmpty ? (
+            {searchResults.length > 0 ? (
               <>
                 <div className="font-poppins text-[13px] text-grey mb-4">
-                  <b className="text-ink">१२</b> परिणाम सापडले "<b className="text-ink">सिंधुदुर्ग किल्ला</b>" साठी
+                  <b className="text-ink">{searchResults.length}</b> परिणाम सापडले {searchQuery && <>"<b className="text-ink">{searchQuery}</b>" साठी</>}
                 </div>
                 {searchResults.map((r) => (
                   <div key={r.title} className="bg-white rounded-[10px] px-5 py-4 mb-3.5 shadow-sm">
                     <span className="font-poppins text-[10.5px] text-teal font-bold uppercase">{r.tag}</span>
                     <h3 className="font-tiro text-[19px] text-ink my-1.5">{r.title}</h3>
                     <p className="font-mukta text-[14.5px] leading-relaxed" style={{ color: '#5a4c3a' }}>
-                      {r.excerpt.split(r.highlight).map((part, i, arr) =>
-                        i < arr.length - 1 ? (
-                          <span key={i}>
-                            {part}
-                            <mark
-                              className="rounded px-0.5"
-                              style={{ background: 'var(--gold-light)', color: 'var(--maroon-deep)' }}
-                            >
-                              {r.highlight}
-                            </mark>
-                          </span>
-                        ) : (
-                          part
-                        )
-                      )}
+                      {r.excerpt}
                     </p>
                     <div className="font-poppins text-[11px] text-grey mt-2.5">{r.meta}</div>
                   </div>
@@ -107,14 +88,14 @@ export default function SearchPage({ onNavigate, onGoBack }) {
             ) : (
               <>
                 <div className="font-poppins text-[13px] text-grey mb-4">
-                  <b className="text-ink">०</b> परिणाम सापडले "<b className="text-ink">राजापूर तालुका बातम्या</b>" साठी
+                  <b className="text-ink">०</b> परिणाम सापडले {searchQuery && <>"<b className="text-ink">{searchQuery}</b>" साठी</>}
                 </div>
-                <div className="bg-white rounded-[10px] px-7 py-14 text-center shadow-sm">
-                <div className="flex justify-center mb-4">
-                  <Search size={48} className="text-grey" />
-                </div>
+                <div className="bg-white rounded-[10px] px-7 py-14 text-center shadow-sm border border-dashed border-line">
+                  <div className="flex justify-center mb-4">
+                    <Search size={48} className="text-grey/40" />
+                  </div>
                   <h3 className="font-tiro text-[20px] text-ink mb-2">काही सापडले नाही</h3>
-                  <p className="font-poppins text-[13px] text-grey mb-1.5">तुमच्या शोधाशी जुळणारी कोणतीही बातमी सापडली नाही.</p>
+                  <p className="font-poppins text-[13px] text-grey mb-1.5">शोधाशी जुळणारी कोणतीही बातमी उपलब्ध नाही.</p>
                   <p className="font-poppins text-[13px] text-grey">शब्दलेखन तपासा किंवा वेगळे शब्द वापरून पुन्हा शोधा.</p>
                 </div>
               </>

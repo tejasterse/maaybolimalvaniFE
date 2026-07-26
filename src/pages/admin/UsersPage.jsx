@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { users } from '../../constants/data.jsx';
+import { CheckCircle2, Clock } from 'lucide-react';
 
 const roleColors = {
   admin: { bg: 'var(--maroon)', color: '#fbe8c9' },
@@ -116,7 +117,17 @@ export default function UsersPage() {
                   </span>
                 </td>
                 <td className="font-poppins text-[12px] text-grey px-4 py-3.5">{u.joined}</td>
-                <td className="font-poppins text-[12px] text-grey px-4 py-3.5">{u.status}</td>
+                <td className="font-poppins text-[12px] text-grey px-4 py-3.5">
+                  {u.status.includes('सक्रिय') ? (
+                    <span className="inline-flex items-center gap-1.5 text-green-700 font-medium">
+                      <CheckCircle2 size={13} className="text-green-600" /> {u.status.replace('🟢 ', '')}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 text-amber-700 font-medium">
+                      <Clock size={13} className="text-amber-500" /> {u.status.replace('⏳ ', '')}
+                    </span>
+                  )}
+                </td>
                 <td className="px-4 py-3.5">
                   <button
                     onClick={() => handleActionClick(u)}

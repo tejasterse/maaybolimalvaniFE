@@ -61,151 +61,175 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
 
         {/* 1. KAVITA LIST */}
         {activeTab === 'kavita' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {kavitaList.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
-              >
-                <div>
-                  <div className="relative h-[150px] overflow-hidden">
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                      }}
-                      className="w-full h-full object-cover bg-gray-100"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                      <span className="font-poppins text-[11px] font-bold text-white bg-maroon/90 px-3 py-1 rounded-full flex items-center gap-1">
-                        <Scroll size={12} /> {item.category}
-                      </span>
+          kavitaList.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {kavitaList.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <div className="relative h-[150px] overflow-hidden">
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
+                        }}
+                        className="w-full h-full object-cover bg-gray-100"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                        <span className="font-poppins text-[11px] font-bold text-white bg-maroon/90 px-3 py-1 rounded-full flex items-center gap-1">
+                          <Scroll size={12} /> {item.category}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-poppins text-[11px] font-medium text-grey">
+                          {item.date}
+                        </span>
+                        <span className="font-poppins text-[11.5px] font-semibold text-teal">
+                          {item.author}
+                        </span>
+                      </div>
+                      <h3 className="font-tiro text-[22px] text-navy mb-2">{item.title}</h3>
+                      <p className="font-mukta text-[14.5px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3 italic">
+                        "{item.excerpt}"
+                      </p>
                     </div>
                   </div>
-                  <div className="p-5">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-poppins text-[11px] font-medium text-grey">
-                        {item.date}
-                      </span>
-                      <span className="font-poppins text-[11.5px] font-semibold text-teal">
-                        {item.author}
-                      </span>
-                    </div>
-                    <h3 className="font-tiro text-[22px] text-navy mb-2">{item.title}</h3>
-                    <p className="font-mukta text-[14.5px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3 italic">
-                      "{item.excerpt}"
-                    </p>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
+                    <span className="font-poppins text-[12px] text-grey flex items-center gap-1">
+                      <Heart size={14} className="text-red-500" fill="currentColor" /> {item.likes} लाईक्स
+                    </span>
+                    <button
+                      onClick={() => setSelectedItem(item)}
+                      className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
+                    >
+                      पूर्ण कविता वाचा <ArrowRight size={14} className="inline ml-1" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
-                  <span className="font-poppins text-[12px] text-grey flex items-center gap-1">
-                    <Heart size={14} className="text-red-500" fill="currentColor" /> {item.likes} लाईक्स
-                  </span>
-                  <button
-                    onClick={() => setSelectedItem(item)}
-                    className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
-                  >
-                    पूर्ण कविता वाचा <ArrowRight size={14} className="inline ml-1" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
+              <Scroll size={40} className="mx-auto text-grey/40 mb-3" />
+              <p className="font-mukta text-[18px] text-navy font-semibold">कोणतीही कविता उपलब्ध नाही</p>
+              <p className="font-poppins text-[13px] text-grey mt-1">नवीन कविता लवकरच प्रकाशित केल्या जातील.</p>
+            </div>
+          )
         )}
 
         {/* 2. LEKH LIST */}
         {activeTab === 'lekh' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {lekhList.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
-              >
-                <div>
-                  <div className="relative h-[150px] overflow-hidden">
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                      }}
-                      className="w-full h-full object-cover bg-gray-100"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                      <span className="font-poppins text-[11px] font-bold text-white bg-teal/90 px-3 py-1 rounded-full flex items-center gap-1">
-                        <PenTool size={12} /> {item.readTime}
-                      </span>
+          lekhList.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {lekhList.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <div className="relative h-[150px] overflow-hidden">
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
+                        }}
+                        className="w-full h-full object-cover bg-gray-100"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                        <span className="font-poppins text-[11px] font-bold text-white bg-teal/90 px-3 py-1 rounded-full flex items-center gap-1">
+                          <PenTool size={12} /> {item.readTime}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-tiro text-[20px] text-navy mb-2 leading-snug">{item.title}</h3>
+                      <div className="font-poppins text-[12px] text-grey mb-3">लेखक: {item.author}</div>
+                      <p className="font-mukta text-[14.5px] text-ink leading-relaxed mb-3">
+                        {item.excerpt}
+                      </p>
                     </div>
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-tiro text-[20px] text-navy mb-2 leading-snug">{item.title}</h3>
-                    <div className="font-poppins text-[12px] text-grey mb-3">लेखक: {item.author}</div>
-                    <p className="font-mukta text-[14.5px] text-ink leading-relaxed mb-3">
-                      {item.excerpt}
-                    </p>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
+                    <span className="font-poppins text-[11px] text-grey">{item.date}</span>
+                    <button
+                      onClick={() => setSelectedItem(item)}
+                      className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
+                    >
+                      संपूर्ण लेख वाचा <ArrowRight size={14} className="inline ml-1" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
-                  <span className="font-poppins text-[11px] text-grey">{item.date}</span>
-                  <button
-                    onClick={() => setSelectedItem(item)}
-                    className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
-                  >
-                    संपूर्ण लेख वाचा <ArrowRight size={14} className="inline ml-1" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
+              <PenTool size={40} className="mx-auto text-grey/40 mb-3" />
+              <p className="font-mukta text-[18px] text-navy font-semibold">कोणताही लेख उपलब्ध नाही</p>
+              <p className="font-poppins text-[13px] text-grey mt-1">नवीन लेख लवकरच प्रकाशित केले जातील.</p>
+            </div>
+          )
         )}
 
         {/* 3. VINOD LIST */}
         {activeTab === 'vinod' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {vinodList.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
-              >
-                <div>
-                  <div className="relative h-[140px] overflow-hidden">
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                      }}
-                      className="w-full h-full object-cover bg-gray-100"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                      <span className="font-poppins text-[11px] font-bold text-navy bg-gold px-3 py-1 rounded-full flex items-center gap-1 shadow">
-                        <Smile size={12} /> मालवणी विनोद
-                      </span>
+          vinodList.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {vinodList.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <div className="relative h-[140px] overflow-hidden">
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
+                        }}
+                        className="w-full h-full object-cover bg-gray-100"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                        <span className="font-poppins text-[11px] font-bold text-navy bg-gold px-3 py-1 rounded-full flex items-center gap-1 shadow">
+                          <Smile size={12} /> मालवणी विनोद
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-tiro text-[20px] text-navy mb-3">{item.title}</h3>
+                      <div className="font-mukta text-[15.5px] text-ink leading-relaxed bg-amber-50/60 p-3.5 rounded-xl border border-amber-200 whitespace-pre-line mb-3 font-medium">
+                        {item.joke}
+                      </div>
                     </div>
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-tiro text-[20px] text-navy mb-3">{item.title}</h3>
-                    <div className="font-mukta text-[15.5px] text-ink leading-relaxed bg-amber-50/60 p-3.5 rounded-xl border border-amber-200 whitespace-pre-line mb-3 font-medium">
-                      {item.joke}
-                    </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
+                    <span className="font-poppins text-[12px] text-grey">लेखक: {item.author}</span>
+                    <button
+                      onClick={() => handleShare(item.title)}
+                      className="font-poppins text-[12px] font-semibold text-teal hover:bg-teal/10 px-3 py-1.5 rounded-lg border border-teal/30 flex items-center gap-1"
+                    >
+                      <Share2 size={14} /> शेअर करा
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
-                  <span className="font-poppins text-[12px] text-grey">लेखक: {item.author}</span>
-                  <button
-                    onClick={() => handleShare(item.title)}
-                    className="font-poppins text-[12px] font-semibold text-teal hover:bg-teal/10 px-3 py-1.5 rounded-lg border border-teal/30 flex items-center gap-1"
-                  >
-                    <Share2 size={14} /> शेअर करा
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
+              <Smile size={40} className="mx-auto text-grey/40 mb-3" />
+              <p className="font-mukta text-[18px] text-navy font-semibold">कोणताही विनोद उपलब्ध नाही</p>
+              <p className="font-poppins text-[13px] text-grey mt-1">नवीन विनोद लवकरच प्रकाशित केले जातील.</p>
+            </div>
+          )
         )}
 
       </div>

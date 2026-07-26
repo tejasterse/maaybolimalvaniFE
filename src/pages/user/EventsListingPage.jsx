@@ -61,7 +61,7 @@ export default function EventsListingPage({ onNavigate }) {
                     <span className="font-medium text-[#4a4a4a]">{item.event_date}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-teal text-lg leading-none">📍</span>
+                    <span className="text-teal"><MapPin size={18} /></span>
                     <span className="text-[#4a4a4a] truncate">{item.location}</span>
                   </div>
                 </div>

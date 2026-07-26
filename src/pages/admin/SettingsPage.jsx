@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import ToggleSwitch from '../../components/admin/ToggleSwitch.jsx';
 
 export default function SettingsPage() {
@@ -55,10 +56,10 @@ export default function SettingsPage() {
 
       {saved && (
         <div
-          className="font-poppins text-[13.5px] text-white px-4 py-3 rounded-lg mb-5 transition-opacity duration-300"
+          className="font-poppins text-[13.5px] text-white px-4 py-3 rounded-lg mb-5 transition-opacity duration-300 flex items-center gap-2"
           style={{ background: '#2e7d4f' }}
         >
-          ✓ बदल यशस्वीरित्या जतन केले आहेत!
+          <CheckCircle2 size={16} /> <span>बदल यशस्वीरित्या जतन केले आहेत!</span>
         </div>
       )}
 

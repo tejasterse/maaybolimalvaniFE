@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchPosts, updatePostStatus } from '../../api/posts.js';
+import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 
 export default function ReviewPage() {
   const queryClient = useQueryClient();
@@ -71,19 +72,19 @@ export default function ReviewPage() {
                       : { background: '#ffebee', color: 'var(--maroon)' }
                   }
                 >
-                  {status === 'approved' && '✓ लेख मंजूर करून यशस्वीरित्या प्रकाशित केला आहे!'}
-                  {status === 'changes' && '⚠️ बदल सुचवले आहेत; लेख दुरुस्तीसाठी रिपोर्टरकडे पाठवला आहे.'}
-                  {status === 'rejected' && '❌ लेख नाकारला गेला आहे.'}
+                  {status === 'approved' && <span className="flex items-center gap-1.5"><CheckCircle2 size={16} /> लेख मंजूर करून यशस्वीरित्या प्रकाशित केला आहे!</span>}
+                  {status === 'changes' && <span className="flex items-center gap-1.5"><AlertTriangle size={16} /> बदल सुचवले आहेत; लेख दुरुस्तीसाठी रिपोर्टरकडे पाठवला आहे.</span>}
+                  {status === 'rejected' && <span className="flex items-center gap-1.5"><XCircle size={16} /> लेख नाकारला गेला आहे.</span>}
                 </div>
               ) : (
                 <div className="flex gap-2.5 flex-wrap">
                   <button
                     onClick={() => handleAction(item.id, 'approved', 'PUBLISHED')}
                     disabled={statusMutation.isPending}
-                    className="font-poppins font-semibold text-[13px] px-4 py-2 rounded-[7px] text-white transition-all hover:opacity-90 disabled:opacity-50"
+                    className="font-poppins font-semibold text-[13px] px-4 py-2 rounded-[7px] text-white transition-all hover:opacity-90 disabled:opacity-50 flex items-center gap-1.5"
                     style={{ background: '#2e7d4f' }}
                   >
-                    ✓ मंजूर करा व प्रकाशित करा
+                    <CheckCircle2 size={15} /> मंजूर करा व प्रकाशित करा
                   </button>
                   <button
                     onClick={() => handleAction(item.id, 'changes', 'DRAFT')}

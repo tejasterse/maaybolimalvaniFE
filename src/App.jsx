@@ -9,6 +9,8 @@ import ArticlePage from './pages/user/ArticlePage.jsx';
 import ListingPage from './pages/user/ListingPage.jsx';
 import SearchPage from './pages/user/SearchPage.jsx';
 import GalleryPage from './pages/user/GalleryPage.jsx';
+import KavitaLekhPage from './pages/user/KavitaLekhPage.jsx';
+import FestivalsPage from './pages/user/FestivalsPage.jsx';
 import EntertainmentListingPage from './pages/user/EntertainmentListingPage.jsx';
 import EntertainmentArticlePage from './pages/user/EntertainmentArticlePage.jsx';
 import EventsListingPage from './pages/user/EventsListingPage.jsx';
@@ -42,6 +44,10 @@ export default function App() {
         <Route path="paryatan" element={<ListingPage categoryKey="paryatan" />} />
         <Route path="sanskriti" element={<ListingPage categoryKey="sanskriti" />} />
         <Route path="krida" element={<ListingPage categoryKey="krida" />} />
+        <Route path="gunhe" element={<ListingPage categoryKey="gunhe" />} />
+        <Route path="utsav" element={<FestivalsPage />} />
+        <Route path="kavita-lekh" element={<KavitaLekhPage />} />
+        <Route path="kavita" element={<KavitaLekhPage />} />
         <Route path="search" element={<SearchPage />} />
         <Route path="gallery" element={<GalleryPage />} />
         <Route path="entertainment" element={<EntertainmentListingPage />} />

@@ -85,12 +85,12 @@ const talukaHighlights = [
 ];
 
 const categories = [
-  { name: 'राजकारण', icon: <Landmark size={28} />, count: '५६', color: 'var(--navy)' },
-  { name: 'पर्यटन', icon: <Palmtree size={28} />, count: '२९', color: 'var(--teal)' },
-  { name: 'मासेमारी-शेती', icon: <Fish size={28} />, count: '३८', color: '#2e7d4f' },
-  { name: 'संस्कृती', icon: <Film size={28} />, count: '४१', color: 'var(--maroon)' },
-  { name: 'क्रीडा', icon: <Trophy size={28} />, count: '१७', color: 'var(--amber)' },
-  { name: 'गुन्हे', icon: <Scale size={28} />, count: '१२', color: '#6d4c41' },
+  { name: 'राजकारण', icon: <Landmark size={28} />, color: 'var(--navy)' },
+  { name: 'पर्यटन', icon: <Palmtree size={28} />, color: 'var(--teal)' },
+  { name: 'मासेमारी-शेती', icon: <Fish size={28} />, color: '#2e7d4f' },
+  { name: 'संस्कृती', icon: <Film size={28} />, color: 'var(--maroon)' },
+  { name: 'क्रीडा', icon: <Trophy size={28} />, color: 'var(--amber)' },
+  { name: 'गुन्हे', icon: <Scale size={28} />, color: '#6d4c41' },
 ];
 
 const timetables = [
@@ -109,23 +109,15 @@ export default function HomePage({ onNavigate }) {
   const routerNavigate = useNavigate();
   const navigate = (path) => {
     if (onNavigate) {
-      if (path === '/listing' || path === '/rajkaran' || path === '/paryatan' || path === '/maasemari' || path === '/sanskriti' || path === '/krida' || path === '/gunhe') {
-        const key = path.replace('/', '');
-        onNavigate(key);
-      } else if (path.startsWith('/article/')) {
-        const id = path.split('/').pop();
+      const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+      if (cleanPath.startsWith('article/')) {
+        const id = cleanPath.split('/')[1];
         onNavigate('article', id);
-      } else if (path === '/entertainment') {
-        onNavigate('entertainment');
-      } else if (path.startsWith('/entertainment/')) {
-        const id = path.split('/').pop();
+      } else if (cleanPath.startsWith('entertainment/')) {
+        const id = cleanPath.split('/')[1];
         onNavigate('entertainment-article', id);
-      } else if (path === '/events') {
-        onNavigate('events');
-      } else if (path === '/chatbot') {
-        onNavigate('chatbot');
-      } else if (path === '/gallery') {
-        onNavigate('gallery');
+      } else if (['listing', 'rajkaran', 'paryatan', 'maasemari', 'sanskriti', 'krida', 'gunhe', 'utsav', 'kavita-lekh', 'kavita', 'search', 'gallery', 'chatbot', 'entertainment', 'events', 'about-us', 'terms', 'privacy'].includes(cleanPath)) {
+        onNavigate(cleanPath === 'kavita' ? 'kavita-lekh' : cleanPath);
       } else {
         onNavigate('home');
       }
@@ -448,13 +440,7 @@ export default function HomePage({ onNavigate }) {
                   style={{ border: '1.5px solid var(--line)' }}
                 >
                   <div className="flex justify-center mb-2">{cat.icon}</div>
-                  <div className="font-tiro text-[15px] text-ink mb-1">{cat.name}</div>
-                  <div
-                    className="font-poppins text-[10px] font-bold px-2 py-0.5 rounded-full inline-block"
-                    style={{ background: cat.color + '18', color: cat.color }}
-                  >
-                    {cat.count} लेख
-                  </div>
+                  <div className="font-tiro text-[15px] text-ink font-semibold">{cat.name}</div>
                 </button>
               );
             })}
@@ -520,9 +506,9 @@ export default function HomePage({ onNavigate }) {
                     <img src={prog.image_type ? `http://localhost:5000/api/events/${prog.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
                     <div>
                       <h3 className="font-tiro text-[16px] text-navy mb-1 line-clamp-1">{prog.title}</h3>
-                      <div className="font-poppins text-[12px] text-grey flex items-center gap-1.5">
+                      <div className="font-poppins text-[12px] text-grey flex items-center gap-2">
                         <span className="flex items-center gap-1"><Calendar size={13} /> {prog.event_date}</span>
-                        <span className="truncate">📍 {prog.location}</span>
+                        <span className="flex items-center gap-1 truncate"><MapPin size={13} /> {prog.location}</span>
                       </div>
                     </div>
                   </div>

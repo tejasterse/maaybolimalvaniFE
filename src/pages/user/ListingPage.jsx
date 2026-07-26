@@ -71,11 +71,12 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
     'maasemari': 'मासेमारी-शेती',
     'sanskriti': 'संस्कृती',
     'krida': 'क्रीडा',
+    'gunhe': 'गुन्हे',
   };
 
   const filteredArticles = posts.filter((art) => {
     const expectedCatName = categoryMappingReverse[categoryKey];
-    const matchesCategory = categoryKey === 'listing' || art.categoryName === expectedCatName;
+    const matchesCategory = categoryKey === 'listing' || art.categoryName === expectedCatName || art.categoryKey === categoryKey;
     const matchesTaluka = selectedTaluka === 'सर्व तालुके' || (art.districtName && art.districtName === selectedTaluka);
     return matchesCategory && matchesTaluka;
   });

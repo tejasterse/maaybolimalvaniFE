@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Home } from 'lucide-react';
+import { ArrowLeft, Home, Search, Menu, X } from 'lucide-react';
 import UtilityBar from '../../components/shared/UtilityBar.jsx';
 import ChatbotFab from '../../components/shared/ChatbotFab.jsx';
 import Footer from '../../components/shared/Footer.jsx';
@@ -92,13 +92,14 @@ export default function UserReaderLayout({ onAdminLogin }) {
     } else if (path === '/utsav') {
       setActivePage('utsav');
       setPageParams(null);
-    } else if (path === '/kavita-lekh') {
+    } else if (path === '/kavita-lekh' || path === '/kavita') {
       setActivePage('kavita-lekh');
       setPageParams(null);
     }
   }, [location.pathname]);
 
-  const navigate = (key, params = null) => {
+  const navigate = (rawKey, params = null) => {
+    const key = rawKey === 'kavita' ? 'kavita-lekh' : rawKey;
     if (key !== activePage) {
       setPageHistory((prev) => [...prev, key]);
     }
@@ -118,7 +119,6 @@ export default function UserReaderLayout({ onAdminLogin }) {
         routerNavigate('/listing');
       }
     }
-    else if (['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'].includes(key)) routerNavigate(`/${key}`);
     else routerNavigate(`/${key}`);
   };
 
@@ -132,7 +132,6 @@ export default function UserReaderLayout({ onAdminLogin }) {
 
       // Trigger URL sync via navigation to the previous state
       if (previous === 'home') routerNavigate('/');
-      else if (['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'].includes(previous)) routerNavigate(`/${previous}`);
       else routerNavigate(`/${previous}`);
     } else {
       setActivePage('home');
@@ -195,19 +194,19 @@ export default function UserReaderLayout({ onAdminLogin }) {
             ))}
             <button
               onClick={() => navigate('search')}
-              className="p-2 rounded-lg text-gold-light hover:bg-maroon-deep text-[14px] ml-1"
+              className="p-2 rounded-lg text-gold-light hover:bg-maroon-deep flex items-center justify-center ml-1"
               title="शोधा"
             >
-              🔍
+              <Search size={16} />
             </button>
           </nav>
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden text-[24px] text-maroon bg-white px-3 py-1.5 rounded-xl border border-line shadow-sm"
+            className="lg:hidden text-maroon bg-white p-2 rounded-xl border border-line shadow-sm flex items-center justify-center"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
           >
-            {showMobileMenu ? '✕' : '☰'}
+            {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 

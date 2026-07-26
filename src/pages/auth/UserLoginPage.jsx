@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, AlertTriangle } from 'lucide-react';
 
 export default function UserLoginPage({ onLogin, onGoAdmin }) {
   const [email, setEmail] = useState('');
@@ -53,10 +53,10 @@ export default function UserLoginPage({ onLogin, onGoAdmin }) {
         <form onSubmit={handleSubmit} className="px-8 py-7">
           {error && (
             <div
-              className="font-poppins text-[12.5px] text-white px-4 py-3 rounded-lg mb-4"
+              className="font-poppins text-[12.5px] text-white px-4 py-3 rounded-lg mb-4 flex items-center gap-2"
               style={{ background: 'var(--amber)' }}
             >
-              ⚠️ {error}
+              <AlertTriangle size={15} /> <span>{error}</span>
             </div>
           )}
 

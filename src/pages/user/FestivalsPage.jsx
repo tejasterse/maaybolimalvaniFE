@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, CheckCircle, MapPin, Share2, Camera, Download } from 'lucide-react';
+import { Calendar, CheckCircle, MapPin, Share2, Camera, Download, Sparkles } from 'lucide-react';
 import { upcomingFestivals, pastFestivals } from '../../constants/data.jsx';
 
 export default function FestivalsPage({ onNavigate, onGoBack }) {
@@ -63,60 +63,68 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
               <span className="w-3 h-3 rounded-full bg-amber animate-ping"></span>
               <h2 className="font-tiro text-[24px] text-navy">नजीकच्या काळातील उत्सव व कार्यक्रम</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {upcomingFestivals.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow relative"
-                >
-                  <div>
-                    <div className="relative h-[160px] overflow-hidden">
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                        }}
-                        className="w-full h-full object-cover bg-gray-100"
-                      />
-                      <div className="absolute top-2 right-2 bg-amber/95 text-navy font-poppins font-bold text-[11px] px-3 py-1 rounded-lg shadow border border-amber-300">
-                        {item.daysLeft}
+            {upcomingFestivals.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {upcomingFestivals.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow relative"
+                  >
+                    <div>
+                      <div className="relative h-[160px] overflow-hidden">
+                        <img
+                          src={item.img}
+                          alt={item.title}
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
+                          }}
+                          className="w-full h-full object-cover bg-gray-100"
+                        />
+                        <div className="absolute top-2 right-2 bg-amber/95 text-navy font-poppins font-bold text-[11px] px-3 py-1 rounded-lg shadow border border-amber-300">
+                          {item.daysLeft}
+                        </div>
+                        <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-full flex items-center gap-1 border border-white/20">
+                          <Calendar size={12} className="text-amber" /> <span>{item.date}</span>
+                        </div>
                       </div>
-                      <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-full flex items-center gap-1.5 border border-white/20">
-                        <span>{item.icon}</span> <span>{item.date}</span>
+                      <div className="p-5">
+                        <h3 className="font-tiro text-[21px] text-navy mb-2 leading-snug">{item.title}</h3>
+                        <div className="font-poppins text-[12px] text-grey mb-3 flex items-center gap-1.5">
+                          <MapPin size={13} className="text-grey" /> {item.location}
+                        </div>
+                        <p className="font-mukta text-[14px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3">
+                          {item.description}
+                        </p>
+                        <div className="space-y-1 mb-3">
+                          <div className="font-poppins text-[11.5px] font-bold text-navy uppercase tracking-wider mb-1">प्रमुख आकर्षणे:</div>
+                          {item.highlights.map((hl, idx) => (
+                            <div key={idx} className="font-mukta text-[13.5px] text-grey flex items-center gap-2">
+                              <Sparkles size={12} className="text-amber flex-shrink-0" /> <span>{hl}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className="p-5">
-                      <h3 className="font-tiro text-[21px] text-navy mb-2 leading-snug">{item.title}</h3>
-                      <div className="font-poppins text-[12px] text-grey mb-3 flex items-center gap-1.5">
-                        <MapPin size={13} className="text-grey" /> {item.location}
-                      </div>
-                      <p className="font-mukta text-[14px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3">
-                        {item.description}
-                      </p>
-                      <div className="space-y-1 mb-3">
-                        <div className="font-poppins text-[11.5px] font-bold text-navy uppercase tracking-wider mb-1">प्रमुख आकर्षणे:</div>
-                        {item.highlights.map((hl, idx) => (
-                          <div key={idx} className="font-mukta text-[13.5px] text-grey flex items-center gap-2">
-                            <span className="text-amber">✦</span> {hl}
-                          </div>
-                        ))}
-                      </div>
+                    <div className="p-4 bg-gray-50 border-t border-line flex items-center justify-between text-[12px] font-poppins text-grey">
+                      <span>आयोजक: {item.organizer}</span>
+                      <button
+                        onClick={() => alert(`"${item.title}" कार्यक्रमाची माहिती शेअर केली!`)}
+                        className="font-poppins text-[12px] font-semibold text-teal hover:underline flex items-center gap-1"
+                      >
+                        शेअर करा <Share2 size={12} />
+                      </button>
                     </div>
                   </div>
-                  <div className="p-4 bg-gray-50 border-t border-line flex items-center justify-between text-[12px] font-poppins text-grey">
-                    <span>आयोजक: {item.organizer}</span>
-                    <button
-                      onClick={() => alert(`"${item.title}" कार्यक्रमाची माहिती शेअर केली!`)}
-                      className="font-poppins text-[12px] font-semibold text-teal hover:underline flex items-center gap-1"
-                    >
-                      शेअर करा <Share2 size={12} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
+                <Calendar size={40} className="mx-auto text-grey/40 mb-3" />
+                <p className="font-mukta text-[18px] text-navy font-semibold">कोणताही आगामी उत्सव किंवा कार्यक्रम उपलब्ध नाही</p>
+                <p className="font-poppins text-[13px] text-grey mt-1">नवीन कार्यक्रम लवकरच अपडेट केले जातील.</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -127,59 +135,67 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
               <span className="w-3 h-3 rounded-full bg-teal"></span>
               <h2 className="font-tiro text-[24px] text-navy">पार पडलेले उत्सव आणि झलक (फोटो/व्हिडिओ)</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {pastFestivals.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
-                >
-                  <div>
-                    <div className="relative h-[160px] overflow-hidden">
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                        }}
-                        className="w-full h-full object-cover bg-gray-100"
-                      />
-                      <div className="absolute top-2 right-2 bg-teal/90 text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-lg shadow flex items-center gap-1">
-                        <Camera size={12} /> {item.photosCount}
+            {pastFestivals.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {pastFestivals.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
+                  >
+                    <div>
+                      <div className="relative h-[160px] overflow-hidden">
+                        <img
+                          src={item.img}
+                          alt={item.title}
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
+                          }}
+                          className="w-full h-full object-cover bg-gray-100"
+                        />
+                        <div className="absolute top-2 right-2 bg-teal/90 text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-lg shadow flex items-center gap-1">
+                          <Camera size={12} /> {item.photosCount}
+                        </div>
+                        <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-full flex items-center gap-1 border border-white/20">
+                          <Calendar size={12} className="text-teal" /> <span>{item.heldDate}</span>
+                        </div>
                       </div>
-                      <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white font-poppins font-bold text-[11px] px-3 py-1 rounded-full flex items-center gap-1.5 border border-white/20">
-                        <span>{item.icon}</span> <span>{item.heldDate}</span>
+                      <div className="p-5">
+                        <h3 className="font-tiro text-[21px] text-navy mb-2 leading-snug">{item.title}</h3>
+                        <div className="font-poppins text-[12px] text-grey mb-3 flex items-center gap-1">
+                          <MapPin size={12} /> {item.location}
+                        </div>
+                        <p className="font-mukta text-[14px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3">
+                          {item.summary}
+                        </p>
+                        <div className="space-y-1 mb-3">
+                          <div className="font-poppins text-[11.5px] font-bold text-navy uppercase tracking-wider mb-1">विशेष झलक:</div>
+                          {item.highlights.map((hl, idx) => (
+                            <div key={idx} className="font-mukta text-[13.5px] text-grey flex items-center gap-2">
+                              <CheckCircle size={12} className="text-teal flex-shrink-0" /> <span>{hl}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className="p-5">
-                      <h3 className="font-tiro text-[21px] text-navy mb-2 leading-snug">{item.title}</h3>
-                      <div className="font-poppins text-[12px] text-grey mb-3 flex items-center gap-1">
-                        <MapPin size={12} /> {item.location}
-                      </div>
-                      <p className="font-mukta text-[14px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3">
-                        {item.summary}
-                      </p>
-                      <div className="space-y-1 mb-3">
-                        <div className="font-poppins text-[11.5px] font-bold text-navy uppercase tracking-wider mb-1">विशेष झलक:</div>
-                        {item.highlights.map((hl, idx) => (
-                          <div key={idx} className="font-mukta text-[13.5px] text-grey flex items-center gap-2">
-                            <span className="text-teal">✓</span> {hl}
-                          </div>
-                        ))}
-                      </div>
+                    <div className="p-4 bg-gray-50 border-t border-line text-right">
+                      <button
+                        onClick={() => alert(`"${item.title}" चे फोटो डाऊनलोड झाले!`)}
+                        className="font-poppins text-[12px] font-semibold text-teal hover:underline inline-flex items-center gap-1"
+                      >
+                        फोटो पाहा व डाऊनलोड करा <Download size={12} />
+                      </button>
                     </div>
                   </div>
-                  <div className="p-4 bg-gray-50 border-t border-line text-right">
-                    <button
-                      onClick={() => alert(`"${item.title}" चे फोटो डाऊनलोड झाले!`)}
-                      className="font-poppins text-[12px] font-semibold text-teal hover:underline inline-flex items-center gap-1"
-                    >
-                      फोटो पाहा व डाऊनलोड करा <Download size={12} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
+                <Camera size={40} className="mx-auto text-grey/40 mb-3" />
+                <p className="font-mukta text-[18px] text-navy font-semibold">कोणताही पार पडलेला कार्यक्रम उपलब्ध नाही</p>
+                <p className="font-poppins text-[13px] text-grey mt-1">मागील कार्यक्रमांची माहिती लवकरच जोडली जाईल.</p>
+              </div>
+            )}
           </div>
         )}
 

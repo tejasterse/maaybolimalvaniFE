@@ -68,10 +68,10 @@ export default function AdminLoginPage() {
         <form onSubmit={handleSubmit} className="px-8 py-7">
           {error && (
             <div
-              className="font-poppins text-[12.5px] text-white px-4 py-3 rounded-lg mb-4"
+              className="font-poppins text-[12.5px] text-white px-4 py-3 rounded-lg mb-4 flex items-center gap-2"
               style={{ background: 'var(--maroon)' }}
             >
-              ⚠️ {error}
+              <AlertTriangle size={15} /> <span>{error}</span>
             </div>
           )}
 

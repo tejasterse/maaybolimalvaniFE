@@ -30,16 +30,16 @@ export default function ChatbotPage({ onGoBack }) {
       const lowerText = userText.toLowerCase();
       if (lowerText.includes('ब्रेकिंग') || lowerText.includes('ताज्या') || lowerText.includes('आजच्या')) {
         botText = "आजची ब्रेकिंग न्यूज: सिंधुदुर्ग किल्ल्यावर पर्यटकांची ३,००० हून अधिक विक्रमी गर्दी झाली आहे. सुट्टीच्या दिवसामुळे पर्यटकांचा ओघ वाढला आहे.";
-        source = "📰 सिंधुदुर्ग किल्ल्यावर पर्यटकांची गर्दी";
+        source = "सिंधुदुर्ग किल्ल्यावर पर्यटकांची गर्दी";
       } else if (lowerText.includes('पर्यटन') || lowerText.includes('फिरणे')) {
         botText = "कोकण पर्यटन विकासासाठी शासनाने नवीन निधी मंजूर केला असून वेंगुर्ला किनाऱ्यावर नवीन वॉटर-स्पोर्ट्स केंद्र सुरू करण्यात आले आहे.";
-        source = "📰 वेंगुर्ला वॉटर-स्पोर्ट्स केंद्र";
+        source = "वेंगुर्ला वॉटर-स्पोर्ट्स केंद्र";
       } else if (lowerText.includes('मालवण') || lowerText.includes('मासे')) {
         botText = "मालवण तालुक्यातून मोठी बातमी: बंदरात नवीन मासळी लिलाव केंद्र सुरू झाले आहे, त्यामुळे स्थानिक कोळी बांधवांना त्यांच्या माशांना चांगला भाव मिळण्यास मदत होणार आहे.";
-        source = "📰 मालवण मासळी लिलाव केंद्र";
+        source = "मालवण मासळी लिलाव केंद्र";
       } else if (lowerText.includes('निवडणूक') || lowerText.includes('राजकारण') || lowerText.includes('नेता')) {
         botText = "जिल्ह्यातील ग्रामपंचायत निवडणुकांची घोषणा झाली असून उमेदवारी अर्ज भरण्यास सुरुवात झाली आहे. सर्व राजकीय पक्ष तयारीत व्यस्त आहेत.";
-        source = "📰 ग्रामपंचायत निवडणूक घोषणा";
+        source = "ग्रामपंचायत निवडणूक घोषणा";
       }
 
       setMessages((prev) => [...prev, { role: 'bot', text: botText, source }]);
@@ -101,9 +101,9 @@ export default function ChatbotPage({ onGoBack }) {
                 </div>
                 {msg.source && (
                   <div
-                    className="inline-flex items-center gap-1 bg-white border border-gold text-maroon-deep font-poppins text-[10px] font-semibold px-2 py-1 rounded-[10px] mt-2 shadow-sm"
+                    className="inline-flex items-center gap-1.5 bg-white border border-gold text-maroon-deep font-poppins text-[10px] font-semibold px-2.5 py-1 rounded-[10px] mt-2 shadow-sm"
                   >
-                    {msg.source}
+                    <Newspaper size={12} className="text-teal" /> <span>{msg.source}</span>
                   </div>
                 )}
               </div>

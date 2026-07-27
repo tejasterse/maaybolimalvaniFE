@@ -10,6 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Globe, ArrowRight } from 'lucide-react';
 
 import { getMediaUrl } from '../../utils/media.js';
+import toast from 'react-hot-toast';
 
 const talukaOptions = ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
 
@@ -75,14 +76,14 @@ export default function ArticleEditorPage({ onBack }) {
   const saveMutation = useMutation({
     mutationFn: (formData) => article ? updatePost({ id: article.id, formData }) : createPost(formData),
     onSuccess: () => {
-      alert(article ? 'लेख यशस्वीरित्या अपडेट केला गेला आहे!' : 'लेख यशस्वीरित्या प्रकाशित केला गेला आहे!');
+      toast.success(article ? 'लेख यशस्वीरित्या अपडेट केला गेला आहे!' : 'लेख यशस्वीरित्या प्रकाशित केला गेला आहे!');
       handleBack();
     },
     onError: (err) => {
       if (err.response?.status === 401) {
-        alert('सत्र कालबाह्य झाले आहे (Session Expired). तुमचा डेटा सुरक्षित आहे. कृपया नवीन टॅबमध्ये लॉग इन करा आणि नंतर या टॅबमध्ये परत येऊन "प्रकाशित करा" वर क्लिक करा.');
+        toast.error('सत्र कालबाह्य झाले आहे. कृपया पुन्हा लॉग इन करा.');
       } else {
-        alert('Error saving post: ' + (err.response?.data?.message || err.message));
+        toast.error('लेख जतन करताना त्रुटी: ' + (err.response?.data?.message || err.message));
       }
     }
   });

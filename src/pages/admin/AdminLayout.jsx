@@ -2,14 +2,21 @@ import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/admin/Sidebar.jsx';
 import AdminTopbar from '../../components/admin/AdminTopbar.jsx';
+import apiClient from '../../api/apiClient.js';
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // perform any logout logic if needed
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/auth/logout');
+    } catch (e) {
+      // ignore network errors on logout
+    }
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/admin-login', { replace: true });
   };
 
   return (

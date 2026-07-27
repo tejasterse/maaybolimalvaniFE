@@ -3,6 +3,7 @@ import { CheckCircle2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchSettings, updateSettings } from '../../api/settings.js';
 import ToggleSwitch from '../../components/admin/ToggleSwitch.jsx';
+import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();
@@ -43,7 +44,11 @@ export default function SettingsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['settings']);
       setSaved(true);
+      toast.success('सेटिंग्ज यशस्वीरीत्या जतन केल्या!');
       setTimeout(() => setSaved(false), 3000);
+    },
+    onError: (err) => {
+      toast.error('सेटिंग्ज जतन करताना त्रुटी: ' + (err.response?.data?.message || err.message));
     }
   });
 

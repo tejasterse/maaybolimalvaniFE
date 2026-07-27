@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchPosts, deletePost } from '../../api/posts.js';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const statusColors = {
   DRAFT: 'var(--grey)',
@@ -66,9 +67,10 @@ export default function ArticlesPage({ onEdit }) {
     if (window.confirm("तुम्हाला खात्री आहे का की तुम्हाला हा लेख काढून टाकायचा आहे?")) {
       try {
         await deletePost(id);
+        toast.success("लेख यशस्वीरित्या काढून टाकला!");
         loadArticles();
       } catch (error) {
-        alert("लेख काढताना त्रुटी आली: " + (error.response?.data?.message || error.message));
+        toast.error("लेख काढताना त्रुटी आली: " + (error.response?.data?.message || error.message));
       }
     }
   };

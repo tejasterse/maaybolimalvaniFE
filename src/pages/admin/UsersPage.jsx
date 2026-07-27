@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchUsers, createUser, updateUserRole, updateUserStatus, deleteUser } from '../../api/users.js';
+import toast from 'react-hot-toast';
 
 export default function UsersPage() {
   const queryClient = useQueryClient();
@@ -31,7 +32,9 @@ export default function UsersPage() {
       setNameInput('');
       setEmailInput('');
       setPhoneInput('');
-    }
+      toast.success('नवीन वापरकर्ता यशस्वीरित्या जोडला गेला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const updateRoleMutation = useMutation({
@@ -39,17 +42,27 @@ export default function UsersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
       setShowRoleModal(false);
-    }
+      toast.success('वापरकर्त्याची भूमिका अपडेट केली!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => updateUserStatus(id, status),
-    onSuccess: () => queryClient.invalidateQueries(['users'])
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      toast.success('वापरकर्ता स्थिती अपडेट केली!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
-    onSuccess: () => queryClient.invalidateQueries(['users'])
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      toast.success('वापरकर्ता काढून टाकला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const handleInviteSubmit = (e) => {

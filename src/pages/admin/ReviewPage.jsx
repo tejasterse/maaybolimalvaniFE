@@ -4,6 +4,8 @@ import { fetchPosts, updatePostStatus } from '../../api/posts.js';
 import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 import { getMediaUrl } from '../../utils/media.js';
 
+import toast from 'react-hot-toast';
+
 export default function ReviewPage() {
   const queryClient = useQueryClient();
   const [statuses, setStatuses] = useState({}); // { itemId: 'approved' | 'changes' | 'rejected' }
@@ -18,8 +20,12 @@ export default function ReviewPage() {
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }) => updatePostStatus(id, status),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['posts', 'review'] });
+      toast.success(variables.status === 'PUBLISHED' ? 'लेख मंजूर करून प्रकाशित केला!' : 'लेख मसुद्यात (Draft) हलवला!');
+    },
+    onError: (err) => {
+      toast.error('स्थिती बदलताना त्रुटी: ' + (err.response?.data?.message || err.message));
     }
   });
 

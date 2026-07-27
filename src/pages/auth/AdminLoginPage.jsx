@@ -4,6 +4,8 @@ import { ArrowRight, AlertTriangle } from 'lucide-react';
 import apiClient from '../../api/apiClient.js';
 import { useMutation } from '@tanstack/react-query';
 
+import toast from 'react-hot-toast';
+
 export default function AdminLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -21,10 +23,13 @@ export default function AdminLoginPage() {
       if (data.user) {
         localStorage.setItem('user', JSON.stringify(data.user));
       }
+      toast.success('लॉगिन यशस्वी!');
       window.location.href = '/admin';
     },
     onError: (err) => {
-      setError(err.response?.data?.message || 'चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.');
+      const msg = err.response?.data?.message || 'चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.';
+      setError(msg);
+      toast.error(msg);
     }
   });
 

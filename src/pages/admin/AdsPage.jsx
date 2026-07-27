@@ -3,6 +3,7 @@ import { Plus, X } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchAds, createAd, deleteAd } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import toast from 'react-hot-toast';
 
 export default function AdsPage() {
   const queryClient = useQueryClient();
@@ -22,9 +23,10 @@ export default function AdsPage() {
       setShowModal(false);
       setImageFile(null);
       setLinkUrl('');
+      toast.success('नवीन जाहिरात बॅनर अपलोड केला!');
     },
     onError: (err) => {
-      alert('Error uploading ad: ' + (err.response?.data?.message || err.message));
+      toast.error('जाहिरात अपलोड करताना त्रुटी: ' + (err.response?.data?.message || err.message));
     }
   });
 
@@ -32,9 +34,10 @@ export default function AdsPage() {
     mutationFn: deleteAd,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ads'] });
+      toast.success('जाहिरात काढून टाकली!');
     },
     onError: (err) => {
-      alert('Error deleting ad: ' + (err.response?.data?.message || err.message));
+      toast.error('जाहिरात काढताना त्रुटी: ' + (err.response?.data?.message || err.message));
     }
   });
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchEvents, createEvent, updateEvent, deleteEvent } from '../../api/events.js';
 import { getMediaUrl } from '../../utils/media.js';
+import toast from 'react-hot-toast';
 
 export default function EventsPage() {
   const queryClient = useQueryClient();
@@ -25,7 +26,9 @@ export default function EventsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['events']);
       closeModal();
-    }
+      toast.success('नवीन कार्यक्रम यशस्वीरित्या जोडला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const updateMutation = useMutation({
@@ -33,14 +36,18 @@ export default function EventsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['events']);
       closeModal();
-    }
+      toast.success('कार्यक्रम माहिती अपडेट केली!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteEvent,
     onSuccess: () => {
       queryClient.invalidateQueries(['events']);
-    }
+      toast.success('कार्यक्रम काढून टाकला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const compressImage = (file) => {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchGallery, createGalleryItem, updateGalleryItem, deleteGalleryItem } from '../../api/gallery.js';
 import { getMediaUrl } from '../../utils/media.js';
+import toast from 'react-hot-toast';
 
 export default function GalleryAdminPage() {
   const queryClient = useQueryClient();
@@ -24,7 +25,9 @@ export default function GalleryAdminPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['gallery']);
       closeModal();
-    }
+      toast.success('गॅलरी घटक जोडला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const updateMutation = useMutation({
@@ -32,14 +35,18 @@ export default function GalleryAdminPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['gallery']);
       closeModal();
-    }
+      toast.success('गॅलरी माहिती अपडेट केली!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteGalleryItem,
     onSuccess: () => {
       queryClient.invalidateQueries(['gallery']);
-    }
+      toast.success('गॅलरी घटक काढून टाकला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const openModal = (item = null) => {

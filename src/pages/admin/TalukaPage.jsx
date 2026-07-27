@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchCategories, createCategory, updateCategory, deleteCategory } from '../../api/categories.js';
 import { fetchDistricts, createDistrict, updateDistrict, deleteDistrict } from '../../api/districts.js';
 
+import toast from 'react-hot-toast';
+
 export default function TalukaPage() {
   const queryClient = useQueryClient();
   const [newCat, setNewCat] = useState('');
@@ -18,14 +20,14 @@ export default function TalukaPage() {
 
   const createCatMutation = useMutation({
     mutationFn: createCategory,
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['categories'] }); setNewCat(''); },
-    onError: (err) => alert(err.response?.data?.message || err.message)
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['categories'] }); setNewCat(''); toast.success('नवीन विभाग जोडला!'); },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const createTalukaMutation = useMutation({
     mutationFn: createDistrict,
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['districts'] }); setNewTaluka(''); },
-    onError: (err) => alert(err.response?.data?.message || err.message)
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['districts'] }); setNewTaluka(''); toast.success('नवीन तालुका जोडला!'); },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
   
   const updateCatMutation = useMutation({
@@ -33,8 +35,9 @@ export default function TalukaPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       setShowEditModal(false);
+      toast.success('विभाग अपडेट केला!');
     },
-    onError: (err) => alert(err.response?.data?.message || err.message)
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const updateTalukaMutation = useMutation({
@@ -42,20 +45,21 @@ export default function TalukaPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['districts'] });
       setShowEditModal(false);
+      toast.success('तालुका अपडेट केला!');
     },
-    onError: (err) => alert(err.response?.data?.message || err.message)
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const deleteCatMutation = useMutation({
     mutationFn: deleteCategory,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['categories'] }),
-    onError: (err) => alert(err.response?.data?.message || err.message)
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['categories'] }); toast.success('विभाग काढला!'); },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const deleteTalukaMutation = useMutation({
     mutationFn: deleteDistrict,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['districts'] }),
-    onError: (err) => alert(err.response?.data?.message || err.message)
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['districts'] }); toast.success('तालुका काढला!'); },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const addCat = () => {

@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchMedia, uploadMediaFile, deleteMediaItem } from '../../api/media.js';
 import { getMediaUrl } from '../../utils/media.js';
 import { Upload, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function MediaPage() {
   const queryClient = useQueryClient();
@@ -21,12 +22,18 @@ export default function MediaPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['media-items']);
       setSelectedFile(null);
-    }
+      toast.success('फाईल यशस्वीरित्या अपलोड केली!');
+    },
+    onError: (err) => toast.error('अपलोड करताना त्रुटी: ' + (err.response?.data?.message || err.message))
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteMediaItem,
-    onSuccess: () => queryClient.invalidateQueries(['media-items'])
+    onSuccess: () => {
+      queryClient.invalidateQueries(['media-items']);
+      toast.success('फाईल काढून टाकली!');
+    },
+    onError: (err) => toast.error('हटवताना त्रुटी: ' + (err.response?.data?.message || err.message))
   });
 
   const handleUploadSubmit = (e) => {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchEntertainment, createEntertainment, updateEntertainment, deleteEntertainment } from '../../api/entertainment.js';
 import { getMediaUrl } from '../../utils/media.js';
+import toast from 'react-hot-toast';
 
 export default function EntertainmentPage() {
   const queryClient = useQueryClient();
@@ -26,7 +27,9 @@ export default function EntertainmentPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['entertainment']);
       closeModal();
-    }
+      toast.success('मनोरंजन घटक जोडला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const updateMutation = useMutation({
@@ -34,14 +37,18 @@ export default function EntertainmentPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['entertainment']);
       closeModal();
-    }
+      toast.success('मनोरंजन माहिती अपडेट केली!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteEntertainment,
     onSuccess: () => {
       queryClient.invalidateQueries(['entertainment']);
-    }
+      toast.success('मनोरंजन घटक काढून टाकला!');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || err.message)
   });
 
   const compressImage = (file) => {

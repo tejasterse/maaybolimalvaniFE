@@ -27,6 +27,17 @@ export default function Sidebar({ onLogout }) {
     { key: 'settings',  label: 'सेटिंग्ज', icon: <Settings size={18} /> },
   ];
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userName = user.name || 'प्रशासक (Admin)';
+  const userRole = user.role || 'ADMIN';
+  const initials = (userName || 'AD')
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase() || 'AD';
+
   return (
     <aside
       className="w-[230px] flex-shrink-0 flex flex-col py-5 min-h-screen"
@@ -63,14 +74,14 @@ export default function Sidebar({ onLogout }) {
       <div style={{ borderTop: '1px solid rgba(255,255,255,.08)' }}>
         <div className="px-5 pt-4 pb-3 flex items-center gap-2.5">
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center font-poppins font-bold text-[13px] flex-shrink-0"
+            className="w-8 h-8 rounded-full flex items-center justify-center font-poppins font-bold text-[12px] flex-shrink-0"
             style={{ background: 'var(--gold)', color: 'var(--navy)' }}
           >
-            SP
+            {initials}
           </div>
-          <div className="font-poppins text-[12px] leading-snug">
-            सारिका पवार
-            <div className="text-[10px]" style={{ color: '#8fa0b3' }}>Editor</div>
+          <div className="font-poppins text-[12px] leading-snug truncate">
+            <div className="font-bold text-white truncate">{userName}</div>
+            <div className="text-[10px]" style={{ color: '#8fa0b3' }}>{userRole}</div>
           </div>
         </div>
         {onLogout && (

@@ -5,16 +5,16 @@ import { Search, ArrowRight } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
 import { getMediaUrl } from '../../utils/media.js';
 
-const talukaFilters = ['सर्व तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
+const talukaFilters = ['सगळे तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
 
 const categoryDetails = {
-  listing: { title: 'तालुका बातम्या', desc: 'सिंधुदुर्ग व कोकण परिसरातील तालुक्यांच्या बातम्या', count: 'एकूण ६२ लेख' },
-  rajkaran: { title: 'राजकारण', desc: 'सिंधुदुर्ग व कोकण परिसरातील राजकीय घडामोडी', count: 'एकूण ५६ लेख' },
-  maasemari: { title: 'मासेमारी-शेती', desc: 'कोकणातील मत्स्यव्यवसाय आणि कृषी क्षेत्रातील घडामोडी', count: 'एकूण ३८ लेख' },
-  paryatan: { title: 'पर्यटन', desc: 'सिंधुदुर्ग व कोकण परिसरातील पर्यटनाशी संबंधित सर्व बातम्या', count: 'एकूण २९ लेख' },
-  sanskriti: { title: 'संस्कृती', desc: 'कोकणातील कला, सण, दशावतार आणि सांस्कृतिक वारसा', count: 'एकूण ४१ लेख' },
-  krida: { title: 'क्रीडा', desc: 'सिंधुदुर्ग व कोकण परिसरातील क्रीडा विश्वातील घडामोडी', count: 'एकूण १७ लेख' },
-  gunhe: { title: 'गुन्हे बातम्या', desc: 'सिंधुदुर्ग व कोकण परिसरातील कायदा, सुव्यवस्था आणि गुन्हेगारी विषयक घडामोडी', count: 'एकूण १२ लेख' }
+  listing: { title: 'तालुक्यच्यो बातम्या', desc: 'सिंधुदुर्ग आनि कोकण परिसरांतल्यो तालुक्यांच्यो बातम्या', count: 'एकूण ६२ लेख' },
+  rajkaran: { title: 'राजकारण', desc: 'सिंधुदुर्ग आनि कोकण परिसरांतल्यो राजकीय घडामोडी', count: 'एकूण ५६ लेख' },
+  maasemari: { title: 'मासेमारी-शेती', desc: 'कोकणांतलो मत्स्यव्यवसाय आनि कृषी क्षेत्रांतल्यो घडामोडी', count: 'एकूण ३८ लेख' },
+  paryatan: { title: 'पर्यटन', desc: 'सिंधुदुर्ग आनि कोकण परिसरांतल्यो पर्यटनाशी संबंधित सगळ्यो बातम्या', count: 'एकूण २९ लेख' },
+  sanskriti: { title: 'संस्कृती', desc: 'कोकणांतली कला, सण, दशावतार आनि सांस्कृतिक वारसा', count: 'एकूण ४१ लेख' },
+  krida: { title: 'क्रीडा', desc: 'सिंधुदुर्ग आनि कोकण परिसरांतल्यो क्रीडा विश्वांतल्यो घडामोडी', count: 'एकूण १७ लेख' },
+  gunhe: { title: 'गुन्हे बातम्या', desc: 'सिंधुदुर्ग आनि कोकण परिसरांतल्यो कायदा, सुव्यवस्था आनि गुन्हेगारी विषयक घडामोडी', count: 'एकूण १२ लेख' }
 };
 
 export default function ListingPage({ categoryKey: propCategoryKey, initialTaluka, onNavigate, onGoBack }) {
@@ -43,7 +43,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
   
   const categoryKey = propCategoryKey || params.categoryKey || 'listing';
   
-  const [selectedTaluka, setSelectedTaluka] = useState(location.state?.taluka || initialTaluka || 'सर्व तालुके');
+  const [selectedTaluka, setSelectedTaluka] = useState(location.state?.taluka || initialTaluka || 'सगळे तालुके');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('latest');
   const detail = categoryDetails[categoryKey] || categoryDetails['listing'];
@@ -81,7 +81,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
       categoryKey === 'listing' ||
       expectedCatNames.some(name => (art.categoryName || '').includes(name)) ||
       art.categoryKey === categoryKey;
-    const matchesTaluka = selectedTaluka === 'सर्व तालुके' || (art.districtName && art.districtName === selectedTaluka);
+    const matchesTaluka = selectedTaluka === 'सगळे तालुके' || (art.districtName && art.districtName === selectedTaluka);
     return matchesCategory && matchesTaluka;
   });
 
@@ -156,14 +156,14 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
             onChange={(e) => setSortBy(e.target.value)}
             className="font-poppins text-[12.5px] text-teal bg-white border-[1.5px] border-line px-3.5 py-2 rounded-lg outline-none"
           >
-            <option value="latest">नवीनतम आधी</option>
+            <option value="latest">नव्यो आधी</option>
             <option value="popular">लोकप्रिय आधी</option>
           </select>
         </div>
 
         {/* Listing */}
         {isLoading ? (
-          <div className="py-10 text-center font-poppins text-grey">बातम्या लोड होत आहेत...</div>
+          <div className="py-10 text-center font-poppins text-grey">बातम्या लोड होतहात...</div>
         ) : paginatedArticles.length > 0 ? (
           paginatedArticles.map((item) => (
             <div
@@ -199,7 +199,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
             <div className="flex justify-center mb-2">
               <Search size={32} className="text-grey" />
             </div>
-            <div className="font-tiro text-[18px] text-ink font-semibold">या तालुक्यात सध्या कोणतीही बातमी उपलब्ध नाही.</div>
+            <div className="font-tiro text-[18px] text-ink font-semibold">ह्या तालुक्यांत सद्याक खंयचीच बातमी उपलब्ध नाय.</div>
           </div>
         )}
 

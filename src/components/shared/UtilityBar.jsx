@@ -22,7 +22,7 @@ export default function UtilityBar({ onNavigate, onAdminLogin }) {
     }
   };
   const handleSocialClick = (platform) => {
-    alert(`${platform} वर मायबोली मालवणीला कनेक्ट केल्याबद्दल धन्यवाद!`);
+    alert(`${platform} वर मायबोली मालवणीक कनेक्ट केल्याबद्दल धन्यवाद!`);
   };
 
   return (

@@ -19,7 +19,7 @@ import EventsListingPage from './EventsListingPage.jsx';
 
 const navItems = [
   { key: 'home', label: 'होम' },
-  { key: 'listing', label: 'तालुका बातम्या' },
+  { key: 'listing', label: 'तालुक्याच्यो बातम्या' },
   { key: 'rajkaran', label: 'राजकारण' },
   { key: 'maasemari', label: 'मासेमारी-शेती' },
   { key: 'paryatan', label: 'पर्यटन' },
@@ -27,7 +27,7 @@ const navItems = [
   { key: 'krida', label: 'क्रीडा' },
   { key: 'gunhe', label: 'गुन्हे' },
   { key: 'kavita-lekh', label: 'कविता-लेख-विनोद' },
-  { key: 'utsav', label: 'सण व उत्सव' },
+  { key: 'utsav', label: 'सण आनि उत्सव' },
   { key: 'gallery', label: 'गॅलरी' },
   { key: 'search', label: 'शोधा' },
 ];
@@ -236,14 +236,14 @@ export default function UserReaderLayout({ onAdminLogin }) {
               className="flex items-center gap-2 font-poppins font-bold text-[13px] text-maroon hover:text-maroon-deep bg-white border border-gold/50 px-4 py-1.5 rounded-full shadow-sm hover:shadow transition-all"
             >
               <ArrowLeft size={14} />
-              <span>मागे जा (Go Back)</span>
+              <span>फाटी वचा (Go Back)</span>
             </button>
             <button
               onClick={() => navigate('home')}
               className="font-poppins text-[12px] font-semibold text-teal hover:underline flex items-center gap-1.5"
             >
               <Home size={14} />
-              <span>मुख्य पानावर जा</span>
+              <span>मुख्य पानाव वचा</span>
             </button>
           </div>
         </div>

@@ -23,7 +23,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
               <img src="/logo.png" alt="मायबोली मालवणी" className="h-[75px] object-contain drop-shadow-md p-0 m-0 block" />
             </div>
             <div className="font-poppins text-[11.5px] leading-relaxed" style={{ color: '#8fa0b3' }}>
-              कोकणाचा आवाज · मालवणी अभिमान<br />सिंधुदुर्ग जिल्ह्यातील विश्वासार्ह मराठी बातमीपत्र
+              कोकणाचो आवाज · मालवणी अभिमान<br />सिंधुदुर्ग जिल्ह्यातलो विश्वासार्ह मराठी बातमीपत्र
             </div>
           </div>
 
@@ -39,7 +39,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
                 { label: 'क्रीडा', key: 'krida' },
                 { label: 'गुन्हे', key: 'gunhe' },
                 { label: 'कविता-लेख-विनोद', key: 'kavita-lekh' },
-                { label: 'सण व उत्सव', key: 'utsav' },
+                { label: 'सण आनि उत्सव', key: 'utsav' },
               ].map(({ label, key }) => (
                 <button
                   key={key}
@@ -78,11 +78,11 @@ export default function Footer({ onNavigate, onAdminLogin }) {
 
           {/* Static Pages (No main navigation items) */}
           <div>
-            <h4 className="font-poppins font-bold text-[11px] uppercase tracking-[.1em] text-gold-light mb-3">माहिती व नियम</h4>
+            <h4 className="font-poppins font-bold text-[11px] uppercase tracking-[.1em] text-gold-light mb-3">म्हायती आनि नियम</h4>
             <div className="space-y-1">
               {[
                 { label: 'आमच्याबद्दल', key: 'about-us' },
-                { label: 'नियम आणि अटी', key: 'terms' },
+                { label: 'नियम आनि अटी', key: 'terms' },
                 { label: 'गोपनीयता धोरण', key: 'privacy' },
               ].map(({ label, key }) => (
                 <button
@@ -108,7 +108,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
           className="pt-4 font-poppins text-[11px] text-center"
           style={{ borderTop: '1px solid rgba(255,255,255,.08)', color: '#5a7090' }}
         >
-          © २०२६ मायबोली मालवणी · सर्व हक्क राखीव · सिंधुदुर्ग, महाराष्ट्र
+          © २०२६ मायबोली मालवणी · सगळे हक्क राखीव · सिंधुदुर्ग, महाराष्ट्र
         </div>
       </div>
     </footer>

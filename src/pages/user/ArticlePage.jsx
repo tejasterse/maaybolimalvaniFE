@@ -55,8 +55,8 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
     return () => clearInterval(intervalId);
   }, [ads.length]);
 
-  if (isLoading) return <div className="py-20 text-center font-poppins text-grey">बातमी लोड होत आहे...</div>;
-  if (isError || !post) return <div className="py-20 text-center font-poppins text-maroon">बातमी सापडली नाही.</div>;
+  if (isLoading) return <div className="py-20 text-center font-poppins text-grey">बातमी लोड होतहा...</div>;
+  if (isError || !post) return <div className="py-20 text-center font-poppins text-maroon">बातमी गावूक नाय.</div>;
 
   const data = {
     tag: post.categoryName || 'बातमी',
@@ -79,9 +79,9 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
   const handleSocialShare = (platform) => {
     if (platform === 'link') {
       navigator.clipboard.writeText(window.location.href);
-      alert('लिंक कॉपी केली!');
+      alert('लिंक कॉपी जाली!');
     } else {
-      alert(`ही बातमी ${platform} वर शेअर केल्याबद्दल धन्यवाद!`);
+      alert(`ही बातमी ${platform} चेर शेअर केल्याबद्दल धन्यवाद!`);
     }
   };
 
@@ -303,7 +303,7 @@ function ArticleMediaSection({ onNavigate }) {
             </div>
             <div>
               <div className="font-tiro text-[20px] text-navy font-bold">फोटो (Photos)</div>
-              <div className="font-poppins text-[12px] text-grey">बातमीचे फोटो दालन उघडा</div>
+              <div className="font-poppins text-[12px] text-grey">बातमीचे फोटो बघा</div>
             </div>
           </div>
           <span className="font-poppins text-teal group-hover:translate-x-1 transition-transform flex items-center"><ArrowRight size={18} /></span>
@@ -320,7 +320,7 @@ function ArticleMediaSection({ onNavigate }) {
             </div>
             <div>
               <div className="font-tiro text-[20px] text-navy font-bold">व्हिडिओ (Videos)</div>
-              <div className="font-poppins text-[12px] text-grey">बातमीचे व्हिडिओ उघडा</div>
+              <div className="font-poppins text-[12px] text-grey">बातमीचे व्हिडिओ बघा</div>
             </div>
           </div>
           <span className="font-poppins text-maroon group-hover:translate-x-1 transition-transform flex items-center"><ArrowRight size={18} /></span>

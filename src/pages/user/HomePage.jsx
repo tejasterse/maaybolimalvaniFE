@@ -77,10 +77,10 @@ function AdCarousel({ ads }) {
 }
 
 const talukaHighlights = [
-  { name: 'मालवण', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop', headline: 'किल्ल्यावर विक्रमी गर्दी' },
+  { name: 'मालवण', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop', headline: 'किल्ल्याचेर विक्रमी गर्दी' },
   { name: 'कणकवली', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop', headline: 'निवडणूक घोषणा' },
   { name: 'देवगड', img: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=300&h=200&fit=crop', headline: 'आंबा हंगाम चर्चा' },
-  { name: 'सावंतवाडी', img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop', headline: 'खेळणी उद्योगाला प्रोत्साहन' },
+  { name: 'सावंतवाडी', img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop', headline: 'खेळणी उद्योगाक प्रोत्साहन' },
   { name: 'वेंगुर्ला', img: 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=300&h=200&fit=crop', headline: 'किनारपट्टी विकास' },
   { name: 'कुडाळ', img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=200&fit=crop', headline: 'गणेशोत्सव तयारी' },
 ];
@@ -95,15 +95,15 @@ const categories = [
 ];
 
 const timetables = [
-  { id: 1, type: 'रेल्वे', name: 'कोकण कन्या एक्सप्रेस', time: 'रात्री ८:००', route: 'मुंबई ते मडगाव', icon: <Train size={24} /> },
-  { id: 2, type: 'एसटी', name: 'मालवण - पुणे', time: 'संध्याकाळी ५:३०', route: 'मालवण - कोल्हापूर - पुणे', icon: <Bus size={24} /> },
-  { id: 3, type: 'खाजगी', name: 'पावलो ट्रॅव्हल्स', time: 'रात्री ९:१५', route: 'सावंतवाडी ते मुंबई', icon: <Car size={24} /> }
+  { id: 1, type: 'रेल्वे', name: 'कोकण कन्या एक्सप्रेस', time: 'राती ८:००', route: 'मुंबई ते मडगाव', icon: <Train size={24} /> },
+  { id: 2, type: 'एसटी', name: 'मालवण - पुणे', time: 'सांजे ५:३०', route: 'मालवण - कोल्हापूर - पुणे', icon: <Bus size={24} /> },
+  { id: 3, type: 'खाजगी', name: 'पावलो ट्रॅव्हल्स', time: 'राती ९:१५', route: 'सावंतवाडी ते मुंबई', icon: <Car size={24} /> }
 ];
 
 const advertisementImg = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1180&h=200&fit=crop';
 
 const calendarEvent = { day: '१९', month: 'जुलै', year: '२०२६', tithi: 'आषाढ शुक्ल पक्ष, एकादशी' };
-const cricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करत आहे' };
+const cricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करतहा' };
 
 
 export default function HomePage({ onNavigate }) {
@@ -177,7 +177,7 @@ export default function HomePage({ onNavigate }) {
       img: latestPost
         ? latestPost.image ? getMediaUrl(latestPost.image) : getMediaUrl(`/posts/${latestPost.id}/image`)
         : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop',
-      headline: latestPost ? latestPost.title : 'सध्या बातमी उपलब्ध नाही'
+      headline: latestPost ? latestPost.title : 'सद्याक बातमी उपलब्ध नाय'
     };
   });
 
@@ -214,7 +214,7 @@ export default function HomePage({ onNavigate }) {
               className="flex-shrink-0 font-poppins font-bold text-[10px] uppercase tracking-[.12em] text-navy px-3 py-1 rounded-full"
               style={{ background: 'var(--gold)' }}
             >
-              ताज्या बातम्या
+              ताज्यो बातम्या
             </span>
             <div className="overflow-hidden flex-1">
               <div className="ticker-inner font-poppins text-[12.5px] text-[#fbe8c9] whitespace-nowrap flex items-center">
@@ -276,7 +276,7 @@ export default function HomePage({ onNavigate }) {
                         style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
                         onClick={(e) => { e.stopPropagation(); navigate(`/article/${hero.id}`); }}
                       >
-                        पूर्ण बातमी वाचा <ArrowRight size={14} className="inline ml-1" />
+                        सगळी बातमी वाचा <ArrowRight size={14} className="inline ml-1" />
                       </button>
                     </div>
                   </div>
@@ -314,7 +314,7 @@ export default function HomePage({ onNavigate }) {
                   className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
                   style={{ background: 'var(--maroon)' }}
                 >
-                  {activeHero.categoryName || 'ताज्या बातम्या'}
+                  {activeHero.categoryName || 'ताज्यो बातम्या'}
                 </span>
                 <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 line-clamp-2 md:line-clamp-none">
                   {activeHero.title}
@@ -330,7 +330,7 @@ export default function HomePage({ onNavigate }) {
                   style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
                   onClick={(e) => { e.stopPropagation(); navigate(`/article/${activeHero.id}`); }}
                 >
-                  पूर्ण बातमी वाचा <ArrowRight size={14} className="inline ml-1" />
+                  सगळी बातमी वाचा <ArrowRight size={14} className="inline ml-1" />
                 </button>
               </div>
             </div>
@@ -342,7 +342,7 @@ export default function HomePage({ onNavigate }) {
         {/* 2. Taluka Highlights */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-tiro text-[24px] text-maroon-deep">तालुका बातम्या</h2>
+            <h2 className="font-tiro text-[24px] text-maroon-deep">तालुक्याच्यो बातम्या</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {dynamicTalukaHighlights.map((t) => (
@@ -365,12 +365,12 @@ export default function HomePage({ onNavigate }) {
         {/* 3. Latest Articles - includes other district & national and other news */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-tiro text-[24px] text-maroon-deep">ताज्या बातम्या</h2>
+            <h2 className="font-tiro text-[24px] text-maroon-deep">ताज्यो बातम्या</h2>
             <button
               onClick={() => navigate('/listing')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
-              सर्व बघा <ArrowRight size={14} className="inline ml-1" />
+              सगळ्यो बघा <ArrowRight size={14} className="inline ml-1" />
             </button>
           </div>
 
@@ -393,7 +393,7 @@ export default function HomePage({ onNavigate }) {
 
           <div className="home-latest-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {isLoading ? (
-              <div className="col-span-3 text-center py-10 font-poppins text-grey">बातम्या लोड होत आहेत...</div>
+              <div className="col-span-3 text-center py-10 font-poppins text-grey">बातम्या लोड होतहात...</div>
             ) : filteredLatest.length > 0 ? (
               filteredLatest.slice(0, 8).map((a) => (
                 <div
@@ -413,7 +413,7 @@ export default function HomePage({ onNavigate }) {
             ) : (
               <div className="col-span-3 bg-white rounded-xl p-8 text-center shadow-sm" style={{ border: '1px solid var(--line)' }}>
                 <span className="flex justify-center mb-2"><Newspaper size={32} className="text-grey" /></span>
-                <div className="font-tiro text-[16px] text-ink font-semibold">या विभागात सध्या कोणतीही बातमी उपलब्ध नाही.</div>
+                <div className="font-tiro text-[16px] text-ink font-semibold">ह्या विभागात सद्याक खंयचीच बातमी उपलब्ध नाय.</div>
               </div>
             )}
           </div>
@@ -421,7 +421,7 @@ export default function HomePage({ onNavigate }) {
 
         {/* 4. Category Cards */}
         <div className="mb-10">
-          <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">विभागानुसार बातम्या</h2>
+          <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">विभागाप्रमाण बातम्या</h2>
           <div className="home-cat-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {categories.map((cat) => {
               const categoryMapping = {
@@ -451,12 +451,12 @@ export default function HomePage({ onNavigate }) {
         {/* 5. Poems, Writings, Other Entertainment (With Images & Icons) */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-tiro text-[24px] text-maroon-deep">कविता, लेख आणि मनोरंजन</h2>
+            <h2 className="font-tiro text-[24px] text-maroon-deep">कविता, लेख आनि मनोरंजन</h2>
             <button
               onClick={() => navigate('/entertainment')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
-              सर्व साहित्य बघा <ArrowRight size={14} className="inline ml-1" />
+              सगळें साहित्य बघा <ArrowRight size={14} className="inline ml-1" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -471,11 +471,11 @@ export default function HomePage({ onNavigate }) {
                 <div className="p-3 flex flex-col justify-center w-full overflow-hidden">
                   <span className="font-poppins text-[10px] text-amber font-bold uppercase tracking-wide">{item.type}</span>
                   <h3 className="font-tiro text-[15px] leading-tight text-ink mt-1 mb-1 truncate">{item.title}</h3>
-                  <div className="font-poppins text-[11px] text-grey truncate">लेखक: {item.author || '-'}</div>
+                  <div className="font-poppins text-[11px] text-grey truncate">बरोवपी: {item.author || '-'}</div>
                 </div>
               </div>
             )) : (
-              <div className="col-span-3 text-center py-5 font-poppins text-grey text-sm border border-dashed border-line rounded-xl">कोणतीही माहिती उपलब्ध नाही</div>
+              <div className="col-span-3 text-center py-5 font-poppins text-grey text-sm border border-dashed border-line rounded-xl">खंयचीच म्हायती उपलब्ध नाय</div>
             )}
           </div>
         </div>
@@ -487,12 +487,12 @@ export default function HomePage({ onNavigate }) {
         {dbEvents.length > 0 && (
           <div className="mb-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-tiro text-[24px] text-maroon-deep">गावचे सण, उत्सव आणि कार्यक्रम</h2>
+              <h2 className="font-tiro text-[24px] text-maroon-deep">गावचे सण, उत्सव आनि कार्यक्रम</h2>
               <button
                 onClick={() => navigate('/events')}
                 className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
               >
-                अधिक वाचा <ArrowRight size={14} className="inline ml-1" />
+                अजून वाचा <ArrowRight size={14} className="inline ml-1" />
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -521,7 +521,7 @@ export default function HomePage({ onNavigate }) {
 
         {/* 7. Railway, ST Bus, Private Vehical Timetable */}
         <div className="mb-10">
-          <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">वेळापत्रक (रेल्वे, एसटी, खाजगी वाहने)</h2>
+          <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">वेळापत्रक (रेल्वे, एसटी, खाजगी वाहनां)</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {timetables.map((t) => (
               <div key={t.id} className="bg-white rounded-xl p-4 shadow-sm border transition-transform hover:-translate-y-1 cursor-pointer" style={{ borderColor: 'var(--line)' }}>
@@ -546,7 +546,7 @@ export default function HomePage({ onNavigate }) {
               <span className="font-mukta text-[14px]">{calendarEvent.month}</span>
             </div>
             <div>
-              <h3 className="font-tiro text-[20px] text-navy mb-1">आजची तिथी</h3>
+              <h3 className="font-tiro text-[20px] text-navy mb-1">आयची तिथी</h3>
               <div className="font-mukta text-[15px] text-grey">{calendarEvent.tithi}</div>
               <div className="font-poppins text-[12px] text-amber font-semibold mt-1">{calendarEvent.year}</div>
             </div>
@@ -574,12 +574,12 @@ export default function HomePage({ onNavigate }) {
         {dbGallery.length > 0 && (
           <div className="mb-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-tiro text-[24px] text-maroon-deep">छायाचित्रे / गॅलरी</h2>
+              <h2 className="font-tiro text-[24px] text-maroon-deep">छायाचित्रां / गॅलरी</h2>
               <button
                 onClick={() => navigate('/gallery')}
                 className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
               >
-                सर्व गॅलरी पहा <ArrowRight size={14} className="inline ml-1" />
+                सगळी गॅलरी बघा <ArrowRight size={14} className="inline ml-1" />
               </button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
@@ -621,10 +621,10 @@ export default function HomePage({ onNavigate }) {
               AI-powered · मायबोली मालवणी
             </div>
             <h2 className="font-tiro text-[26px] text-white mb-2">
-              तुमच्या भागातल्या बातम्यांबद्दल विचारा
+              तुमच्या गावातल्या बातम्यांबद्दल विचारा
             </h2>
             <p className="font-poppins text-[13px]" style={{ color: '#c9d6e2' }}>
-              AI बॉट फक्त प्रकाशित बातम्यांवर आधारित उत्तर देतो — नेहमी बातमीच्या लिंकसह.
+              AI बॉट फक्त छापून आयलेल्या बातम्यांवर आधारित उत्तर देता — नेहमी बातमीचे लिंकसकट.
             </p>
           </div>
           <button
@@ -633,7 +633,7 @@ export default function HomePage({ onNavigate }) {
             style={{ background: 'var(--gold)', color: 'var(--navy)' }}
           >
             <Bot size={20} />
-            AI ला विचारा
+            AI क विचारा
           </button>
         </div>
 

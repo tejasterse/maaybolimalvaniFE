@@ -4,7 +4,7 @@ import { X, Play } from 'lucide-react';
 import { fetchGallery } from '../../api/gallery.js';
 import { getMediaUrl } from '../../utils/media.js';
 
-export default function GalleryPage({ initialTab = 'सर्व', onNavigate, onGoBack }) {
+export default function GalleryPage({ initialTab = 'सगळे', onNavigate, onGoBack }) {
   const [lightbox, setLightbox] = useState(null);
   const [activeTab, setActiveTab] = useState(initialTab);
 
@@ -21,14 +21,14 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
   };
 
   const filteredItems = dbGallery.filter((item) => {
-    if (activeTab === 'सर्व') return true;
+    if (activeTab === 'सगळे') return true;
     if (activeTab === 'फोटो') return !item.is_video;
     if (activeTab === 'व्हिडिओ') return item.is_video;
     return true;
   });
 
   if (isLoading) {
-    return <div className="max-w-[1180px] mx-auto px-6 py-12 text-center font-poppins text-grey">माहिती लोड होत आहे...</div>;
+    return <div className="max-w-[1180px] mx-auto px-6 py-12 text-center font-poppins text-grey">म्हायती लोड होतहा...</div>;
   }
 
   return (
@@ -37,13 +37,13 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
         {/* Gallery Head */}
         <div className="py-7 flex justify-between items-end flex-wrap gap-3">
           <div>
-            <h1 className="font-tiro text-[30px] text-maroon-deep">फोटो व व्हिडिओ गॅलरी</h1>
+            <h1 className="font-tiro text-[30px] text-maroon-deep">फोटो आनि व्हिडिओ गॅलरी</h1>
             <p className="font-poppins text-[12.5px] text-grey mt-1.5">
-              कोकणातल्या घडामोडींचे क्षणचित्रे — सण, उत्सव, बातम्या
+              कोकणांतल्या घडामोडींचे क्षणचित्रां — सण, उत्सव, बातम्या
             </p>
           </div>
           <div className="flex gap-2">
-            {['सर्व', 'फोटो', 'व्हिडिओ'].map((tab) => (
+            {['सगळे', 'फोटो', 'व्हिडिओ'].map((tab) => (
               <span
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -90,7 +90,7 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             </div>
           ))}
           {filteredItems.length === 0 && (
-            <div className="text-center py-12 text-grey font-poppins text-sm w-full">सध्या कोणतीही माहिती उपलब्ध नाही.</div>
+            <div className="text-center py-12 text-grey font-poppins text-sm w-full">सद्याक खंयचीच म्हायती उपलब्ध नाय.</div>
           )}
         </div>
       </div>

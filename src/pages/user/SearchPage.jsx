@@ -32,7 +32,7 @@ export default function SearchPage({ onNavigate, onGoBack }) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="शोधायचे शब्द टाका (उदा. मालवण, पर्यटन, बातमी)..."
+            placeholder="शोधाचे शब्द टाका (उदा. मालवण, पर्यटन, बातमी)..."
             className="flex-1 px-[18px] py-3.5 font-mukta text-[16px] text-ink rounded-[10px] outline-none"
             style={{ border: '2px solid var(--gold)' }}
           />
@@ -41,22 +41,22 @@ export default function SearchPage({ onNavigate, onGoBack }) {
             className="font-poppins font-semibold text-[14px] px-6 rounded-[10px] flex items-center gap-2"
             style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
           >
-            <Search size={16} /> શોधा
+            <Search size={16} /> शोधा
           </button>
         </form>
       </div>
 
       <div className="max-w-[1180px] mx-auto px-6 py-8">
         <h2 className="font-tiro text-[22px] text-ink mb-6">
-          {activeQuery ? `"${activeQuery}" संदर्भातील निकाल (${posts.length})` : `सर्व ताज्या बातम्या (${posts.length})`}
+          {activeQuery ? `"${activeQuery}" संदर्भांतले निकाल (${posts.length})` : `सगळ्यो ताज्यो बातम्या (${posts.length})`}
         </h2>
 
         {isLoading ? (
-          <div className="text-center py-12 font-poppins text-grey">बातम्या शोधत आहे...</div>
+          <div className="text-center py-12 font-poppins text-grey">बातम्या शोधतहा...</div>
         ) : isError ? (
-          <div className="text-center py-12 font-poppins text-red-500">शोधताना त्रुटी आली.</div>
+          <div className="text-center py-12 font-poppins text-red-500">शोधताना चूक जाली.</div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-12 font-poppins text-grey">कोणतीही बातमी सापडली नाही.</div>
+          <div className="text-center py-12 font-poppins text-grey">खंयचीच बातमी गावूक नाय.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {posts.map((post) => (

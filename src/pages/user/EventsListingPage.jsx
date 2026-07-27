@@ -20,11 +20,11 @@ export default function EventsListingPage({ onNavigate }) {
   });
 
   if (isLoading) {
-    return <div className="max-w-[1180px] mx-auto px-6 py-12 text-center font-poppins text-grey">माहिती लोड होत आहे...</div>;
+    return <div className="max-w-[1180px] mx-auto px-6 py-12 text-center font-poppins text-grey">म्हायती लोड होतहा...</div>;
   }
 
   if (isError) {
-    return <div className="max-w-[1180px] mx-auto px-6 py-12 text-center font-poppins text-red-500">माहिती लोड करताना त्रुटी आली.</div>;
+    return <div className="max-w-[1180px] mx-auto px-6 py-12 text-center font-poppins text-red-500">म्हायती लोड करताना चूक जाली.</div>;
   }
 
   return (
@@ -32,9 +32,9 @@ export default function EventsListingPage({ onNavigate }) {
       {/* Header */}
       <div className="bg-white shadow-sm mb-8 py-6 border-b border-line">
         <div className="max-w-[1180px] mx-auto px-6">
-          <h1 className="font-tiro text-[28px] text-maroon-deep">गावचे सण, उत्सव आणि कार्यक्रम</h1>
+          <h1 className="font-tiro text-[28px] text-maroon-deep">गावचे सण, उत्सव आनि कार्यक्रम</h1>
           <p className="font-poppins text-[14px] text-grey mt-2">
-            कोकणातील विविध गावांमध्ये होणारे सण, उत्सव आणि सांस्कृतिक कार्यक्रमांची माहिती
+            कोकणांतल्या वेगवेगळया गांवांनी जावपी सण, उत्सव आनि सांस्कृतिक कार्यक्रमांची म्हायती
           </p>
         </div>
       </div>
@@ -72,7 +72,7 @@ export default function EventsListingPage({ onNavigate }) {
           {items.length === 0 && (
             <div className="col-span-1 md:col-span-4 text-center py-12 bg-white rounded-xl border border-line shadow-sm">
               <div className="flex justify-center mb-3"><Tent size={32} className="text-grey" /></div>
-              <div className="font-tiro text-[18px] text-ink font-semibold">सध्या कोणत्याही कार्यक्रमांची माहिती उपलब्ध नाही.</div>
+              <div className="font-tiro text-[18px] text-ink font-semibold">सद्याक खंयच्याच कार्यक्रमांची म्हायती उपलब्ध नाय.</div>
             </div>
           )}
         </div>

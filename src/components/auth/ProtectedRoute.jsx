@@ -9,9 +9,11 @@ export default function ProtectedRoute() {
     return <Navigate to="/admin-login" replace />;
   }
 
-  if (user.role && user.role !== 'ADMIN' && user.roleId !== 1) {
+  const role = (user.role || '').toUpperCase();
+  if (role && role !== 'ADMIN' && user.roleId !== 1) {
     return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
 }
+

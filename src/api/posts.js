@@ -17,16 +17,12 @@ export const fetchPostById = async (id) => {
 };
 
 export const createPost = async (formData) => {
-  const { data } = await apiClient.post('/posts', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
+  const { data } = await apiClient.post('/posts', formData);
   return data;
 };
 
 export const updatePost = async ({ id, formData }) => {
-  const { data } = await apiClient.put(`/posts/${id}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
+  const { data } = await apiClient.put(`/posts/${id}`, formData);
   return data;
 };
 

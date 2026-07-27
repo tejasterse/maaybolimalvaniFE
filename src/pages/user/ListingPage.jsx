@@ -67,17 +67,20 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
   const posts = data.posts || [];
 
   const categoryMappingReverse = {
-    'rajkaran': 'राजकारण',
-    'paryatan': 'पर्यटन',
-    'maasemari': 'मासेमारी-शेती',
-    'sanskriti': 'संस्कृती',
-    'krida': 'क्रीडा',
-    'gunhe': 'गुन्हे',
+    'rajkaran': ['राजकारण', 'Politics'],
+    'paryatan': ['पर्यटन', 'Tourism'],
+    'maasemari': ['मासेमारी-शेती', 'मासेमारी', 'शेती', 'Fishing-farming'],
+    'sanskriti': ['संस्कृती', 'Culture'],
+    'krida': ['क्रीडा', 'Sports'],
+    'gunhe': ['गुन्हे', 'गुन्हे बातम्या', 'Crimes'],
   };
 
   const filteredArticles = posts.filter((art) => {
-    const expectedCatName = categoryMappingReverse[categoryKey];
-    const matchesCategory = categoryKey === 'listing' || art.categoryName === expectedCatName || art.categoryKey === categoryKey;
+    const expectedCatNames = categoryMappingReverse[categoryKey] || [];
+    const matchesCategory =
+      categoryKey === 'listing' ||
+      expectedCatNames.some(name => (art.categoryName || '').includes(name)) ||
+      art.categoryKey === categoryKey;
     const matchesTaluka = selectedTaluka === 'सर्व तालुके' || (art.districtName && art.districtName === selectedTaluka);
     return matchesCategory && matchesTaluka;
   });

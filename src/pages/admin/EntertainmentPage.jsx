@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchEntertainment, createEntertainment, updateEntertainment, deleteEntertainment } from '../../api/entertainment.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function EntertainmentPage() {
   const queryClient = useQueryClient();
@@ -43,6 +44,36 @@ export default function EntertainmentPage() {
     }
   });
 
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      if (!file || !file.type.startsWith('image/')) return resolve(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          const scale = Math.min(1, MAX_WIDTH / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            if (!blob) return resolve(file);
+            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+              type: 'image/jpeg',
+              lastModified: Date.now()
+            });
+            resolve(compressedFile);
+          }, 'image/jpeg', 0.8);
+        };
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const openModal = (item = null) => {
     if (item) {
       setEditingItem(item);
@@ -50,7 +81,7 @@ export default function EntertainmentPage() {
       setAuthor(item.author || '');
       setType(item.type);
       setContent(item.content || '');
-      setExistingImage(item.image_type ? `https://maayboli-backend.yuktiyantra.com/api/entertainment/${item.id}/image` : null);
+      setExistingImage(item.image_type ? getMediaUrl(`/entertainment/${item.id}/image`) : null);
     } else {
       setEditingItem(null);
       setTitle('');
@@ -68,14 +99,18 @@ export default function EntertainmentPage() {
     setEditingItem(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('title', title);
     formData.append('author', author);
     formData.append('type', type);
     formData.append('content', content);
-    if (imageFile) formData.append('image', imageFile);
+
+    if (imageFile) {
+      const optimizedImage = await compressImage(imageFile);
+      formData.append('image', optimizedImage);
+    }
 
     if (editingItem) {
       updateMutation.mutate({ id: editingItem.id, formData });

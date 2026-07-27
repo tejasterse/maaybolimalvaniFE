@@ -6,9 +6,7 @@ export const fetchAds = async () => {
 };
 
 export const createAd = async (data) => {
-    const response = await apiClient.post('/banners', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    const response = await apiClient.post('/banners', data);
     return response.data;
 };
 

@@ -15,9 +15,13 @@ export default function AdminLoginPage() {
       return response.data;
     },
     onSuccess: (data) => {
-      // Token is also saved in cookie by backend if configured, or can store locally
-      localStorage.setItem('token', data.token);
-      navigate('/admin');
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+      window.location.href = '/admin';
     },
     onError: (err) => {
       setError(err.response?.data?.message || 'चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.');

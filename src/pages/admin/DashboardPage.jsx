@@ -1,4 +1,4 @@
-import { useNavigate } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Pen, Image as ImageIcon, CheckSquare } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchDashboardStats, fetchDashboardActivity } from '../../api/dashboard.js';

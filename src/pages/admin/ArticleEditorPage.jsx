@@ -85,19 +85,64 @@ export default function ArticleEditorPage({ onBack }) {
     }
   });
 
-  const handlePublish = (status) => {
-    const cat = categoriesData.find(c => c.name === category);
-    const dist = districtsData.find(d => d.name === selectedTaluka);
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      if (!file || !file.type.startsWith('image/')) return resolve(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          const scale = Math.min(1, MAX_WIDTH / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            if (!blob) return resolve(file);
+            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+              type: 'image/jpeg',
+              lastModified: Date.now()
+            });
+            resolve(compressedFile);
+          }, 'image/jpeg', 0.8);
+        };
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePublish = async (status) => {
+    const cat = categoriesData.find(c => 
+      c.name === category || 
+      c.id === category || 
+      (category === 'Politics' && c.name === 'राजकारण') ||
+      (category === 'Tourism' && c.name === 'पर्यटन') ||
+      (category === 'Fishing-farming' && c.name === 'मासेमारी-शेती') ||
+      (category === 'Culture' && c.name === 'संस्कृती') ||
+      (category === 'Sports' && c.name === 'क्रीडा') ||
+      (category === 'Crimes' && c.name === 'गुन्हे')
+    );
+    const dist = districtsData.find(d => d.name === selectedTaluka || d.id === selectedTaluka);
 
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', body);
-    if (cat) formData.append('category_id', cat.id);
+    formData.append('category_id', cat ? cat.id : (article?.category_id || 1));
     if (dist) formData.append('district_id', dist.id);
-    formData.append('is_breaking', breakingOn);
+    formData.append('is_breaking', breakingOn ? 1 : 0);
     formData.append('status', status);
-    if (imageFile) formData.append('image', imageFile);
-    if (videoFile) formData.append('video', videoFile);
+
+    if (imageFile) {
+      const optimizedImage = await compressImage(imageFile);
+      formData.append('image', optimizedImage);
+    }
+    if (videoFile) {
+      formData.append('video', videoFile);
+    }
 
     saveMutation.mutate(formData);
   };
@@ -267,14 +312,28 @@ export default function ArticleEditorPage({ onBack }) {
             <div>
               <label className="block font-poppins text-[12.5px] font-medium text-grey mb-1.5">व्हिडिओ (पर्यायी - कमाल 50MB)</label>
               <div className="border-2 border-dashed border-line rounded-[8px] p-5 text-center bg-[#fafafa]">
-                {existingVideo && !videoFile && (
-                  <div className="mb-3 font-poppins text-[12.5px] text-green-600 flex items-center justify-center gap-1">
-                    <CheckCircle size={14} /> पूर्वी अपलोड केलेला व्हिडिओ उपलब्ध आहे
+                {existingVideo && !videoFile && article && (
+                  <div className="mb-3">
+                    <video
+                      src={getMediaUrl(`/posts/${article.id}/video`)}
+                      controls
+                      className="max-h-[220px] w-full max-w-[440px] mx-auto rounded-[8px] bg-black mb-2 shadow-sm"
+                    />
+                    <div className="font-poppins text-[12px] text-teal flex items-center justify-center gap-1 font-medium">
+                      <CheckCircle size={14} /> पूर्वी अपलोड केलेला व्हिडिओ उपलब्ध आहे
+                    </div>
                   </div>
                 )}
                 {videoFile && (
-                  <div className="mb-3 font-poppins text-sm text-teal">
-                    नवीन व्हिडिओ निवडला: {videoFile.name}
+                  <div className="mb-3">
+                    <video
+                      src={URL.createObjectURL(videoFile)}
+                      controls
+                      className="max-h-[220px] w-full max-w-[440px] mx-auto rounded-[8px] bg-black mb-2 shadow-sm"
+                    />
+                    <div className="font-poppins text-[12px] text-teal font-medium">
+                      नवीन व्हिडिओ पूर्वदृश्य (Preview): {videoFile.name}
+                    </div>
                   </div>
                 )}
                 <input

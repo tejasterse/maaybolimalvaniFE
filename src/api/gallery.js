@@ -6,20 +6,12 @@ export const fetchGallery = async () => {
 };
 
 export const createGalleryItem = async (formData) => {
-    const res = await apiClient.post("/gallery", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    });
+    const res = await apiClient.post("/gallery", formData);
     return res.data;
 };
 
 export const updateGalleryItem = async ({ id, formData }) => {
-    const res = await apiClient.put(`/gallery/${id}`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    });
+    const res = await apiClient.put(`/gallery/${id}`, formData);
     return res.data;
 };
 

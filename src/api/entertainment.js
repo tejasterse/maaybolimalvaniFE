@@ -11,20 +11,12 @@ export const fetchEntertainmentById = async (id) => {
 };
 
 export const createEntertainment = async (formData) => {
-    const res = await apiClient.post("/entertainment", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    });
+    const res = await apiClient.post("/entertainment", formData);
     return res.data;
 };
 
 export const updateEntertainment = async ({ id, formData }) => {
-    const res = await apiClient.put(`/entertainment/${id}`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    });
+    const res = await apiClient.put(`/entertainment/${id}`, formData);
     return res.data;
 };
 

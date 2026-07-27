@@ -11,20 +11,12 @@ export const fetchEventById = async (id) => {
 };
 
 export const createEvent = async (formData) => {
-    const res = await apiClient.post("/events", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    });
+    const res = await apiClient.post("/events", formData);
     return res.data;
 };
 
 export const updateEvent = async ({ id, formData }) => {
-    const res = await apiClient.put(`/events/${id}`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    });
+    const res = await apiClient.put(`/events/${id}`, formData);
     return res.data;
 };
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchAds, createAd, deleteAd } from '../../api/ads.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function AdsPage() {
   const queryClient = useQueryClient();
@@ -89,7 +90,7 @@ export default function AdsPage() {
 
           {ads.map((ad) => (
             <div key={ad.id} className="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col justify-between transition-transform hover:-translate-y-0.5 relative group">
-              <img src={`https://maayboli-backend.yuktiyantra.com/api/banners/${ad.id}/image`} alt="Ad" className="w-full h-[150px] object-cover block" />
+              <img src={getMediaUrl(ad.image || `/banners/${ad.id}/image`)} alt="Ad" className="w-full h-[150px] object-cover block" />
               <div className="px-2.5 py-3">
                 <div className="font-poppins text-[11px] text-ink font-semibold truncate mb-1">
                   {ad.link_url ? <a href={ad.link_url} target="_blank" rel="noreferrer" className="text-teal hover:underline">{ad.link_url}</a> : 'कोणतीही लिंक नाही'}

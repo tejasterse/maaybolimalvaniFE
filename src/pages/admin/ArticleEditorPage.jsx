@@ -9,6 +9,8 @@ import 'react-quill-new/dist/quill.snow.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Globe, ArrowRight } from 'lucide-react';
 
+import { getMediaUrl } from '../../utils/media.js';
+
 const talukaOptions = ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
 
 const quillModules = {
@@ -58,8 +60,8 @@ export default function ArticleEditorPage({ onBack }) {
       setBreakingOn(article.is_breaking === 1);
       setCategory(article.categoryName || '');
       setSelectedTaluka(article.districtName || '');
-      if (article.image_type) {
-        setExistingImage(`https://maayboli-backend.yuktiyantra.com/api/posts/${article.id}/image`);
+      if (article.image_type || article.image) {
+        setExistingImage(getMediaUrl(article.image || `/posts/${article.id}/image`));
       }
       if (article.video_type) {
         setExistingVideo(true);

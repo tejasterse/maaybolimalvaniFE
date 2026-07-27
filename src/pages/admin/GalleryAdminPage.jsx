@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchGallery, createGalleryItem, updateGalleryItem, deleteGalleryItem } from '../../api/gallery.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function GalleryAdminPage() {
   const queryClient = useQueryClient();
@@ -46,7 +47,7 @@ export default function GalleryAdminPage() {
       setEditingItem(item);
       setTitle(item.title);
       setMeta(item.meta || '');
-      setExistingMedia(`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`);
+      setExistingMedia(getMediaUrl(item.image || item.media_url || `/gallery/${item.id}/media`));
       setExistingIsVideo(item.is_video);
     } else {
       setEditingItem(null);
@@ -107,9 +108,9 @@ export default function GalleryAdminPage() {
           <div key={item.id} className="bg-white rounded-xl shadow-sm border border-line overflow-hidden flex flex-col group">
             <div className="relative h-[160px] bg-black">
               {item.is_video === 1 ? (
-                <video src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} className="w-full h-full object-cover opacity-80" muted />
+                <video src={getMediaUrl(item.image || item.media_url || `/gallery/${item.id}/media`)} className="w-full h-full object-cover opacity-80" muted />
               ) : (
-                <img src={`https://maayboli-backend.yuktiyantra.com/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-full object-cover" />
+                <img src={getMediaUrl(item.image || item.media_url || `/gallery/${item.id}/media`)} alt={item.title} className="w-full h-full object-cover" />
               )}
               {item.is_video === 1 && (
                 <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-[10px] px-2 py-1 rounded">VIDEO</div>

@@ -154,8 +154,8 @@ export default function EventsPage() {
             {items.map((item) => (
               <tr key={item.id} className="border-b border-line hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
-                  {item.image_type ? (
-                    <img src={`https://maayboli-backend.yuktiyantra.com/api/events/${item.id}/image`} alt={item.title} className="w-16 h-12 object-cover rounded" />
+                  {item.image_type || item.image ? (
+                    <img src={getMediaUrl(item.image || `/events/${item.id}/image`)} alt={item.title} className="w-16 h-12 object-cover rounded" />
                   ) : (
                     <div className="w-16 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
                   )}

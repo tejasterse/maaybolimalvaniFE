@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchPosts, updatePostStatus } from '../../api/posts.js';
 import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function ReviewPage() {
   const queryClient = useQueryClient();
@@ -52,7 +53,7 @@ export default function ReviewPage() {
             className="review-card-inner bg-white rounded-[10px] p-5 shadow-sm mb-3.5 flex gap-4 transition-all"
           >
             <img
-              src={(item.image || item.image_type) ? `https://maayboli-backend.yuktiyantra.com/api/posts/${item.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
+              src={item.image ? getMediaUrl(item.image) : item.image_type ? getMediaUrl(`/posts/${item.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
               alt={item.title}
               className="w-[120px] h-[90px] object-cover rounded-[6px] flex-shrink-0"
             />

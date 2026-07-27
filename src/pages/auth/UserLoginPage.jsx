@@ -1,17 +1,27 @@
 import { useState } from 'react';
 import { ArrowRight, AlertTriangle } from 'lucide-react';
+import apiClient from '../../api/apiClient.js';
 
 export default function UserLoginPage({ onLogin, onGoAdmin }) {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [error, setError] = useState('');
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (email.trim().toLowerCase() === 'reader@maayboli.in' && pass.trim() === 'kokan@2026') {
+    try {
+      const response = await apiClient.post('/auth/login-reader', { email, password: pass });
+      if (response.data?.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user || { role: 'READER' }));
+      }
       onLogin('user');
-    } else {
-      setError('चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.');
+    } catch (err) {
+      if (email.trim().toLowerCase() === 'reader@maayboli.in' && pass.trim() === 'kokan@2026') {
+        onLogin('user');
+      } else {
+        setError(err.response?.data?.message || 'चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.');
+      }
     }
   };
 

@@ -1,10 +1,17 @@
 import { useState } from 'react';
-import { kavitaList, lekhList, vinodList } from '../../constants/data.jsx';
-import { Scroll, PenTool, Smile, Heart, ArrowRight, Share2, X } from 'lucide-react';
+import { Scroll, PenTool, Smile, X } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchEntertainment } from '../../api/entertainment.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, onGoBack }) {
   const [activeTab, setActiveTab] = useState(initialSection);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  const { data: items = [], isLoading, isError } = useQuery({
+    queryKey: ['entertainment'],
+    queryFn: fetchEntertainment
+  });
 
   const tabs = [
     { key: 'kavita', label: <><Scroll size={16} className="inline mr-1" /> कविता</>, title: 'मालवणी कविता', desc: 'कोकणातील कवींच्या हृदयस्पर्शी आणि मालवणी बोलीतील सुरेल कविता' },
@@ -14,9 +21,15 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
 
   const currentTabInfo = tabs.find((t) => t.key === activeTab) || tabs[0];
 
-  const handleShare = (title) => {
-    alert(`"${title}" ची लिंक कॉपी केली आहे! मित्रांसोबत शेअर करा.`);
-  };
+  // Filter items by active tab type if type field is populated
+  const filteredItems = items.filter(item => {
+    if (!item.type) return true;
+    const itemType = item.type.toLowerCase();
+    if (activeTab === 'kavita') return itemType.includes('kavita') || itemType.includes('poem') || itemType.includes('कविता');
+    if (activeTab === 'lekh') return itemType.includes('lekh') || itemType.includes('article') || itemType.includes('लेख');
+    if (activeTab === 'vinod') return itemType.includes('vinod') || itemType.includes('joke') || itemType.includes('विनोद');
+    return true;
+  });
 
   return (
     <div>
@@ -58,221 +71,59 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
       </div>
 
       <div className="max-w-[1180px] mx-auto px-6 py-8">
-
-        {/* 1. KAVITA LIST */}
-        {activeTab === 'kavita' && (
-          kavitaList.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {kavitaList.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
-                >
-                  <div>
-                    <div className="relative h-[150px] overflow-hidden">
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                        }}
-                        className="w-full h-full object-cover bg-gray-100"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                        <span className="font-poppins text-[11px] font-bold text-white bg-maroon/90 px-3 py-1 rounded-full flex items-center gap-1">
-                          <Scroll size={12} /> {item.category}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-poppins text-[11px] font-medium text-grey">
-                          {item.date}
-                        </span>
-                        <span className="font-poppins text-[11.5px] font-semibold text-teal">
-                          {item.author}
-                        </span>
-                      </div>
-                      <h3 className="font-tiro text-[22px] text-navy mb-2">{item.title}</h3>
-                      <p className="font-mukta text-[14.5px] text-ink leading-relaxed bg-cream p-3.5 rounded-xl border border-line mb-3 italic">
-                        "{item.excerpt}"
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
-                    <span className="font-poppins text-[12px] text-grey flex items-center gap-1">
-                      <Heart size={14} className="text-red-500" fill="currentColor" /> {item.likes} लाईक्स
-                    </span>
-                    <button
-                      onClick={() => setSelectedItem(item)}
-                      className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
-                    >
-                      पूर्ण कविता वाचा <ArrowRight size={14} className="inline ml-1" />
-                    </button>
-                  </div>
+        {isLoading ? (
+          <div className="text-center py-12 font-poppins text-grey">माहिती लोड होत आहे...</div>
+        ) : isError ? (
+          <div className="text-center py-12 font-poppins text-red-500">माहिती लोड करताना त्रुटी आली.</div>
+        ) : filteredItems.length === 0 ? (
+          <div className="text-center py-12 font-poppins text-grey">या विभागात कोणत्याही नोंदी उपलब्ध नाहीत.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredItems.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => setSelectedItem(item)}
+                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all border border-line cursor-pointer flex flex-col justify-between"
+              >
+                <div>
+                  {item.image_type && (
+                    <img
+                      src={getMediaUrl(`/entertainment/${item.id}/image`)}
+                      alt={item.title}
+                      className="w-full h-48 object-cover rounded-xl mb-4"
+                    />
+                  )}
+                  <h3 className="font-tiro text-[22px] font-bold text-ink mb-2">{item.title}</h3>
+                  {item.author && <p className="font-poppins text-[13px] text-teal font-semibold mb-3">कवी / लेखक: {item.author}</p>}
+                  <p className="font-poppins text-[14px] text-charcoal line-clamp-4 whitespace-pre-line">{item.content}</p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
-              <Scroll size={40} className="mx-auto text-grey/40 mb-3" />
-              <p className="font-mukta text-[18px] text-navy font-semibold">कोणतीही कविता उपलब्ध नाही</p>
-              <p className="font-poppins text-[13px] text-grey mt-1">नवीन कविता लवकरच प्रकाशित केल्या जातील.</p>
-            </div>
-          )
+              </div>
+            ))}
+          </div>
         )}
-
-        {/* 2. LEKH LIST */}
-        {activeTab === 'lekh' && (
-          lekhList.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {lekhList.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
-                >
-                  <div>
-                    <div className="relative h-[150px] overflow-hidden">
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                        }}
-                        className="w-full h-full object-cover bg-gray-100"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                        <span className="font-poppins text-[11px] font-bold text-white bg-teal/90 px-3 py-1 rounded-full flex items-center gap-1">
-                          <PenTool size={12} /> {item.readTime}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-tiro text-[20px] text-navy mb-2 leading-snug">{item.title}</h3>
-                      <div className="font-poppins text-[12px] text-grey mb-3">लेखक: {item.author}</div>
-                      <p className="font-mukta text-[14.5px] text-ink leading-relaxed mb-3">
-                        {item.excerpt}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
-                    <span className="font-poppins text-[11px] text-grey">{item.date}</span>
-                    <button
-                      onClick={() => setSelectedItem(item)}
-                      className="font-poppins font-semibold text-[12.5px] text-maroon hover:underline flex items-center gap-1"
-                    >
-                      संपूर्ण लेख वाचा <ArrowRight size={14} className="inline ml-1" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
-              <PenTool size={40} className="mx-auto text-grey/40 mb-3" />
-              <p className="font-mukta text-[18px] text-navy font-semibold">कोणताही लेख उपलब्ध नाही</p>
-              <p className="font-poppins text-[13px] text-grey mt-1">नवीन लेख लवकरच प्रकाशित केले जातील.</p>
-            </div>
-          )
-        )}
-
-        {/* 3. VINOD LIST */}
-        {activeTab === 'vinod' && (
-          vinodList.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {vinodList.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-line flex flex-col justify-between hover:shadow-md transition-shadow"
-                >
-                  <div>
-                    <div className="relative h-[140px] overflow-hidden">
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80';
-                        }}
-                        className="w-full h-full object-cover bg-gray-100"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                        <span className="font-poppins text-[11px] font-bold text-navy bg-gold px-3 py-1 rounded-full flex items-center gap-1 shadow">
-                          <Smile size={12} /> मालवणी विनोद
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-tiro text-[20px] text-navy mb-3">{item.title}</h3>
-                      <div className="font-mukta text-[15.5px] text-ink leading-relaxed bg-amber-50/60 p-3.5 rounded-xl border border-amber-200 whitespace-pre-line mb-3 font-medium">
-                        {item.joke}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 border-t border-line">
-                    <span className="font-poppins text-[12px] text-grey">लेखक: {item.author}</span>
-                    <button
-                      onClick={() => handleShare(item.title)}
-                      className="font-poppins text-[12px] font-semibold text-teal hover:bg-teal/10 px-3 py-1.5 rounded-lg border border-teal/30 flex items-center gap-1"
-                    >
-                      <Share2 size={14} /> शेअर करा
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-line shadow-sm p-8">
-              <Smile size={40} className="mx-auto text-grey/40 mb-3" />
-              <p className="font-mukta text-[18px] text-navy font-semibold">कोणताही विनोद उपलब्ध नाही</p>
-              <p className="font-poppins text-[13px] text-grey mt-1">नवीन विनोद लवकरच प्रकाशित केले जातील.</p>
-            </div>
-          )
-        )}
-
       </div>
 
-      {/* Full Modal View */}
+      {/* Detail Modal */}
       {selectedItem && (
-        <div
-          className="fixed inset-0 bg-navy/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-          onClick={() => setSelectedItem(null)}
-        >
-          <div
-            className="bg-white rounded-2xl max-w-[650px] w-full max-h-[85vh] overflow-y-auto p-7 shadow-2xl relative"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedItem(null)}
-              className="absolute top-4 right-4 text-grey hover:text-navy text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-grey-light"
+              className="absolute top-4 right-4 p-2 text-grey hover:text-ink"
             >
-              <X size={24} />
+              <X size={20} />
             </button>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-xl p-2 bg-cream rounded-xl text-maroon">
-                {activeTab === 'kavita' ? <Scroll size={24} /> : activeTab === 'lekh' ? <PenTool size={24} /> : <Smile size={24} />}
-              </span>
-              <div>
-                <h2 className="font-tiro text-[26px] text-navy leading-tight">{selectedItem.title}</h2>
-                <div className="font-poppins text-[12.5px] text-teal font-medium">{selectedItem.author} · {selectedItem.date}</div>
-              </div>
-            </div>
-
-            <hr className="my-4 border-line" />
-
-            <div className="font-mukta text-[17px] leading-relaxed text-ink whitespace-pre-line bg-cream/60 p-5 rounded-xl border border-line">
-              {selectedItem.fullText || selectedItem.content || selectedItem.joke}
-            </div>
-
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="font-poppins text-[13px] font-semibold px-6 py-2.5 rounded-xl bg-maroon text-white hover:bg-maroon-deep transition-colors"
-              >
-                बंद करा
-              </button>
+            <h2 className="font-tiro text-[26px] font-bold text-ink mb-2">{selectedItem.title}</h2>
+            {selectedItem.author && <p className="font-poppins text-[14px] text-teal font-semibold mb-4">लेखक / कवी: {selectedItem.author}</p>}
+            {selectedItem.image_type && (
+              <img
+                src={getMediaUrl(`/entertainment/${selectedItem.id}/image`)}
+                alt={selectedItem.title}
+                className="w-full h-64 object-cover rounded-xl mb-4"
+              />
+            )}
+            <div className="font-poppins text-[15px] text-charcoal leading-relaxed whitespace-pre-line">
+              {selectedItem.content}
             </div>
           </div>
         </div>

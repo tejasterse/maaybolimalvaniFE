@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Tent } from 'lucide-react';
+import { Calendar, Tent, MapPin } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from '../../api/events.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function EventsListingPage({ onNavigate }) {
   const routerNavigate = useNavigate();
@@ -47,7 +48,7 @@ export default function EventsListingPage({ onNavigate }) {
               style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
             >
               <img 
-                src={item.image_type ? `http://localhost:5000/api/events/${item.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&h=300&fit=crop'} 
+                src={item.image_type ? getMediaUrl(`/events/${item.id}/image`) : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&h=300&fit=crop'} 
                 alt={item.title} 
                 className="w-full h-[160px] object-cover block flex-shrink-0" 
               />

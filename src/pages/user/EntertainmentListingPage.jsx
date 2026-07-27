@@ -2,18 +2,15 @@ import { useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEntertainment } from '../../api/entertainment.js';
+import { getMediaUrl } from '../../utils/media.js';
 
-export default function EntertainmentListingPage({ onNavigate }) {
+export default function EntertainmentListingPage({ onNavigate, onGoBack }) {
   const routerNavigate = useNavigate();
   const navigate = (key, params) => {
     if (onNavigate) {
       onNavigate(key, params);
     } else {
-      if (key === 'entertainment-article') {
-        routerNavigate(`/entertainment/${params}`);
-      } else {
-        routerNavigate(key);
-      }
+      routerNavigate(`/entertainment/${params}`);
     }
   };
 
@@ -35,7 +32,7 @@ export default function EntertainmentListingPage({ onNavigate }) {
       {/* Header */}
       <div className="bg-white shadow-sm mb-8 py-6 border-b border-line">
         <div className="max-w-[1180px] mx-auto px-6">
-          <h1 className="font-tiro text-[28px] text-maroon-deep">कविता, लेख आणि मनोरंजन</h1>
+          <h1 className="font-tiro text-[28px] text-maroon-deep">मनोरंजन व साहित्य</h1>
           <p className="font-poppins text-[14px] text-grey mt-2">
             मालवणी साहित्य, कविता, लेख आणि विनोदांचा आनंद घ्या
           </p>
@@ -52,7 +49,7 @@ export default function EntertainmentListingPage({ onNavigate }) {
               style={{ border: '1px solid var(--line)' }}
             >
               <img 
-                src={item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop'} 
+                src={item.image_type ? getMediaUrl(`/entertainment/${item.id}/image`) : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop'} 
                 alt={item.title} 
                 className="w-full h-[180px] object-cover block flex-shrink-0" 
               />

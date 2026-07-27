@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { X, Play } from 'lucide-react';
 import { fetchGallery } from '../../api/gallery.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function GalleryPage({ initialTab = 'सर्व', onNavigate, onGoBack }) {
   const [lightbox, setLightbox] = useState(null);
@@ -69,9 +70,9 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             >
               <div className="relative">
                 {item.is_video === 1 ? (
-                  <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full block" muted />
+                  <video src={getMediaUrl(`/gallery/${item.id}/media`)} className="w-full block" muted />
                 ) : (
-                  <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full block" />
+                  <img src={getMediaUrl(`/gallery/${item.id}/media`)} alt={item.title} className="w-full block" />
                 )}
                 {item.is_video === 1 && (
                   <div
@@ -109,7 +110,7 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
           </span>
           {lightbox.is_video === 1 ? (
             <video
-              src={`http://localhost:5000/api/gallery/${lightbox.id}/media`}
+              src={getMediaUrl(`/gallery/${lightbox.id}/media`)}
               controls
               autoPlay
               className="max-w-[800px] max-h-[80vh] rounded-lg"
@@ -117,7 +118,7 @@ export default function GalleryPage({ initialTab = 'सर्व', onNavigate, o
             />
           ) : (
             <img
-              src={`http://localhost:5000/api/gallery/${lightbox.id}/media`}
+              src={getMediaUrl(`/gallery/${lightbox.id}/media`)}
               alt={lightbox.title}
               className="max-w-[800px] max-h-[80vh] rounded-lg"
               style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}

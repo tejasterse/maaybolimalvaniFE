@@ -1,201 +1,228 @@
 import { useState } from 'react';
-import { users } from '../../constants/data.jsx';
-import { CheckCircle2, Clock } from 'lucide-react';
-
-const roleColors = {
-  admin: { bg: 'var(--maroon)', color: '#fbe8c9' },
-  editor: { bg: 'var(--teal)', color: '#fff' },
-  reporter: { bg: '#F6F1E6', color: 'var(--grey)' },
-};
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchUsers, createUser, updateUserRole, updateUserStatus, deleteUser } from '../../api/users.js';
 
 export default function UsersPage() {
-  const [members, setMembers] = useState(users);
-
-  // Custom modal states
+  const queryClient = useQueryClient();
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
-  const [roleInput, setRoleInput] = useState('reporter');
+  const [phoneInput, setPhoneInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('123456');
+  const [roleInput, setRoleInput] = useState('USER');
 
-  // Edit/Manage role modal states
+  // Edit role modal
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [activeMember, setActiveMember] = useState(null);
-  const [newRoleVal, setNewRoleVal] = useState('reporter');
+  const [newRoleVal, setNewRoleVal] = useState('USER');
+
+  const { data: usersData, isLoading, isError } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetchUsers({ limit: 100 })
+  });
+
+  const members = usersData?.users || [];
+
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      setShowInviteModal(false);
+      setNameInput('');
+      setEmailInput('');
+      setPhoneInput('');
+    }
+  });
+
+  const updateRoleMutation = useMutation({
+    mutationFn: ({ id, role }) => updateUserRole(id, role),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      setShowRoleModal(false);
+    }
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }) => updateUserStatus(id, status),
+    onSuccess: () => queryClient.invalidateQueries(['users'])
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => queryClient.invalidateQueries(['users'])
+  });
 
   const handleInviteSubmit = (e) => {
     e.preventDefault();
     if (!nameInput.trim() || !emailInput.trim()) return;
-
-    let role = 'Reporter';
-    if (roleInput === 'admin') role = 'Admin';
-    else if (roleInput === 'editor') role = 'Editor';
-
-    const newMember = {
+    createUserMutation.mutate({
       name: nameInput.trim(),
       email: emailInput.trim(),
-      role,
-      roleKey: roleInput,
-      joined: 'आत्ताच',
-      status: '⏳ आमंत्रण प्रलंबित',
-      action: 'पुन्हा पाठवा',
-    };
-
-    setMembers([...members, newMember]);
-    setShowInviteModal(false);
-    setNameInput('');
-    setEmailInput('');
-    setRoleInput('reporter');
-  };
-
-  const handleActionClick = (m) => {
-    if (m.action === 'पुन्हा पाठवा') {
-      alert(`${m.name} ला पुन्हा आमंत्रण ईमेल पाठवला गेला आहे!`);
-    } else {
-      setActiveMember(m);
-      setNewRoleVal(m.roleKey);
-      setShowRoleModal(true);
-    }
+      phone: phoneInput.trim(),
+      password: passwordInput,
+      role: roleInput
+    });
   };
 
   const handleRoleSubmit = (e) => {
     e.preventDefault();
     if (!activeMember) return;
-
-    const updated = members.map((x) => {
-      if (x.email === activeMember.email) {
-        let role = 'Reporter';
-        if (newRoleVal === 'admin') role = 'Admin';
-        else if (newRoleVal === 'editor') role = 'Editor';
-        return { ...x, role, roleKey: newRoleVal };
-      }
-      return x;
-    });
-
-    setMembers(updated);
-    setShowRoleModal(false);
-    setActiveMember(null);
+    updateRoleMutation.mutate({ id: activeMember.id, role: newRoleVal });
   };
 
   return (
     <div>
-      <div className="flex justify-between items-end mb-5">
+      {/* Top Header */}
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="font-tiro text-[26px] text-maroon-deep">युजर्स व भूमिका</h1>
-          <p className="font-poppins text-[12.5px] text-grey mt-1">टीम मेंबर्स व त्यांची भूमिका ({members.length})</p>
+          <h1 className="font-tiro text-[24px] text-ink font-bold">वापरकर्ते आणि भूमिका व्यवस्थापन</h1>
+          <p className="font-poppins text-[13px] text-grey">सिंहावलोकन आणि सदस्य हक्क नियंत्रण</p>
         </div>
         <button
           onClick={() => setShowInviteModal(true)}
-          className="font-poppins font-semibold text-[13px] px-[18px] py-2.5 rounded-[7px] text-[#fbe8c9] nav-transition hover:opacity-95"
-          style={{ background: 'var(--maroon)' }}
+          className="font-poppins font-semibold text-[13.5px] px-4 py-2.5 rounded-[8px] cursor-pointer"
+          style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
         >
-          + युजर आमंत्रित करा
+          + नवीन वापरकर्ता जोडा
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-[10px] shadow-sm bg-white">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr style={{ background: '#F6F1E6' }}>
-              {['नाव', 'ईमेल', 'भूमिका', 'सामील झाले', 'स्थिती', ''].map((h) => (
-                <th key={h} className="font-poppins text-[11px] uppercase tracking-[.06em] text-grey text-left px-4 py-3 font-semibold">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {members.map((u) => (
-              <tr key={u.email} style={{ borderTop: '1px solid var(--line)' }}>
-                <td className="font-poppins text-[14px] font-semibold text-ink px-4 py-3.5">{u.name}</td>
-                <td className="font-poppins text-[12px] text-grey px-4 py-3.5">{u.email}</td>
-                <td className="px-4 py-3.5">
-                  <span
-                    className="font-poppins text-[10.5px] font-bold px-3 py-1 rounded-[14px]"
-                    style={roleColors[u.roleKey]}
-                  >
-                    {u.role}
-                  </span>
-                </td>
-                <td className="font-poppins text-[12px] text-grey px-4 py-3.5">{u.joined}</td>
-                <td className="font-poppins text-[12px] text-grey px-4 py-3.5">
-                  {u.status.includes('सक्रिय') ? (
-                    <span className="inline-flex items-center gap-1.5 text-green-700 font-medium">
-                      <CheckCircle2 size={13} className="text-green-600" /> {u.status.replace('🟢 ', '')}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 text-amber-700 font-medium">
-                      <Clock size={13} className="text-amber-500" /> {u.status.replace('⏳ ', '')}
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3.5">
-                  <button
-                    onClick={() => handleActionClick(u)}
-                    className="font-poppins text-[12px] text-teal font-semibold hover:underline"
-                  >
-                    {u.action}
-                  </button>
-                </td>
+      {isLoading ? (
+        <div className="text-center py-12 font-poppins text-grey">वापरकर्ते लोड होत आहेत...</div>
+      ) : isError ? (
+        <div className="text-center py-12 font-poppins text-red-500">वापरकर्ते लोड करताना त्रुटी आली.</div>
+      ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
+          <table className="w-full text-left font-poppins text-[13.5px]">
+            <thead className="bg-[#FAF9F5] border-b border-line text-grey uppercase tracking-wider text-[11px] font-bold">
+              <tr>
+                <th className="py-3 px-4">नाव / ईमेल</th>
+                <th className="py-3 px-4">भूमिका</th>
+                <th className="py-3 px-4">फोन</th>
+                <th className="py-3 px-4">स्थिती</th>
+                <th className="py-3 px-4 text-right">कृती</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {members.map((u) => (
+                <tr key={u.id} className="hover:bg-amber-50/20">
+                  <td className="py-3.5 px-4">
+                    <div className="font-semibold text-ink">{u.name}</div>
+                    <div className="text-[12px] text-grey">{u.email}</div>
+                  </td>
+                  <td className="py-3.5 px-4 font-bold text-teal">{u.roleName || 'USER'}</td>
+                  <td className="py-3.5 px-4 text-grey">{u.phone || '-'}</td>
+                  <td className="py-3.5 px-4">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${u.status === 'INACTIVE' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                      {u.status || 'ACTIVE'}
+                    </span>
+                  </td>
+                  <td className="py-3.5 px-4 text-right space-x-2">
+                    <button
+                      onClick={() => {
+                        setActiveMember(u);
+                        setNewRoleVal(u.roleName || 'USER');
+                        setShowRoleModal(true);
+                      }}
+                      className="text-teal hover:underline font-semibold"
+                    >
+                      भूमिका बदला
+                    </button>
+                    <button
+                      onClick={() => updateStatusMutation.mutate({ id: u.id, status: u.status === 'INACTIVE' ? 'ACTIVE' : 'INACTIVE' })}
+                      className="text-amber-600 hover:underline font-semibold"
+                    >
+                      {u.status === 'INACTIVE' ? 'सक्रिय करा' : 'निष्क्रिय करा'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`नक्की ${u.name} ला हटवायचे आहे का?`)) {
+                          deleteUserMutation.mutate(u.id);
+                        }
+                      }}
+                      className="text-red-600 hover:underline font-semibold"
+                    >
+                      हटवा
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-      {/* Invite User Modal */}
+      {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg max-w-[400px] w-full p-6 mx-4 animate-scale-up">
-            <h2 className="font-tiro text-[20px] text-maroon-deep mb-4 font-semibold">नवीन युजर आमंत्रित करा</h2>
-            <form onSubmit={handleInviteSubmit}>
-              <div className="mb-4">
-                <label className="block font-poppins text-[12px] text-grey mb-1.5 font-semibold">नाव</label>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
+            <h3 className="font-tiro text-xl font-bold text-ink mb-4">नवीन वापरकर्ता जोडा</h3>
+            <form onSubmit={handleInviteSubmit} className="space-y-4 font-poppins text-sm">
+              <div>
+                <label className="block text-grey mb-1">नाव</label>
                 <input
                   type="text"
                   required
-                  placeholder="उदा. विलास साळवी"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  className="w-full px-3.5 py-2 border border-line rounded-lg font-poppins text-[13px] outline-none focus:border-teal"
+                  className="w-full px-3 py-2 border rounded-lg"
                 />
               </div>
-              <div className="mb-4">
-                <label className="block font-poppins text-[12px] text-grey mb-1.5 font-semibold">ईमेल पत्ता</label>
+              <div>
+                <label className="block text-grey mb-1">ईमेल</label>
                 <input
                   type="email"
                   required
-                  placeholder="उदा. vilas@maayboli.in"
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
-                  className="w-full px-3.5 py-2 border border-line rounded-lg font-poppins text-[13px] outline-none focus:border-teal"
+                  className="w-full px-3 py-2 border rounded-lg"
                 />
               </div>
-              <div className="mb-5">
-                <label className="block font-poppins text-[12px] text-grey mb-1.5 font-semibold">भूमिका</label>
+              <div>
+                <label className="block text-grey mb-1">फोन (पर्यायी)</label>
+                <input
+                  type="text"
+                  value={phoneInput}
+                  onChange={(e) => setPhoneInput(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-grey mb-1">संकेतशब्द (Password)</label>
+                <input
+                  type="password"
+                  required
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-grey mb-1">भूमिका (Role)</label>
                 <select
                   value={roleInput}
                   onChange={(e) => setRoleInput(e.target.value)}
-                  className="w-full px-3.5 py-2 border border-line rounded-lg font-poppins text-[13px] outline-none focus:border-teal bg-white cursor-pointer"
+                  className="w-full px-3 py-2 border rounded-lg bg-white"
                 >
-                  <option value="reporter">Reporter</option>
-                  <option value="editor">Editor</option>
-                  <option value="admin">Admin</option>
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="READER">READER</option>
+                  <option value="USER">USER</option>
                 </select>
               </div>
-              <div className="flex gap-2 justify-end">
+              <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowInviteModal(false)}
-                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-grey border border-line hover:bg-grey-light transition-colors"
+                  className="px-4 py-2 border rounded-lg"
                 >
                   रद्द करा
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-[#fbe8c9] transition-colors"
-                  style={{ background: 'var(--maroon)' }}
+                  disabled={createUserMutation.isPending}
+                  className="px-4 py-2 bg-maroon text-white font-bold rounded-lg"
                 >
-                  आमंत्रित करा
+                  {createUserMutation.isPending ? 'जतन करत आहे...' : 'जतन करा'}
                 </button>
               </div>
             </form>
@@ -203,38 +230,38 @@ export default function UsersPage() {
         </div>
       )}
 
-      {/* Edit Role Modal */}
-      {showRoleModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg max-w-[400px] w-full p-6 mx-4 animate-scale-up">
-            <h2 className="font-tiro text-[20px] text-maroon-deep mb-4 font-semibold">{activeMember?.name} ची भूमिका बदला</h2>
-            <form onSubmit={handleRoleSubmit}>
-              <div className="mb-5">
-                <label className="block font-poppins text-[12px] text-grey mb-1.5 font-semibold">भूमिका</label>
+      {/* Role Modal */}
+      {showRoleModal && activeMember && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
+            <h3 className="font-tiro text-xl font-bold text-ink mb-4">{activeMember.name} ची भूमिका बदला</h3>
+            <form onSubmit={handleRoleSubmit} className="space-y-4 font-poppins text-sm">
+              <div>
+                <label className="block text-grey mb-1">नवी भूमिका</label>
                 <select
                   value={newRoleVal}
                   onChange={(e) => setNewRoleVal(e.target.value)}
-                  className="w-full px-3.5 py-2 border border-line rounded-lg font-poppins text-[13px] outline-none focus:border-teal bg-white cursor-pointer"
+                  className="w-full px-3 py-2 border rounded-lg bg-white"
                 >
-                  <option value="reporter">Reporter</option>
-                  <option value="editor">Editor</option>
-                  <option value="admin">Admin</option>
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="READER">READER</option>
+                  <option value="USER">USER</option>
                 </select>
               </div>
-              <div className="flex gap-2 justify-end">
+              <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowRoleModal(false)}
-                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-grey border border-line hover:bg-grey-light transition-colors"
+                  className="px-4 py-2 border rounded-lg"
                 >
                   रद्द करा
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-[#fbe8c9] transition-colors"
-                  style={{ background: 'var(--maroon)' }}
+                  disabled={updateRoleMutation.isPending}
+                  className="px-4 py-2 bg-teal text-white font-bold rounded-lg"
                 >
-                  जतन करा
+                  अपडेट करा
                 </button>
               </div>
             </form>

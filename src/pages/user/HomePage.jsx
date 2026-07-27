@@ -9,6 +9,7 @@ import { fetchAds } from '../../api/ads.js';
 import { fetchEntertainment } from '../../api/entertainment.js';
 import { fetchEvents } from '../../api/events.js';
 import { fetchGallery } from '../../api/gallery.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 function AdCarousel({ ads }) {
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
@@ -32,7 +33,7 @@ function AdCarousel({ ads }) {
         {currentAd.link_url ? (
           <a href={currentAd.link_url} target="_blank" rel="noreferrer" className="w-full block text-center">
             <img 
-              src={`http://localhost:5000/api/banners/${currentAd.id}/image`} 
+              src={getMediaUrl(`/banners/${currentAd.id}/image`)} 
               alt="Promotion" 
               onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
               className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto" 
@@ -41,7 +42,7 @@ function AdCarousel({ ads }) {
         ) : (
           <div className="w-full block text-center cursor-pointer" onClick={() => setLightboxAd(currentAd)}>
             <img 
-              src={`http://localhost:5000/api/banners/${currentAd.id}/image`} 
+              src={getMediaUrl(`/banners/${currentAd.id}/image`)} 
               alt="Promotion" 
               onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
               className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto block" 
@@ -63,7 +64,7 @@ function AdCarousel({ ads }) {
             <X size={24} />
           </span>
           <img
-            src={`http://localhost:5000/api/banners/${lightboxAd.id}/image`}
+            src={getMediaUrl(`/banners/${lightboxAd.id}/image`)}
             alt="Advertisement"
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
             className="max-w-[800px] max-h-[80vh] rounded-lg"
@@ -173,8 +174,8 @@ export default function HomePage({ onNavigate }) {
     const latestPost = posts.find(p => p.districtName === district.name);
     return {
       name: district.name,
-      img: latestPost && (latestPost.image || latestPost.image_type)
-        ? `http://localhost:5000/api/posts/${latestPost.id}/image`
+      img: latestPost
+        ? latestPost.image ? getMediaUrl(latestPost.image) : getMediaUrl(`/posts/${latestPost.id}/image`)
         : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop',
       headline: latestPost ? latestPost.title : 'सध्या बातमी उपलब्ध नाही'
     };
@@ -250,7 +251,7 @@ export default function HomePage({ onNavigate }) {
                     onClick={() => navigate(`/article/${hero.id}`)}
                   >
                     <img
-                      src={(hero.image || hero.image_type) ? `http://localhost:5000/api/posts/${hero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                      src={hero.image ? getMediaUrl(hero.image) : hero.image_type ? getMediaUrl(`/posts/${hero.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
                       alt={hero.title}
                       className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
                     />
@@ -304,7 +305,7 @@ export default function HomePage({ onNavigate }) {
               style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}
             >
               <img
-                src={(activeHero.image || activeHero.image_type) ? `http://localhost:5000/api/posts/${activeHero.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                src={activeHero.image ? getMediaUrl(activeHero.image) : activeHero.image_type ? getMediaUrl(`/posts/${activeHero.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
                 alt={activeHero.title}
                 className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
               />
@@ -401,7 +402,7 @@ export default function HomePage({ onNavigate }) {
                   className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1"
                   style={{ border: '1px solid var(--line)' }}
                 >
-                  <img src={(a.image || a.image_type) ? `http://localhost:5000/api/posts/${a.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
+                  <img src={a.image ? getMediaUrl(a.image) : a.image_type ? getMediaUrl(`/posts/${a.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
                   <div className="p-4">
                     <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.categoryName || 'बातमी'}</span>
                     <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2 line-clamp-2">{a.title}</h3>
@@ -464,9 +465,9 @@ export default function HomePage({ onNavigate }) {
                 key={item.id}
                 onClick={() => navigate(`/entertainment/${item.id}`)}
                 className="bg-cream rounded-xl overflow-hidden shadow-sm cursor-pointer flex transition-transform hover:-translate-y-1"
-                style={{ border: '1px solid var(--line)' }}
+                style={{ border: '1.5px solid var(--line)' }}
               >
-                <img src={item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop'} alt={item.title} className="w-[100px] h-[100px] object-cover block flex-shrink-0" />
+                <img src={item.image_type ? getMediaUrl(`/entertainment/${item.id}/image`) : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop'} alt={item.title} className="w-[100px] h-[100px] object-cover block flex-shrink-0" />
                 <div className="p-3 flex flex-col justify-center w-full overflow-hidden">
                   <span className="font-poppins text-[10px] text-amber font-bold uppercase tracking-wide">{item.type}</span>
                   <h3 className="font-tiro text-[15px] leading-tight text-ink mt-1 mb-1 truncate">{item.title}</h3>
@@ -503,7 +504,7 @@ export default function HomePage({ onNavigate }) {
                   style={{ borderColor: 'var(--amber)', borderTop: '1px solid var(--line)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
                 >
                   <div className="flex items-center gap-4">
-                    <img src={prog.image_type ? `http://localhost:5000/api/events/${prog.id}/image` : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
+                    <img src={prog.image_type ? getMediaUrl(`/events/${prog.id}/image`) : 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop'} alt={prog.title} className="w-[60px] h-[60px] rounded-full object-cover" />
                     <div>
                       <h3 className="font-tiro text-[16px] text-navy mb-1 line-clamp-1">{prog.title}</h3>
                       <div className="font-poppins text-[12px] text-grey flex items-center gap-2">
@@ -589,9 +590,9 @@ export default function HomePage({ onNavigate }) {
                   className="rounded-xl overflow-hidden relative cursor-pointer group shadow-sm bg-black"
                 >
                   {item.is_video === 1 ? (
-                    <video src={`http://localhost:5000/api/gallery/${item.id}/media`} className="w-full h-[120px] object-cover opacity-80" muted />
+                    <video src={getMediaUrl(`/gallery/${item.id}/media`)} className="w-full h-[120px] object-cover opacity-80" muted />
                   ) : (
-                    <img src={`http://localhost:5000/api/gallery/${item.id}/media`} alt={item.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
+                    <img src={getMediaUrl(`/gallery/${item.id}/media`)} alt={item.title} className="w-full h-[120px] object-cover transition-transform duration-300 group-hover:scale-110" />
                   )}
                   {item.is_video === 1 && (
                     <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-[10px] px-2 py-0.5 rounded flex items-center justify-center">

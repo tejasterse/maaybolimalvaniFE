@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLoginPage from './pages/auth/AdminLoginPage.jsx';
+import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import AdminLayout from './pages/admin/AdminLayout.jsx';
 import UserReaderLayout from './pages/user/UserReaderLayout.jsx';
 
@@ -63,20 +64,22 @@ export default function App() {
       <Route path="/admin-login" element={<AdminLoginPage />} />
 
       {/* 3. Admin Panel Routes */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<DashboardPage />} />
-        <Route path="articles" element={<ArticlesPage />} />
-        <Route path="articles/new" element={<ArticleEditorPage />} />
-        <Route path="articles/edit" element={<ArticleEditorPage />} />
-        <Route path="media" element={<MediaPage />} />
-        <Route path="review" element={<ReviewPage />} />
-        <Route path="taluka" element={<TalukaPage />} />
-        <Route path="ads" element={<AdsPage />} />
-        <Route path="entertainment" element={<EntertainmentPage />} />
-        <Route path="events" element={<EventsPage />} />
-        <Route path="gallery" element={<GalleryAdminPage />} />
-        <Route path="users" element={<UsersPage />} />
-        <Route path="settings" element={<SettingsPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="articles" element={<ArticlesPage />} />
+          <Route path="articles/new" element={<ArticleEditorPage />} />
+          <Route path="articles/edit" element={<ArticleEditorPage />} />
+          <Route path="media" element={<MediaPage />} />
+          <Route path="review" element={<ReviewPage />} />
+          <Route path="taluka" element={<TalukaPage />} />
+          <Route path="ads" element={<AdsPage />} />
+          <Route path="entertainment" element={<EntertainmentPage />} />
+          <Route path="events" element={<EventsPage />} />
+          <Route path="gallery" element={<GalleryAdminPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
       </Route>
 
       {/* Catch-all */}

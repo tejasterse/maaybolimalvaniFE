@@ -1,171 +1,124 @@
 import { useState } from 'react';
-import { mediaFiles } from '../../constants/data.jsx';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchMedia, uploadMediaFile, deleteMediaItem } from '../../api/media.js';
+import { getMediaUrl } from '../../utils/media.js';
+import { Upload, Trash2 } from 'lucide-react';
 
 export default function MediaPage() {
-  const [files, setFiles] = useState(mediaFiles);
-  const [active, setActive] = useState('सर्व');
-  const [sortBy, setSortBy] = useState('latest');
+  const queryClient = useQueryClient();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [folderInput, setFolderInput] = useState('General');
 
-  // Custom modal state
-  const [showModal, setShowModal] = useState(false);
-  const [fileNameInput, setFileNameInput] = useState('');
-  const [fileTypeInput, setFileTypeInput] = useState('photo');
-
-  // Filter logic
-  const filteredFiles = files.filter((f) => {
-    if (active === 'सर्व') return true;
-    if (active === 'फोटो') return f.type === 'photo';
-    if (active === 'व्हिडिओ') return f.type === 'video';
-    if (active === 'मोठ्या फाईल्स') return f.warn === true;
-    return true;
+  const { data: mediaData, isLoading, isError } = useQuery({
+    queryKey: ['media-items'],
+    queryFn: () => fetchMedia({ limit: 100 })
   });
 
-  // Sort logic
-  const sortedFiles = [...filteredFiles];
-  if (sortBy === 'large') {
-    sortedFiles.sort((a, b) => {
-      const getBytes = (str) => {
-        const num = parseFloat(str);
-        if (str.includes('MB')) return num * 1024 * 1024;
-        if (str.includes('KB')) return num * 1024;
-        return num;
-      };
-      return getBytes(b.size) - getBytes(a.size);
-    });
-  }
+  const files = mediaData?.media || [];
+
+  const uploadMutation = useMutation({
+    mutationFn: ({ file, folder }) => uploadMediaFile(file, folder),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['media-items']);
+      setSelectedFile(null);
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteMediaItem,
+    onSuccess: () => queryClient.invalidateQueries(['media-items'])
+  });
 
   const handleUploadSubmit = (e) => {
     e.preventDefault();
-    if (!fileNameInput.trim()) return;
-
-    const newFile = {
-      name: fileNameInput.trim(),
-      size: fileTypeInput === 'video' ? '15.4 MB' : '1.5 MB',
-      type: fileTypeInput,
-      warn: fileTypeInput === 'video' ? false : Math.random() > 0.7,
-      warnLabel: 'कॉम्प्रेस करा — मोठी फाईल',
-      img: fileTypeInput === 'video'
-        ? 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=200&h=150&fit=crop'
-        : 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=200&h=150&fit=crop',
-    };
-
-    setFiles([newFile, ...files]);
-    setShowModal(false);
-    setFileNameInput('');
-    setFileTypeInput('photo');
+    if (!selectedFile) return;
+    uploadMutation.mutate({ file: selectedFile, folder: folderInput });
   };
 
   return (
     <div>
       <div className="flex justify-between items-end mb-5">
         <div>
-          <h1 className="font-tiro text-[26px] text-maroon-deep">मीडिया लायब्ररी</h1>
-          <p className="font-poppins text-[12.5px] text-grey mt-1">{files.length} फाईल्स · २.३ GB वापरले</p>
+          <h1 className="font-tiro text-[26px] text-maroon-deep font-bold">मीडिया लायब्ररी</h1>
+          <p className="font-poppins text-[12.5px] text-grey mt-1">फोटो, व्हिडिओ आणि दस्तऐवज व्यवस्थापन</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="font-poppins font-semibold text-[13px] px-[18px] py-2.5 rounded-[7px] text-[#fbe8c9] nav-transition hover:opacity-90"
-          style={{ background: 'var(--maroon)' }}
-        >
-          + अपलोड करा
-        </button>
       </div>
 
-      {/* Filters */}
-      <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
-        <div className="flex gap-2 flex-wrap">
-          {['सर्व', 'फोटो', 'व्हिडिओ', 'मोठ्या फाईल्स'].map((f) => (
-            <span
-              key={f}
-              onClick={() => setActive(f)}
-              className={`font-poppins text-[12px] px-3.5 py-[7px] rounded-[20px] cursor-pointer border-[1.5px] transition-colors
-                ${active === f ? 'bg-teal text-white border-teal' : 'bg-white text-teal border-line'}`}
-            >
-              {f}
-            </span>
-          ))}
-        </div>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="font-poppins text-[12px] text-teal bg-white border-[1.5px] border-line px-3.5 py-1.5 rounded-[20px] outline-none cursor-pointer"
-        >
-          <option value="latest">नवीनतम आधी ▾</option>
-          <option value="large">मोठ्या फाईल्स आधी ▾</option>
-        </select>
+      {/* Upload Box */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-line mb-8">
+        <h3 className="font-poppins font-bold text-sm text-ink mb-4 flex items-center gap-2">
+          <Upload size={16} /> नवीन फाईल अपलोड करा
+        </h3>
+        <form onSubmit={handleUploadSubmit} className="flex flex-wrap gap-4 items-center">
+          <input
+            type="file"
+            required
+            onChange={(e) => setSelectedFile(e.target.files[0])}
+            className="font-poppins text-xs"
+          />
+          <input
+            type="text"
+            placeholder="फोल्डर नाव (उदा. General, Events)"
+            value={folderInput}
+            onChange={(e) => setFolderInput(e.target.value)}
+            className="px-3 py-1.5 border rounded text-xs font-poppins"
+          />
+          <button
+            type="submit"
+            disabled={uploadMutation.isPending || !selectedFile}
+            className="font-poppins font-bold text-xs px-5 py-2 bg-maroon text-white rounded-lg shadow"
+          >
+            {uploadMutation.isPending ? 'अपलोड होत आहे...' : 'अपलोड करा'}
+          </button>
+        </form>
       </div>
 
       {/* Media Grid */}
-      <div className="grid gap-3.5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {/* Upload tile */}
-        <div
-          onClick={() => setShowModal(true)}
-          className="border-[1.5px] border-dashed border-gold rounded-lg flex flex-col items-center justify-center min-h-[150px] font-poppins text-[11.5px] font-semibold text-maroon-deep cursor-pointer hover:bg-white/40 transition-colors"
-        >
-          <span className="text-[22px] mb-2">＋</span>
-          अपलोड करा
-        </div>
-
-        {sortedFiles.map((f, index) => (
-          <div key={f.name + index} className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-0.5">
-            <img src={f.img} alt={f.name} className="w-full h-[110px] object-cover block" />
-            <div className="px-2.5 py-2">
-              <div className="font-poppins text-[11px] text-ink font-semibold truncate">{f.name}</div>
-              <div className={`font-poppins text-[10px] mt-0.5 ${f.warn ? 'text-amber font-bold' : 'text-grey'}`}>
-                {f.warn ? f.warnLabel : f.size}
+      {isLoading ? (
+        <div className="text-center py-12 font-poppins text-grey">मीडिया फाईल्स लोड होत आहेत...</div>
+      ) : isError ? (
+        <div className="text-center py-12 font-poppins text-red-500">मीडिया लोड करताना त्रुटी आली.</div>
+      ) : files.length === 0 ? (
+        <div className="text-center py-12 font-poppins text-grey">कोणत्याही फाईल्स उपलब्ध नाहीत.</div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {files.map((f) => (
+            <div key={f.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-line p-3 flex flex-col justify-between">
+              <div>
+                {f.type === 'image' ? (
+                  <img
+                    src={getMediaUrl(f.url)}
+                    alt={f.name}
+                    className="w-full h-36 object-cover rounded-lg mb-2"
+                  />
+                ) : (
+                  <div className="w-full h-36 bg-navy/10 rounded-lg flex items-center justify-center font-poppins font-bold text-navy text-xs p-2 text-center">
+                    {f.name}
+                  </div>
+                )}
+                <div className="font-poppins font-semibold text-xs text-ink truncate mt-1">{f.name}</div>
+                <div className="font-poppins text-[11px] text-grey">{f.folder || 'General'}</div>
               </div>
-              {f.warn && <div className="font-poppins text-[10px] text-grey">{f.size}</div>}
+              <div className="flex justify-between items-center pt-2 mt-2 border-t border-line">
+                <a
+                  href={getMediaUrl(f.url)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-poppins text-[11px] text-teal font-bold hover:underline"
+                >
+                  पहा / डाउनलोड
+                </a>
+                <button
+                  onClick={() => {
+                    if (confirm('नक्की हटवायचे?')) deleteMutation.mutate(f.id);
+                  }}
+                  className="text-red-600 hover:text-red-800 p-1"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Custom Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg max-w-[400px] w-full p-6 mx-4 animate-scale-up">
-            <h2 className="font-tiro text-[20px] text-maroon-deep mb-4 font-semibold">नवीन मीडिया फाईल अपलोड करा</h2>
-            <form onSubmit={handleUploadSubmit}>
-              <div className="mb-4">
-                <label className="block font-poppins text-[12px] text-grey mb-1.5 font-semibold">फाईलचे नाव</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="उदा. scuba-diving.jpg"
-                  value={fileNameInput}
-                  onChange={(e) => setFileNameInput(e.target.value)}
-                  className="w-full px-3.5 py-2 border border-line rounded-lg font-poppins text-[13px] outline-none focus:border-teal"
-                />
-              </div>
-              <div className="mb-5">
-                <label className="block font-poppins text-[12px] text-grey mb-1.5 font-semibold">प्रकार</label>
-                <select
-                  value={fileTypeInput}
-                  onChange={(e) => setFileTypeInput(e.target.value)}
-                  className="w-full px-3.5 py-2 border border-line rounded-lg font-poppins text-[13px] outline-none focus:border-teal bg-white cursor-pointer"
-                >
-                  <option value="photo">फोटो</option>
-                  <option value="video">व्हिडिओ</option>
-                </select>
-              </div>
-              <div className="flex gap-2 justify-end">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-grey border border-line hover:bg-grey-light transition-colors"
-                >
-                  रद्द करा
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg font-poppins text-[13px] text-[#fbe8c9] transition-colors"
-                  style={{ background: 'var(--maroon)' }}
-                >
-                  अपलोड करा
-                </button>
-              </div>
-            </form>
-          </div>
+          ))}
         </div>
       )}
     </div>

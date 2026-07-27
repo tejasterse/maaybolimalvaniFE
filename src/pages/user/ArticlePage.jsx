@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { MessageCircle, X, ArrowRight, Camera, Video, Link2 } from 'lucide-react';
 import { fetchPostById, fetchPosts } from '../../api/posts.js';
 import { fetchAds } from '../../api/ads.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 
 export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
@@ -63,9 +64,9 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
     author: post.authorName || 'संपादक',
     authorInitial: post.authorName ? post.authorName[0] : 'स',
     time: `${new Date(post.createdAt).toLocaleDateString('mr-IN')}`,
-    img: (post.image || post.image_type) ? `http://localhost:5000/api/posts/${post.id}/image` : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop',
+    img: post.image ? getMediaUrl(post.image) : post.image_type ? getMediaUrl(`/posts/${post.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop',
     hasVideo: !!post.video_type,
-    videoUrl: post.video_type ? `http://localhost:5000/api/posts/${post.id}/video` : null,
+    videoUrl: post.video_type ? getMediaUrl(`/posts/${post.id}/video`) : null,
     imgCaption: '',
     quote: '',
     tags: [`#${post.categoryName || 'बातमी'}`, `#${post.districtName || 'सिंधुदुर्ग'}`]
@@ -226,7 +227,7 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
                   className="rounded-[10px] overflow-hidden cursor-pointer transition-transform hover:-translate-y-0.5"
                   style={{ background: 'var(--cream)' }}
                 >
-                  <img src={(r.image || r.image_type) ? `http://localhost:5000/api/posts/${r.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={r.title} className="w-full h-[110px] object-cover block" />
+                  <img src={r.image ? getMediaUrl(r.image) : r.image_type ? getMediaUrl(`/posts/${r.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={r.title} className="w-full h-[110px] object-cover block" />
                   <div className="p-3">
                     <h3 className="font-tiro text-[14.5px] leading-snug text-ink line-clamp-2">{r.title}</h3>
                     <div className="font-poppins text-[10px] text-grey mt-2">{r.districtName || 'सिंधुदुर्ग'} · {new Date(r.createdAt).toLocaleDateString('mr-IN')}</div>
@@ -250,7 +251,7 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
               onClick={(e) => handleAdClick(e, ads[currentAdIndex])}
             >
               <img 
-                src={`http://localhost:5000/api/banners/${ads[currentAdIndex]?.id}/image`} 
+                src={getMediaUrl(`/banners/${ads[currentAdIndex]?.id}/image`)} 
                 alt="Advertisement" 
                 onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
                 className="max-w-full h-auto object-contain max-h-[250px]" 
@@ -274,7 +275,7 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
             <X size={24} />
           </span>
           <img
-            src={`http://localhost:5000/api/banners/${lightboxAd.id}/image`}
+            src={getMediaUrl(`/banners/${lightboxAd.id}/image`)}
             alt="Advertisement"
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
             className="max-w-[800px] max-h-[80vh] rounded-lg"

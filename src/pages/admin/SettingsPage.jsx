@@ -1,27 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchSettings, updateSettings } from '../../api/settings.js';
 import ToggleSwitch from '../../components/admin/ToggleSwitch.jsx';
 
 export default function SettingsPage() {
-  const [tickerOn, setTickerOn] = useState(true);
-  const [broadcastOn, setBroadcastOn] = useState(true);
-  const [pushOn, setPushOn] = useState(false);
-  const [tickerText, setTickerText] = useState(
-    'सिंधुदुर्ग किल्ल्यावर आज पर्यटकांची विक्रमी गर्दी\nकणकवलीत उद्या वीजपुरवठा खंडित राहणार\nमालवण बंदरात नवीन मासळी लिलाव केंद्र सुरू'
-  );
-  const [waLink, setWaLink] = useState('wa.me/channel/maayboli-malvani');
-  const [tagline, setTagline] = useState('कोकणाचा आवाज · मालवणी अभिमान');
-  const [email, setEmail] = useState('team@maayboli.in');
+  const queryClient = useQueryClient();
+  const [formData, setFormData] = useState({
+    site_name: 'मायबोली मालवणी',
+    tagline: 'कोकणाचा आवाज · मालवणी अभिमान',
+    ticker: 'सिंधुदुर्ग किल्ल्यावर आज पर्यटकांची विक्रमी गर्दी',
+    whatsapp: 'wa.me/channel/maayboli-malvani',
+    email: 'team@maayboli.in',
+    phone: '',
+    facebook: '',
+    instagram: '',
+    youtube: '',
+    footer: '',
+    seo_title: 'मायबोली मालवणी',
+    seo_description: '',
+    maintenance_mode: false
+  });
 
   const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+  const { data: settingsData } = useQuery({
+    queryKey: ['settings'],
+    queryFn: fetchSettings
+  });
+
+  useEffect(() => {
+    if (settingsData) {
+      setFormData((prev) => ({
+        ...prev,
+        ...settingsData
+      }));
+    }
+  }, [settingsData]);
+
+  const saveMutation = useMutation({
+    mutationFn: updateSettings,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['settings']);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    saveMutation.mutate(formData);
+  };
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const Box = ({ title, children }) => (
-    <div className="bg-white rounded-[10px] p-5 shadow-sm mb-4">
+    <div className="bg-white rounded-[10px] p-5 shadow-sm mb-4 border border-line">
       <h3 className="font-poppins text-[13px] font-bold text-maroon-deep mb-4 uppercase tracking-[.05em]">{title}</h3>
       {children}
     </div>
@@ -34,16 +70,7 @@ export default function SettingsPage() {
     </div>
   );
 
-  const inputCls = 'w-full px-3 py-2.5 border border-line rounded-[6px] font-mukta text-sm';
-  const toggleRow = (label, val, setter, noBorder) => (
-    <div
-      className="flex items-center justify-between py-2.5"
-      style={noBorder ? {} : { borderTop: '1px solid var(--line)' }}
-    >
-      <span className="font-poppins text-[13px] text-ink">{label}</span>
-      <ToggleSwitch on={val} onToggle={() => setter(!val)} />
-    </div>
-  );
+  const inputCls = 'w-full px-3 py-2.5 border border-line rounded-[6px] font-mukta text-sm outline-none focus:border-amber-500';
 
   return (
     <div>
@@ -59,63 +86,84 @@ export default function SettingsPage() {
           className="font-poppins text-[13.5px] text-white px-4 py-3 rounded-lg mb-5 transition-opacity duration-300 flex items-center gap-2"
           style={{ background: '#2e7d4f' }}
         >
-          <CheckCircle2 size={16} /> <span>बदल यशस्वीरित्या जतन केले आहेत!</span>
+          <CheckCircle2 size={16} /> सेटिंग्ज यशस्वीरीत्या जतन केल्या गेल्या!
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Box title="ब्रेकिंग न्यूज टिकर">
-            <Field label="टिकरमध्ये दाखवायचे लेख (कमाल ३)">
-              <textarea
-                className={inputCls}
-                style={{ minHeight: 70, resize: 'vertical' }}
-                value={tickerText}
-                onChange={(e) => setTickerText(e.target.value)}
-              />
-            </Field>
-            {toggleRow('टिकर सक्रिय आहे', tickerOn, setTickerOn, true)}
-          </Box>
-          <Box title="होमपेज फीचर्ड STORY">
-            <Field label="मुख्य फीचर्ड लेख निवडा">
-              <select className="w-full px-3 py-2.5 border border-line rounded-[6px] font-poppins text-[13px] text-ink">
-                <option>सिंधुदुर्ग किल्ल्यावर पर्यटकांची विक्रमी गर्दी</option>
-                <option>ग्रामपंचायत निवडणुकीची घोषणा</option>
-              </select>
-            </Field>
-          </Box>
-        </div>
-        <div>
-          <Box title="WhatsApp / नोटिफिकेशन ब्रॉडकास्ट">
-            <Field label="WhatsApp चॅनल लिंक">
-              <input
-                type="text"
-                className={inputCls}
-                value={waLink}
-                onChange={(e) => setWaLink(e.target.value)}
-              />
-            </Field>
-            {toggleRow('ब्रेकिंग न्यूजसाठी स्वयं-ब्रॉडकास्ट', broadcastOn, setBroadcastOn, true)}
-            {toggleRow('रीडर्ससाठी पुश नोटिफिकेशन', pushOn, setPushOn)}
-          </Box>
-          <Box title="साईट माहिती">
-            <Field label="साईट टॅगलाईन">
-              <input type="text" className={inputCls} value={tagline} onChange={(e) => setTagline(e.target.value)} />
-            </Field>
-            <Field label="संपर्क ईमेल">
-              <input type="text" className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} />
-            </Field>
-          </Box>
-        </div>
-      </div>
+      <form onSubmit={handleSubmit}>
+        <Box title="सामान्य सेटिंग्ज">
+          <Field label="पोर्टलचे नाव">
+            <input
+              type="text"
+              value={formData.site_name}
+              onChange={(e) => handleChange('site_name', e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+          <Field label="टॅगलाईन">
+            <input
+              type="text"
+              value={formData.tagline}
+              onChange={(e) => handleChange('tagline', e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+          <Field label="ब्रेकिंग न्यूज टिकर मजकूर">
+            <textarea
+              rows={3}
+              value={formData.ticker || ''}
+              onChange={(e) => handleChange('ticker', e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+        </Box>
 
-      <button
-        onClick={handleSave}
-        className="font-poppins font-semibold text-[13px] px-[18px] py-2.5 rounded-[7px] text-[#fbe8c9] mt-2 nav-transition"
-        style={{ background: 'var(--maroon)' }}
-      >
-        बदल जतन करा
-      </button>
+        <Box title="संपर्क व सोशल मीडिया">
+          <Field label="व्हॉट्सॲप चॅनल लिंक">
+            <input
+              type="text"
+              value={formData.whatsapp || ''}
+              onChange={(e) => handleChange('whatsapp', e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+          <Field label="अधिकृत ईमेल">
+            <input
+              type="email"
+              value={formData.email || ''}
+              onChange={(e) => handleChange('email', e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+          <Field label="संपर्क फोन">
+            <input
+              type="text"
+              value={formData.phone || ''}
+              onChange={(e) => handleChange('phone', e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+        </Box>
+
+        <Box title="सिस्टम मोड्स">
+          <div className="flex items-center justify-between py-2.5">
+            <span className="font-poppins text-[13px] text-ink">मेंटेनन्स मोड (Maintenance Mode)</span>
+            <ToggleSwitch
+              on={formData.maintenance_mode}
+              onToggle={() => handleChange('maintenance_mode', !formData.maintenance_mode)}
+            />
+          </div>
+        </Box>
+
+        <button
+          type="submit"
+          disabled={saveMutation.isPending}
+          className="font-poppins font-bold text-[14px] px-8 py-3 rounded-lg text-white shadow-md transition-all"
+          style={{ background: 'var(--maroon)' }}
+        >
+          {saveMutation.isPending ? 'जतन करत आहे...' : 'सेटिंग्ज जतन करा'}
+        </button>
+      </form>
     </div>
   );
 }

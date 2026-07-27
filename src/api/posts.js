@@ -1,9 +1,11 @@
 import apiClient from './apiClient.js';
 
-export const fetchPosts = async ({ page = 1, limit = 50, categoryId, admin } = {}) => {
+export const fetchPosts = async ({ page = 1, limit = 50, categoryId, districtId, admin, search } = {}) => {
   const params = { page, limit };
-  if (categoryId) params.categoryId = categoryId;
+  if (categoryId) params.category_id = categoryId;
+  if (districtId) params.district_id = districtId;
   if (admin) params.admin = true;
+  if (search) params.search = search;
   
   const { data } = await apiClient.get('/posts', { params });
   return data;

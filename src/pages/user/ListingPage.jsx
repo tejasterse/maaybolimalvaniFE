@@ -3,6 +3,7 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search, ArrowRight } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 const talukaFilters = ['सर्व तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
 
@@ -168,7 +169,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
               className="listing-item-inner flex gap-5 bg-white rounded-[10px] p-4 mb-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-0.5"
             >
               <img
-                src={(item.image || item.image_type) ? `http://localhost:5000/api/posts/${item.id}/image` : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
+                src={item.image ? getMediaUrl(item.image) : item.image_type ? getMediaUrl(`/posts/${item.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
                 alt={item.title}
                 onError={(e) => {
                   e.currentTarget.onerror = null;

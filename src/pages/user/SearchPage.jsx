@@ -1,107 +1,92 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, RefreshCw } from 'lucide-react';
-import { searchResults } from '../../constants/data.jsx';
+import { Search } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchPosts } from '../../api/posts.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function SearchPage({ onNavigate, onGoBack }) {
   const routerNavigate = useNavigate();
-  const navigate = (path) => {
-    if (onNavigate) {
-      if (path === '/') {
-        onNavigate('home');
-      } else {
-        onNavigate('home');
-      }
-    } else {
-      routerNavigate(path);
-    }
-  };
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeQuery, setActiveQuery] = useState('');
+
+  const { data: searchData, isLoading, isError } = useQuery({
+    queryKey: ['search-posts', activeQuery],
+    queryFn: () => fetchPosts({ search: activeQuery, limit: 30 }),
+    enabled: true
+  });
+
+  const posts = searchData?.posts || [];
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setActiveQuery(searchQuery);
+  };
 
   return (
     <div>
       {/* Search Hero */}
       <div className="bg-white py-8" style={{ borderBottom: '1px solid var(--line)' }}>
-        <div className="max-w-[640px] mx-auto flex gap-2.5 px-4">
+        <form onSubmit={handleSearchSubmit} className="max-w-[640px] mx-auto flex gap-2.5 px-4">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="शोधायचे शब्द टाका..."
+            placeholder="शोधायचे शब्द टाका (उदा. मालवण, पर्यटन, बातमी)..."
             className="flex-1 px-[18px] py-3.5 font-mukta text-[16px] text-ink rounded-[10px] outline-none"
             style={{ border: '2px solid var(--gold)' }}
           />
           <button
-            className="font-poppins font-semibold text-[14px] px-6 rounded-[10px]"
+            type="submit"
+            className="font-poppins font-semibold text-[14px] px-6 rounded-[10px] flex items-center gap-2"
             style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
           >
-            शोधा
+            <Search size={16} /> શોधा
           </button>
-        </div>
+        </form>
       </div>
 
-      <div className="max-w-[1180px] mx-auto px-6">
-        <div className="grid gap-6 py-7" style={{ gridTemplateColumns: '230px 1fr' }}>
-          {/* Filters Sidebar */}
-          <aside className="bg-white rounded-[10px] p-5 shadow-sm self-start">
-            <h4 className="font-poppins text-[11.5px] uppercase tracking-[.06em] text-grey mb-2.5">विभाग</h4>
-            {['पर्यटन', 'राजकारण', 'संस्कृती', 'क्रीडा'].map((c) => (
-              <label key={c} className="flex items-center gap-2 font-mukta text-sm text-ink py-1 cursor-pointer">
-                <input type="checkbox" />
-                {c}
-              </label>
-            ))}
-            <h4 className="font-poppins text-[11.5px] uppercase tracking-[.06em] text-grey mt-4 mb-2.5">तालुका</h4>
-            {['मालवण', 'कणकवली', 'कुडाळ'].map((t) => (
-              <label key={t} className="flex items-center gap-2 font-mukta text-sm text-ink py-1 cursor-pointer">
-                <input type="checkbox" />
-                {t}
-              </label>
-            ))}
-            <h4 className="font-poppins text-[11.5px] uppercase tracking-[.06em] text-grey mt-4 mb-2.5">कालावधी</h4>
-            {['कधीही', 'गेल्या ७ दिवसांत', 'गेल्या महिन्यात'].map((d, i) => (
-              <label key={d} className="flex items-center gap-2 font-mukta text-sm text-ink py-1 cursor-pointer">
-                <input type="radio" name="d" defaultChecked={i === 0} />
-                {d}
-              </label>
-            ))}
-          </aside>
+      <div className="max-w-[1180px] mx-auto px-6 py-8">
+        <h2 className="font-tiro text-[22px] text-ink mb-6">
+          {activeQuery ? `"${activeQuery}" संदर्भातील निकाल (${posts.length})` : `सर्व ताज्या बातम्या (${posts.length})`}
+        </h2>
 
-          {/* Results */}
-          <div>
-            {searchResults.length > 0 ? (
-              <>
-                <div className="font-poppins text-[13px] text-grey mb-4">
-                  <b className="text-ink">{searchResults.length}</b> परिणाम सापडले {searchQuery && <>"<b className="text-ink">{searchQuery}</b>" साठी</>}
-                </div>
-                {searchResults.map((r) => (
-                  <div key={r.title} className="bg-white rounded-[10px] px-5 py-4 mb-3.5 shadow-sm">
-                    <span className="font-poppins text-[10.5px] text-teal font-bold uppercase">{r.tag}</span>
-                    <h3 className="font-tiro text-[19px] text-ink my-1.5">{r.title}</h3>
-                    <p className="font-mukta text-[14.5px] leading-relaxed" style={{ color: '#5a4c3a' }}>
-                      {r.excerpt}
-                    </p>
-                    <div className="font-poppins text-[11px] text-grey mt-2.5">{r.meta}</div>
+        {isLoading ? (
+          <div className="text-center py-12 font-poppins text-grey">बातम्या शोधत आहे...</div>
+        ) : isError ? (
+          <div className="text-center py-12 font-poppins text-red-500">शोधताना त्रुटी आली.</div>
+        ) : posts.length === 0 ? (
+          <div className="text-center py-12 font-poppins text-grey">कोणतीही बातमी सापडली नाही.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <div
+                key={post.id}
+                onClick={() => routerNavigate(`/article/${post.id}`)}
+                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-line cursor-pointer flex flex-col"
+              >
+                <img
+                  src={post.image ? getMediaUrl(post.image) : post.image_type ? getMediaUrl(`/posts/${post.id}/image`) : 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&h=250&fit=crop'}
+                  alt={post.title}
+                  className="w-full h-44 object-cover"
+                />
+                <div className="p-4 flex flex-col flex-1 justify-between">
+                  <div>
+                    <span className="font-poppins text-[11px] font-bold text-teal bg-teal/10 px-2.5 py-0.5 rounded-full">
+                      {post.categoryName || 'बातमी'}
+                    </span>
+                    <h3 className="font-tiro text-[17px] font-bold text-ink mt-2 line-clamp-2 leading-snug">
+                      {post.title}
+                    </h3>
                   </div>
-                ))}
-              </>
-            ) : (
-              <>
-                <div className="font-poppins text-[13px] text-grey mb-4">
-                  <b className="text-ink">०</b> परिणाम सापडले {searchQuery && <>"<b className="text-ink">{searchQuery}</b>" साठी</>}
+                  <p className="font-poppins text-[12px] text-grey mt-3">
+                    {new Date(post.createdAt).toLocaleDateString('mr-IN')}
+                  </p>
                 </div>
-                <div className="bg-white rounded-[10px] px-7 py-14 text-center shadow-sm border border-dashed border-line">
-                  <div className="flex justify-center mb-4">
-                    <Search size={48} className="text-grey/40" />
-                  </div>
-                  <h3 className="font-tiro text-[20px] text-ink mb-2">काही सापडले नाही</h3>
-                  <p className="font-poppins text-[13px] text-grey mb-1.5">शोधाशी जुळणारी कोणतीही बातमी उपलब्ध नाही.</p>
-                  <p className="font-poppins text-[13px] text-grey">शब्दलेखन तपासा किंवा वेगळे शब्द वापरून पुन्हा शोधा.</p>
-                </div>
-              </>
-            )}
+              </div>
+            ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

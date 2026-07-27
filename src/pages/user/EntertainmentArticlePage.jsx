@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEntertainmentById } from '../../api/entertainment.js';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function EntertainmentArticlePage({ articleId, onNavigate, onGoBack }) {
   const { id: routeId } = useParams();
@@ -35,7 +36,7 @@ export default function EntertainmentArticlePage({ articleId, onNavigate, onGoBa
     );
   }
 
-  const imageUrl = item.image_type ? `http://localhost:5000/api/entertainment/${item.id}/image` : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&h=500&fit=crop';
+  const imageUrl = item.image_type ? getMediaUrl(`/entertainment/${item.id}/image`) : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&h=500&fit=crop';
 
   return (
     <div className="bg-[#fafafa] min-h-screen pb-16 pt-8">

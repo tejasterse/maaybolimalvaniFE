@@ -174,7 +174,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
             className="cursor-pointer flex-shrink-0 p-0 m-0 leading-none flex items-center"
             onClick={() => navigate('home')}
           >
-            <img src="/logo.png" alt="मायबोली मालवणी" className="h-[80px] md:h-[95px] object-contain drop-shadow-md transition-transform hover:scale-105 p-0 m-0 block" />
+            <img src="/logo.png" alt="मायबोली मालवणी" className="h-[100px] md:h-[125px] object-contain drop-shadow-md transition-transform hover:scale-105 p-0 m-0 block" />
           </div>
 
           {/* Primary Nav — positioned directly on right side of logo */}

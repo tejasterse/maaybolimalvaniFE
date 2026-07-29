@@ -20,7 +20,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
               className="mb-2 cursor-pointer"
               onClick={() => handleNavigate('home')}
             >
-              <img src="/logo.png" alt="मायबोली मालवणी" className="h-[75px] object-contain drop-shadow-md p-0 m-0 block" />
+              <img src="/logo.png" alt="मायबोली मालवणी" className="h-[90px] object-contain drop-shadow-md p-0 m-0 block" />
             </div>
             <div className="font-poppins text-[11.5px] leading-relaxed" style={{ color: '#8fa0b3' }}>
               कोकणाचो आवाज · मालवणी अभिमान<br />सिंधुदुर्ग जिल्ह्यातलो विश्वासार्ह मराठी बातमीपत्र
@@ -57,7 +57,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
           <div>
             <h4 className="font-poppins font-bold text-[11px] uppercase tracking-[.1em] text-gold-light mb-3">तालुके</h4>
             <div className="space-y-1">
-              {['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'].map((t) => (
+              {['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'वैभववाडी', 'दोडामार्ग'].map((t) => (
                 <button
                   key={t}
                   onClick={() => {

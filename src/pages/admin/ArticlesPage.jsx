@@ -137,6 +137,7 @@ export default function ArticlesPage({ onEdit }) {
             <option>वेंगुर्ला</option>
             <option>देवगड</option>
             <option>वैभववाडी</option>
+            <option>दोडामार्ग</option>
           </select>
 
           <select

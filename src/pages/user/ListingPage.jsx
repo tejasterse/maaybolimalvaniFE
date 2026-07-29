@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight, Eye, Play } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
+import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
-const talukaFilters = ['सगळे तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
+const talukaFilters = ['सगळे तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'वैभववाडी', 'दोडामार्ग'];
 
 const categoryDetails = {
   listing: { title: 'तालुक्यच्यो बातम्या', desc: 'सिंधुदुर्ग आनि कोकण परिसरांतल्यो तालुक्यांच्यो बातम्या', count: 'एकूण ६२ लेख' },
@@ -65,6 +67,11 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
     queryFn: () => fetchPosts()
   });
   const posts = data.posts || [];
+
+  const { data: ads = [] } = useQuery({
+    queryKey: ['ads'],
+    queryFn: fetchAds
+  });
 
   const categoryMappingReverse = {
     'rajkaran': ['राजकारण', 'Politics'],
@@ -171,25 +178,37 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
               onClick={() => navigate(`/article/${item.id}`)}
               className="listing-item-inner flex gap-5 bg-white rounded-[10px] p-4 mb-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-0.5"
             >
-              <img
-                src={item.image ? getMediaUrl(item.image) : item.image_type ? getMediaUrl(`/posts/${item.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
-                alt={item.title}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=80';
-                }}
-                className="w-[200px] h-[130px] object-cover rounded-lg flex-shrink-0 hidden sm:block bg-gray-100"
-              />
-              <div>
-                <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-[.05em]">
-                  {item.categoryName || 'बातमी'}
-                </span>
-                <h3 className="font-tiro text-[19px] text-ink my-2 leading-snug">{item.title}</h3>
-                <p className="font-mukta text-[15px] leading-relaxed mb-3 text-grey line-clamp-3">
-                  {item.content ? stripHtml(item.content).substring(0, 150) + '...' : ''}
-                </p>
-                <div className="font-poppins text-[11px] text-grey">
-                  {item.districtName || 'सिंधुदुर्ग'} · {new Date(item.createdAt).toLocaleDateString('mr-IN')}
+              <div className="relative flex-shrink-0 hidden sm:block">
+                <img
+                  src={item.image ? getMediaUrl(item.image) : item.image_type ? getMediaUrl(`/posts/${item.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
+                  alt={item.title}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=80';
+                  }}
+                  className="w-[200px] h-[130px] object-cover rounded-lg block bg-gray-100"
+                />
+                {(item.video_type || item.video_url || item.hasVideo || item.isVideo) && (
+                  <div className="absolute top-2 right-2 bg-black/70 text-white p-1.5 rounded-full backdrop-blur-xs">
+                    <Play size={12} fill="currentColor" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 flex flex-col justify-between">
+                <div>
+                  <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-[.05em]">
+                    {item.categoryName || 'बातमी'}
+                  </span>
+                  <h3 className="font-tiro text-[19px] text-ink my-1.5 leading-snug">{item.title}</h3>
+                  <p className="font-mukta text-[15px] leading-relaxed mb-2 text-grey line-clamp-2">
+                    {item.content ? stripHtml(item.content).substring(0, 140) + '...' : ''}
+                  </p>
+                </div>
+                <div className="font-poppins text-[11px] text-grey flex items-center justify-between">
+                  <span>{item.districtName || 'सिंधुदुर्ग'} · {new Date(item.createdAt).toLocaleDateString('mr-IN')}</span>
+                  <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
+                    <Eye size={12} className="text-teal" /> {item.views || Math.floor(100 + (item.id * 173) % 1800)} वाचक
+                  </span>
                 </div>
               </div>
             </div>
@@ -233,6 +252,9 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
             )}
           </div>
         )}
+
+        {/* Advertisement Slider */}
+        <AdCarousel ads={ads} className="my-8" />
       </div>
     </div>
   );

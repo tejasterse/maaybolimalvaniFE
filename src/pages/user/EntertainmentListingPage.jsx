@@ -2,7 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEntertainment } from '../../api/entertainment.js';
+import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
 export default function EntertainmentListingPage({ onNavigate, onGoBack }) {
   const routerNavigate = useNavigate();
@@ -17,6 +19,11 @@ export default function EntertainmentListingPage({ onNavigate, onGoBack }) {
   const { data: items = [], isLoading, isError } = useQuery({
     queryKey: ['entertainment'],
     queryFn: fetchEntertainment
+  });
+
+  const { data: ads = [] } = useQuery({
+    queryKey: ['ads'],
+    queryFn: fetchAds
   });
 
   if (isLoading) {
@@ -73,6 +80,9 @@ export default function EntertainmentListingPage({ onNavigate, onGoBack }) {
             </div>
           )}
         </div>
+
+        {/* Advertisement Carousel */}
+        <AdCarousel ads={ads} className="mt-10" />
       </div>
     </div>
   );

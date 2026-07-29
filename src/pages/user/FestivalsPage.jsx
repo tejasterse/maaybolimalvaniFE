@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Calendar, CheckCircle, MapPin, Share2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from '../../api/events.js';
+import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
 export default function FestivalsPage({ onNavigate, onGoBack }) {
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -10,6 +12,11 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
   const { data: eventsList = [], isLoading, isError } = useQuery({
     queryKey: ['events'],
     queryFn: fetchEvents
+  });
+
+  const { data: ads = [] } = useQuery({
+    queryKey: ['ads'],
+    queryFn: fetchAds
   });
 
   return (
@@ -88,6 +95,9 @@ export default function FestivalsPage({ onNavigate, onGoBack }) {
             ))}
           </div>
         )}
+
+        {/* Advertisement Carousel */}
+        <AdCarousel ads={ads} className="mt-10" />
       </div>
     </div>
   );

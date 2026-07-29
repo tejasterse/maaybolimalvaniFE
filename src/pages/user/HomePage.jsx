@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { X, Landmark, Palmtree, Fish, Film, Trophy, Scale, Train, Bus, Car, Bot, ArrowRight, Calendar, MapPin, Play, Newspaper } from 'lucide-react';
+import { X, Landmark, Palmtree, Fish, Film, Trophy, Scale, Train, Bus, Car, Bot, ArrowRight, Calendar, MapPin, Play, Newspaper, Eye, Video, ChevronLeft, ChevronRight } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
 import { fetchCategories } from '../../api/categories.js';
 import { fetchDistricts } from '../../api/districts.js';
@@ -11,70 +11,7 @@ import { fetchEvents } from '../../api/events.js';
 import { fetchGallery } from '../../api/gallery.js';
 import { getMediaUrl } from '../../utils/media.js';
 
-function AdCarousel({ ads }) {
-  const [currentAdIndex, setCurrentAdIndex] = useState(0);
-  const [lightboxAd, setLightboxAd] = useState(null);
-
-  useEffect(() => {
-    if (!ads || ads.length <= 1) return;
-    const intervalId = setInterval(() => {
-      setCurrentAdIndex((prev) => (prev + 1) % ads.length);
-    }, 5000);
-    return () => clearInterval(intervalId);
-  }, [ads]);
-
-  if (!ads || ads.length === 0) return null;
-
-  const currentAd = ads[currentAdIndex];
-
-  return (
-    <>
-      <div className="mb-10 w-full rounded-xl overflow-hidden shadow-sm transition-opacity hover:opacity-95 bg-white flex justify-center items-center border border-line">
-        {currentAd.link_url ? (
-          <a href={currentAd.link_url} target="_blank" rel="noreferrer" className="w-full block text-center">
-            <img 
-              src={getMediaUrl(`/banners/${currentAd.id}/image`)} 
-              alt="Promotion" 
-              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
-              className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto" 
-            />
-          </a>
-        ) : (
-          <div className="w-full block text-center cursor-pointer" onClick={() => setLightboxAd(currentAd)}>
-            <img 
-              src={getMediaUrl(`/banners/${currentAd.id}/image`)} 
-              alt="Promotion" 
-              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
-              className="w-full h-auto max-h-[250px] md:max-h-[350px] object-contain mx-auto block" 
-            />
-          </div>
-        )}
-      </div>
-
-      {lightboxAd && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-6"
-          style={{ background: 'rgba(14,42,71,.92)' }}
-          onClick={() => setLightboxAd(null)}
-        >
-          <span
-            className="absolute top-6 right-8 text-white cursor-pointer font-poppins"
-            onClick={() => setLightboxAd(null)}
-          >
-            <X size={24} />
-          </span>
-          <img
-            src={getMediaUrl(`/banners/${lightboxAd.id}/image`)}
-            alt="Advertisement"
-            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
-            className="max-w-[800px] max-h-[80vh] rounded-lg"
-            style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}
-          />
-        </div>
-      )}
-    </>
-  );
-}
+import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
 const talukaHighlights = [
   { name: 'मालवण', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop', headline: 'किल्ल्याचेर विक्रमी गर्दी' },
@@ -170,16 +107,39 @@ export default function HomePage({ onNavigate }) {
     queryFn: fetchGallery
   });
 
-  const dynamicTalukaHighlights = dbDistricts.map(district => {
+  const [modalVideo, setModalVideo] = useState(null);
+
+  const defaultTalukas = [
+    { name: 'मालवण', headline: 'किल्ल्याचेर विक्रमी गर्दी' },
+    { name: 'कणकवली', headline: 'निवडणूक घोषणा' },
+    { name: 'देवगड', headline: 'आंबा हंगाम चर्चा' },
+    { name: 'सावंतवाडी', headline: 'खेळणी उद्योगाक प्रोत्साहन' },
+    { name: 'वेंगुर्ला', headline: 'किनारपट्टी विकास' },
+    { name: 'कुडाळ', headline: 'गणेशोत्सव तयारी' },
+    { name: 'वैभववाडी', headline: 'काजू प्रक्रिया अनुदान' },
+    { name: 'दोडामार्ग', headline: 'वनविभाग कारवाई' },
+  ];
+
+  const listToUse = dbDistricts.length > 0 ? dbDistricts : defaultTalukas;
+
+  const dynamicTalukaHighlights = listToUse.map(district => {
     const latestPost = posts.find(p => p.districtName === district.name);
     return {
       name: district.name,
       img: latestPost
         ? latestPost.image ? getMediaUrl(latestPost.image) : getMediaUrl(`/posts/${latestPost.id}/image`)
         : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=200&h=140&fit=crop',
-      headline: latestPost ? latestPost.title : 'सद्याक बातमी उपलब्ध नाय'
+      headline: latestPost ? latestPost.title : (district.headline || 'सद्याक बातमी उपलब्ध नाय')
     };
   });
+
+  const videoPosts = posts.filter(p => p.video_type || p.video_url || p.hasVideo || p.isVideo);
+  const defaultVideoNews = [
+    { id: 101, title: 'सिंधुदुर्ग किल्ला ड्रोन व्ह्यू २०२६', duration: '२:४५ मि.', thumbnail: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'पर्यटन', views: 2450 },
+    { id: 102, title: 'दशावतार नाट्य सादरीकरण थेट वार्तांकन', duration: '४:२० मि.', thumbnail: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=600&h=380&fit=crop', taluka: 'देवगड', categoryName: 'संस्कृती', views: 1890 },
+    { id: 103, title: 'मालवण मच्छिमार सहकारी सभा चर्चा', duration: '३:१५ मि.', thumbnail: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'मासेमारी', views: 1320 },
+    { id: 104, title: 'सावंतवाडी लाकडी खेळणी कारागीर मुलाखत', duration: '५:१० मि.', thumbnail: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&h=380&fit=crop', taluka: 'सावंतवाडी', categoryName: 'संस्कृती', views: 980 },
+  ];
 
   const filteredLatest = activeTab === 'सर्व'
     ? posts
@@ -235,7 +195,7 @@ export default function HomePage({ onNavigate }) {
         </div>
       )}
 
-      <div className="max-w-[1180px] mx-auto px-6 pb-12">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 pb-12">
 
         {breakingNewsData.length > 0 ? (
           <div className="py-6">
@@ -250,11 +210,18 @@ export default function HomePage({ onNavigate }) {
                     className="hero-inner flex flex-col md:flex-row gap-0 md:gap-6 bg-white h-[420px] md:h-[340px] flex-shrink-0 cursor-pointer w-full group overflow-hidden"
                     onClick={() => navigate(`/article/${hero.id}`)}
                   >
-                    <img
-                      src={hero.image ? getMediaUrl(hero.image) : hero.image_type ? getMediaUrl(`/posts/${hero.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
-                      alt={hero.title}
-                      className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
-                    />
+                    <div className="relative w-full md:w-[55%] h-[180px] md:h-[340px]">
+                      <img
+                        src={hero.image ? getMediaUrl(hero.image) : hero.image_type ? getMediaUrl(`/posts/${hero.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                        alt={hero.title}
+                        className="w-full h-full object-cover flex-shrink-0 block"
+                      />
+                      {(hero.video_type || hero.video_url || hero.hasVideo || hero.isVideo) && (
+                        <div className="absolute top-3 right-3 bg-black/75 text-white p-2 rounded-full backdrop-blur-xs shadow-md">
+                          <Play size={16} fill="currentColor" />
+                        </div>
+                      )}
+                    </div>
                     <div className="flex flex-col justify-center px-4 md:pr-8 py-4 md:py-8 w-full md:w-[45%] h-[240px] md:h-full">
                       <span
                         className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
@@ -265,11 +232,11 @@ export default function HomePage({ onNavigate }) {
                       <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 group-hover:text-teal transition-colors line-clamp-2 md:line-clamp-none">
                         {hero.title}
                       </h2>
-                      {/* <p className="font-mukta text-[14px] md:text-[16px] leading-relaxed mb-2 md:mb-4 line-clamp-2 md:line-clamp-3" style={{ color: '#5a4c3a' }}>
-                        {stripHtml(hero.content)}
-                      </p> */}
-                      <div className="font-poppins text-[12px] text-grey">
-                        {hero.districtName || 'सिंधुदुर्ग'} · {new Date(hero.createdAt).toLocaleDateString('mr-IN')}
+                      <div className="font-poppins text-[12px] text-grey flex items-center justify-between">
+                        <span>{hero.districtName || 'सिंधुदुर्ग'} · {new Date(hero.createdAt).toLocaleDateString('mr-IN')}</span>
+                        <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
+                          <Eye size={12} className="text-teal" /> {hero.views || Math.floor(500 + (hero.id * 219) % 3000)} वाचक
+                        </span>
                       </div>
                       <button
                         className="mt-5 self-start font-poppins font-semibold text-[13px] px-5 py-2.5 rounded-lg transition-colors hover:bg-opacity-90"
@@ -304,11 +271,18 @@ export default function HomePage({ onNavigate }) {
               onClick={() => navigate(`/article/${activeHero.id}`)}
               style={{ boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}
             >
-              <img
-                src={activeHero.image ? getMediaUrl(activeHero.image) : activeHero.image_type ? getMediaUrl(`/posts/${activeHero.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
-                alt={activeHero.title}
-                className="w-full md:w-[55%] h-[180px] md:h-[340px] object-cover flex-shrink-0 block"
-              />
+              <div className="relative w-full md:w-[55%] h-[180px] md:h-[340px]">
+                <img
+                  src={activeHero.image ? getMediaUrl(activeHero.image) : activeHero.image_type ? getMediaUrl(`/posts/${activeHero.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                  alt={activeHero.title}
+                  className="w-full h-full object-cover flex-shrink-0 block"
+                />
+                {(activeHero.video_type || activeHero.video_url || activeHero.hasVideo || activeHero.isVideo) && (
+                  <div className="absolute top-3 right-3 bg-black/75 text-white p-2 rounded-full backdrop-blur-xs shadow-md">
+                    <Play size={16} fill="currentColor" />
+                  </div>
+                )}
+              </div>
               <div className="flex flex-col justify-center px-4 md:pr-8 py-4 md:py-8 w-full md:w-[45%] h-[240px] md:h-full">
                 <span
                   className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
@@ -322,8 +296,11 @@ export default function HomePage({ onNavigate }) {
                 <p className="font-mukta text-[14px] md:text-[16px] leading-relaxed mb-2 md:mb-4 line-clamp-2 md:line-clamp-3" style={{ color: '#5a4c3a' }}>
                   {stripHtml(activeHero.content)}
                 </p>
-                <div className="font-poppins text-[12px] text-grey">
-                  {activeHero.districtName || 'सिंधुदुर्ग'} · {new Date(activeHero.createdAt).toLocaleDateString('mr-IN')}
+                <div className="font-poppins text-[12px] text-grey flex items-center justify-between">
+                  <span>{activeHero.districtName || 'सिंधुदुर्ग'} · {new Date(activeHero.createdAt).toLocaleDateString('mr-IN')}</span>
+                  <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
+                    <Eye size={12} className="text-teal" /> {activeHero.views || Math.floor(500 + (activeHero.id * 219) % 3000)} वाचक
+                  </span>
                 </div>
                 <button
                   className="mt-5 self-start font-poppins font-semibold text-[13px] px-5 py-2.5 rounded-lg transition-colors hover:bg-opacity-90"
@@ -339,21 +316,21 @@ export default function HomePage({ onNavigate }) {
           <div className="py-6"></div>
         )}
 
-        {/* 2. Taluka Highlights */}
+        {/* 2. Taluka Highlights - 8 Talukas */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-tiro text-[24px] text-maroon-deep">तालुक्याच्यो बातम्या</h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
             {dynamicTalukaHighlights.map((t) => (
               <div
                 key={t.name}
                 onClick={() => navigate('/listing', { state: { taluka: t.name } })}
-                className="rounded-xl p-4 cursor-pointer transition-transform hover:-translate-y-1 shadow-sm bg-white flex flex-col justify-center items-center text-center h-[110px] border-b-4 border-teal"
+                className="rounded-xl p-3 cursor-pointer transition-transform hover:-translate-y-1 shadow-sm bg-white flex flex-col justify-center items-center text-center h-[105px] border-b-4 border-teal"
                 style={{ borderTop: '1px solid var(--line)', borderLeft: '1px solid var(--line)', borderRight: '1px solid var(--line)' }}
               >
-                <div className="font-tiro font-bold text-[18px] text-maroon-deep mb-1">{t.name}</div>
-                <div className="font-mukta text-[11px] leading-snug text-grey line-clamp-2">{t.headline}</div>
+                <div className="font-tiro font-bold text-[16px] text-maroon-deep mb-1">{t.name}</div>
+                <div className="font-mukta text-[10.5px] leading-tight text-grey line-clamp-2">{t.headline}</div>
               </div>
             ))}
           </div>
@@ -399,14 +376,28 @@ export default function HomePage({ onNavigate }) {
                 <div
                   key={a.id}
                   onClick={() => navigate(`/article/${a.id}`)}
-                  className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1"
+                  className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-transform hover:-translate-y-1 group flex flex-col justify-between"
                   style={{ border: '1px solid var(--line)' }}
                 >
-                  <img src={a.image ? getMediaUrl(a.image) : a.image_type ? getMediaUrl(`/posts/${a.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
-                  <div className="p-4">
-                    <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.categoryName || 'बातमी'}</span>
-                    <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2 line-clamp-2">{a.title}</h3>
-                    <div className="font-poppins text-[11px] text-grey">{a.districtName || 'सिंधुदुर्ग'} · {new Date(a.createdAt).toLocaleDateString('mr-IN')}</div>
+                  <div>
+                    <div className="relative">
+                      <img src={a.image ? getMediaUrl(a.image) : a.image_type ? getMediaUrl(`/posts/${a.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'} alt={a.title} className="w-full h-[160px] object-cover block" />
+                      {(a.video_type || a.video_url || a.hasVideo || a.isVideo) && (
+                        <div className="absolute top-2 right-2 bg-black/75 text-white p-1.5 rounded-full backdrop-blur-xs shadow-md">
+                          <Play size={12} fill="currentColor" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-4 pb-2">
+                      <span className="font-poppins text-[10.5px] text-teal font-bold uppercase tracking-wide">{a.categoryName || 'बातमी'}</span>
+                      <h3 className="font-tiro text-[17px] leading-snug text-ink mt-1.5 mb-2 line-clamp-2 group-hover:text-teal transition-colors">{a.title}</h3>
+                    </div>
+                  </div>
+                  <div className="px-4 pb-4 font-poppins text-[11px] text-grey flex items-center justify-between pt-2 border-t border-line/60">
+                    <span>{a.districtName || 'सिंधुदुर्ग'} · {new Date(a.createdAt).toLocaleDateString('mr-IN')}</span>
+                    <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
+                      <Eye size={12} className="text-teal" /> {a.views || Math.floor(120 + (a.id * 183) % 1900)} वाचक
+                    </span>
                   </div>
                 </div>
               ))
@@ -418,6 +409,102 @@ export default function HomePage({ onNavigate }) {
             )}
           </div>
         </div>
+
+        {/* 4. Dedicated Video Section: खास व्हिडिओ बातम्या */}
+        <div className="mb-10 bg-[#162738] rounded-2xl p-6 shadow-md text-white">
+          <div className="flex items-center justify-between mb-5 border-b border-white/10 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="p-2 bg-red-600 rounded-lg text-white animate-pulse flex items-center justify-center">
+                <Video size={20} />
+              </span>
+              <div>
+                <h2 className="font-tiro text-[24px] text-white leading-tight">खास व्हिडिओ बातम्या</h2>
+                <div className="font-poppins text-[11.5px] text-white/70">कोकणातल्या ताज्या व्हिडिओ घडामोडी</div>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/gallery', { tab: 'व्हिडिओ' })}
+              className="font-poppins font-semibold text-[12px] text-gold-light px-4 py-1.5 rounded-lg border border-gold/40 hover:bg-gold hover:text-navy transition-colors flex items-center gap-1"
+            >
+              सगळे व्हिडिओ बघा <ArrowRight size={14} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {(videoPosts.length > 0 ? videoPosts : defaultVideoNews).slice(0, 4).map((v) => (
+              <div
+                key={v.id}
+                onClick={() => setModalVideo(v)}
+                className="bg-white/5 rounded-xl overflow-hidden border border-white/10 cursor-pointer group hover:border-gold/60 transition-all flex flex-col justify-between"
+              >
+                <div className="relative overflow-hidden aspect-video">
+                  <img
+                    src={v.image ? getMediaUrl(v.image) : v.thumbnail || 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=500&h=300&fit=crop'}
+                    alt={v.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/10 transition-colors">
+                    <div className="w-11 h-11 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Play size={20} fill="currentColor" className="ml-0.5" />
+                    </div>
+                  </div>
+                  <span className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-poppins px-2 py-0.5 rounded font-medium">
+                    {v.duration || '२:४५ मि.'}
+                  </span>
+                  <span className="absolute top-2 left-2 bg-maroon text-gold-light text-[10px] font-poppins px-2.5 py-0.5 rounded font-bold uppercase">
+                    {v.categoryName || v.tag || 'व्हिडिओ'}
+                  </span>
+                </div>
+
+                <div className="p-3.5 flex flex-col justify-between flex-1">
+                  <h3 className="font-tiro text-[16px] leading-snug text-white group-hover:text-gold-light transition-colors line-clamp-2 mb-3">
+                    {v.title}
+                  </h3>
+                  <div className="font-poppins text-[11px] text-white/60 flex items-center justify-between border-t border-white/10 pt-2">
+                    <span>{v.districtName || v.taluka || 'सिंधुदुर्ग'}</span>
+                    <span className="flex items-center gap-1 font-semibold text-gold-light">
+                      <Eye size={12} /> {v.views || Math.floor(400 + (v.id * 149) % 2500)} वाचक
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Video Player Modal */}
+        {modalVideo && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+            style={{ background: 'rgba(10, 25, 41, 0.94)' }}
+            onClick={() => setModalVideo(null)}
+          >
+            <div
+              className="relative bg-black rounded-2xl overflow-hidden max-w-[850px] w-full border border-white/20 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-5 py-3 bg-navy text-white border-b border-white/10">
+                <h3 className="font-tiro text-[18px] text-gold-light truncate pr-4">{modalVideo.title}</h3>
+                <button onClick={() => setModalVideo(null)} className="text-white hover:text-gold p-1">
+                  <X size={22} />
+                </button>
+              </div>
+              <div className="aspect-video w-full bg-black flex items-center justify-center">
+                {modalVideo.video_type || modalVideo.video_url || modalVideo.videoUrl ? (
+                  <video src={modalVideo.video_url || modalVideo.videoUrl || getMediaUrl(`/posts/${modalVideo.id}/video`)} controls autoPlay className="w-full h-full object-contain" />
+                ) : (
+                  <iframe
+                    src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1"
+                    title={modalVideo.title}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 4. Category Cards */}
         <div className="mb-10">

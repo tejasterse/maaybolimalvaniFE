@@ -12,7 +12,7 @@ import { ArrowLeft, CheckCircle, Globe, ArrowRight } from 'lucide-react';
 import { getMediaUrl } from '../../utils/media.js';
 import toast from 'react-hot-toast';
 
-const talukaOptions = ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड'];
+const talukaOptions = ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'वैभववाडी', 'दोडामार्ग'];
 
 const quillModules = {
   toolbar: [

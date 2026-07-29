@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Scroll, PenTool, Smile, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEntertainment } from '../../api/entertainment.js';
+import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
 export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, onGoBack }) {
   const [activeTab, setActiveTab] = useState(initialSection);
@@ -11,6 +13,11 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
   const { data: items = [], isLoading, isError } = useQuery({
     queryKey: ['entertainment'],
     queryFn: fetchEntertainment
+  });
+
+  const { data: ads = [] } = useQuery({
+    queryKey: ['ads'],
+    queryFn: fetchAds
   });
 
   const tabs = [
@@ -101,6 +108,9 @@ export default function KavitaLekhPage({ initialSection = 'kavita', onNavigate, 
             ))}
           </div>
         )}
+
+        {/* Advertisement Carousel */}
+        <AdCarousel ads={ads} className="mt-10" />
       </div>
 
       {/* Detail Modal */}

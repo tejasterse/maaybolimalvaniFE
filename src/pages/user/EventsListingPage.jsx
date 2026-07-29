@@ -2,7 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { Calendar, Tent, MapPin } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from '../../api/events.js';
+import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
 export default function EventsListingPage({ onNavigate }) {
   const routerNavigate = useNavigate();
@@ -17,6 +19,11 @@ export default function EventsListingPage({ onNavigate }) {
   const { data: items = [], isLoading, isError } = useQuery({
     queryKey: ['events'],
     queryFn: fetchEvents
+  });
+
+  const { data: ads = [] } = useQuery({
+    queryKey: ['ads'],
+    queryFn: fetchAds
   });
 
   if (isLoading) {
@@ -76,6 +83,9 @@ export default function EventsListingPage({ onNavigate }) {
             </div>
           )}
         </div>
+
+        {/* Advertisement Carousel */}
+        <AdCarousel ads={ads} className="mt-10" />
       </div>
     </div>
   );

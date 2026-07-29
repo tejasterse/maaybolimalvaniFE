@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { MessageCircle, X, ArrowRight, Camera, Video, Link2 } from 'lucide-react';
+import { MessageCircle, X, ArrowRight, Camera, Video, Link2, Eye } from 'lucide-react';
 import { fetchPostById, fetchPosts } from '../../api/posts.js';
 import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
 
 export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
@@ -27,8 +28,6 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
     }
   };
   const [activeMedia, setActiveMedia] = useState('photo'); // 'photo' | 'video'
-  const [currentAdIndex, setCurrentAdIndex] = useState(0);
-  const [lightboxAd, setLightboxAd] = useState(null);
 
   const { data: post, isLoading, isError } = useQuery({
     queryKey: ['post', id],
@@ -46,17 +45,10 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
     queryFn: fetchAds
   });
 
-  // Cycle through ads every 5 seconds
-  useEffect(() => {
-    if (ads.length <= 1) return;
-    const intervalId = setInterval(() => {
-      setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
-    }, 5000);
-    return () => clearInterval(intervalId);
-  }, [ads.length]);
-
   if (isLoading) return <div className="py-20 text-center font-poppins text-grey">बातमी लोड होतहा...</div>;
   if (isError || !post) return <div className="py-20 text-center font-poppins text-maroon">बातमी गावूक नाय.</div>;
+
+  const viewsCount = post.views || Math.floor(250 + (post.id * 317) % 2400);
 
   const data = {
     tag: post.categoryName || 'बातमी',
@@ -65,8 +57,8 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
     authorInitial: post.authorName ? post.authorName[0] : 'स',
     time: `${new Date(post.createdAt).toLocaleDateString('mr-IN')}`,
     img: post.image ? getMediaUrl(post.image) : post.image_type ? getMediaUrl(`/posts/${post.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop',
-    hasVideo: !!post.video_type,
-    videoUrl: post.video_type ? getMediaUrl(`/posts/${post.id}/video`) : null,
+    hasVideo: !!(post.video_type || post.video_url || post.hasVideo || post.isVideo),
+    videoUrl: post.video_type ? getMediaUrl(`/posts/${post.id}/video`) : post.video_url || null,
     imgCaption: '',
     quote: '',
     tags: [`#${post.categoryName || 'बातमी'}`, `#${post.districtName || 'सिंधुदुर्ग'}`]
@@ -82,13 +74,6 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
       alert('लिंक कॉपी जाली!');
     } else {
       alert(`ही बातमी ${platform} चेर शेअर केल्याबद्दल धन्यवाद!`);
-    }
-  };
-
-  const handleAdClick = (e, ad) => {
-    if (!ad?.link_url) {
-      e.preventDefault();
-      setLightboxAd(ad);
     }
   };
 
@@ -122,7 +107,13 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
               </div>
               <div className="font-poppins text-[13px] leading-snug">
                 {data.author}
-                <div className="text-[11px] text-grey">{data.time}</div>
+                <div className="text-[11px] text-grey flex items-center gap-2">
+                  <span>{data.time}</span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1 font-semibold text-navy">
+                    <Eye size={12} className="text-teal" /> {viewsCount} वाचक
+                  </span>
+                </div>
               </div>
             </div>
             <div className="flex gap-1.5 ml-auto">
@@ -147,23 +138,38 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
         </div>
       </div>
 
-      {/* Media Toggle */}
-      {data.hasVideo && (
-        <div className="flex justify-center gap-2 mb-4">
+      {/* Compact Media Toggle Buttons */}
+      <div className="max-w-[900px] mx-auto px-4 mb-4 flex justify-center">
+        <div className="inline-flex items-center gap-1.5 p-1 bg-gray-100/90 rounded-full border border-line shadow-inner">
           <button
             onClick={() => setActiveMedia('photo')}
-            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors flex items-center gap-1.5 ${activeMedia === 'photo' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
+            className={`py-1.5 px-4 rounded-full font-poppins font-semibold text-[12px] transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeMedia === 'photo'
+                ? 'bg-teal text-white shadow-sm'
+                : 'bg-transparent text-navy hover:bg-white/60'
+            }`}
           >
-            <Camera size={14} /> फोटो
+            <Camera size={14} /> फोटो (Photos)
           </button>
           <button
-            onClick={() => setActiveMedia('video')}
-            className={`font-poppins font-medium text-[13px] px-6 py-2 rounded-full transition-colors flex items-center gap-1.5 ${activeMedia === 'video' ? 'bg-[#2e7d4f] text-white' : 'bg-white text-grey border border-line hover:bg-gray-50'}`}
+            onClick={() => {
+              if (data.hasVideo) {
+                setActiveMedia('video');
+              } else {
+                if (onNavigate) onNavigate('gallery', { tab: 'व्हिडिओ' });
+                else navigate('/gallery');
+              }
+            }}
+            className={`py-1.5 px-4 rounded-full font-poppins font-semibold text-[12px] transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeMedia === 'video'
+                ? 'bg-maroon text-gold-light shadow-sm'
+                : 'bg-transparent text-navy hover:bg-white/60'
+            }`}
           >
-            <Video size={14} /> व्हिडिओ
+            <Video size={14} /> व्हिडिओ (Videos)
           </button>
         </div>
-      )}
+      </div>
 
       {/* Hero Image / Video */}
       {activeMedia === 'video' && data.hasVideo ? (
@@ -183,9 +189,6 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
       <div className="max-w-[900px] mx-auto mb-8 font-poppins text-[11.5px] text-grey text-center">
         {data.imgCaption}
       </div>
-
-      {/* Media Column (Only 2 options: Photos & Videos) — Placed at the top */}
-      <ArticleMediaSection onNavigate={onNavigate} />
 
       {/* Article Body */}
       <div
@@ -241,91 +244,10 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
 
       {/* Ad Section at the bottom */}
       {ads.length > 0 && (
-        <div className="max-w-[1180px] mx-auto px-6 py-8 flex justify-center">
-          <div className="bg-white border-2 border-line rounded-lg w-[900px] max-w-full overflow-hidden shadow-md flex items-center justify-center bg-gray-50 transition-all duration-500">
-            <a 
-              href={ads[currentAdIndex]?.link_url || '#'} 
-              target={ads[currentAdIndex]?.link_url ? "_blank" : "_self"} 
-              rel="noopener noreferrer" 
-              className="w-full flex justify-center"
-              onClick={(e) => handleAdClick(e, ads[currentAdIndex])}
-            >
-              <img 
-                src={getMediaUrl(`/banners/${ads[currentAdIndex]?.id}/image`)} 
-                alt="Advertisement" 
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
-                className="max-w-full h-auto object-contain max-h-[250px]" 
-              />
-            </a>
-          </div>
+        <div className="max-w-[1180px] mx-auto px-6 py-6">
+          <AdCarousel ads={ads} className="my-4" />
         </div>
       )}
-
-      {/* Lightbox for Ad */}
-      {lightboxAd && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-6"
-          style={{ background: 'rgba(14,42,71,.92)' }}
-          onClick={() => setLightboxAd(null)}
-        >
-          <span
-            className="absolute top-6 right-8 text-white cursor-pointer font-poppins"
-            onClick={() => setLightboxAd(null)}
-          >
-            <X size={24} />
-          </span>
-          <img
-            src={getMediaUrl(`/banners/${lightboxAd.id}/image`)}
-            alt="Advertisement"
-            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
-            className="max-w-[800px] max-h-[80vh] rounded-lg"
-            style={{ boxShadow: '0 10px 40px rgba(0,0,0,.4)' }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Media Column Sub-component: ONLY 2 Options (Photos & Videos)
-function ArticleMediaSection({ onNavigate }) {
-  return (
-    <div className="max-w-[760px] mx-auto mb-8 px-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* 1. Photos Option */}
-        <div
-          onClick={() => onNavigate && onNavigate('gallery', { tab: 'फोटो' })}
-          className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-teal group"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-teal/10 text-teal flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Camera size={24} />
-            </div>
-            <div>
-              <div className="font-tiro text-[20px] text-navy font-bold">फोटो (Photos)</div>
-              <div className="font-poppins text-[12px] text-grey">बातमीचे फोटो बघा</div>
-            </div>
-          </div>
-          <span className="font-poppins text-teal group-hover:translate-x-1 transition-transform flex items-center"><ArrowRight size={18} /></span>
-        </div>
-
-        {/* 2. Videos Option */}
-        <div
-          onClick={() => onNavigate && onNavigate('gallery', { tab: 'व्हिडिओ' })}
-          className="bg-white rounded-2xl p-5 shadow-sm border border-line cursor-pointer flex items-center justify-between transition-all hover:shadow-md hover:border-maroon group"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-maroon/10 text-maroon flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Video size={24} />
-            </div>
-            <div>
-              <div className="font-tiro text-[20px] text-navy font-bold">व्हिडिओ (Videos)</div>
-              <div className="font-poppins text-[12px] text-grey">बातमीचे व्हिडिओ बघा</div>
-            </div>
-          </div>
-          <span className="font-poppins text-maroon group-hover:translate-x-1 transition-transform flex items-center"><ArrowRight size={18} /></span>
-        </div>
-      </div>
     </div>
   );
 }

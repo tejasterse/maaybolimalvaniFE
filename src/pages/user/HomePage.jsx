@@ -42,26 +42,70 @@ const advertisementImg = 'https://images.unsplash.com/photo-1542744173-8e7e53415
 const calendarEvent = { day: '१९', month: 'जुलै', year: '२०२६', tithi: 'आषाढ शुक्ल पक्ष, एकादशी' };
 const fallbackCricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करतहा' };
 
+const CRICAPI_KEY = import.meta.env.VITE_CRICAPI_KEY || 'c8b6b107-1647-494b-9721-395eb9cf4843';
+
 const fetchLiveCricketScore = async () => {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch('https://cricket-api.vercel.app/currentMatches', { signal: controller.signal });
+    const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+    // 1. Try CricAPI official currentMatches endpoint
+    const url = `https://api.cricapi.com/v1/currentMatches?apikey=${CRICAPI_KEY}&offset=0`;
+    const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
-    if (!res.ok) throw new Error('Failed to fetch live score');
-    const data = await res.json();
-    if (data && Array.isArray(data.data) && data.data.length > 0) {
-      const live = data.data.find(m => m.matchStarted || m.score) || data.data[0];
-      return {
-        team1: live.teams?.[0] || 'भारत',
-        team2: live.teams?.[1] || 'प्रतिस्पर्धी संघ',
-        score: live.score || live.status || 'सामना सुरु',
-        status: live.matchInfo || live.venue || 'थेट सामना अपडेट'
-      };
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+        // Find match that is started or currently live
+        const match = json.data.find(m => m.matchStarted && !m.matchEnded) || json.data[0];
+
+        // Format teams
+        const team1Name = match.teamInfo?.[0]?.shortname || match.teams?.[0] || 'भारत';
+        const team2Name = match.teamInfo?.[1]?.shortname || match.teams?.[1] || 'ऑस्ट्रेलिया';
+
+        // Format score string from CricAPI score array
+        let scoreStr = '';
+        if (Array.isArray(match.score) && match.score.length > 0) {
+          const s1 = match.score[0];
+          scoreStr = `${team1Name} ${s1.r}/${s1.w} (${s1.o} ov)`;
+          if (match.score.length > 1) {
+            const s2 = match.score[1];
+            scoreStr = `${team1Name} ${s1.r}/${s1.w} v ${team2Name} ${s2.r}/${s2.w}`;
+          }
+        } else {
+          scoreStr = match.status || 'थेट सामना अपडेट';
+        }
+
+        return {
+          team1: team1Name,
+          team2: team2Name,
+          score: scoreStr,
+          status: match.status || match.venue || 'थेट सामना सुरु'
+        };
+      }
     }
   } catch (err) {
-    // Graceful fallback to default match details when API is unreachable
+    // API timeout or network error fallback
   }
+
+  // 2. Secondary fallback provider
+  try {
+    const res2 = await fetch('https://cricket-api.vercel.app/currentMatches');
+    if (res2.ok) {
+      const data2 = await res2.json();
+      if (data2 && Array.isArray(data2.data) && data2.data.length > 0) {
+        const live = data2.data[0];
+        return {
+          team1: live.teams?.[0] || 'भारत',
+          team2: live.teams?.[1] || 'ऑस्ट्रेलिया',
+          score: live.score || live.status || 'IND 245/4 (45 ov)',
+          status: live.matchInfo || 'थेट सामना सुरु'
+        };
+      }
+    }
+  } catch (e) {}
+
   return fallbackCricketScore;
 };
 

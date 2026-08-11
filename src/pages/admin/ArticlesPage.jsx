@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchPosts, deletePost } from '../../api/posts.js';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { getMediaUrl } from '../../utils/media.js';
 
 const statusColors = {
   DRAFT: 'var(--grey)',
@@ -171,7 +172,7 @@ export default function ArticlesPage({ onEdit }) {
         <table className="w-full border-collapse">
           <thead>
             <tr style={{ background: '#F6F1E6' }}>
-              {['शीर्षक', 'स्थिती', 'विभाग', 'तालुका', 'लेखक', 'अपडेट', ''].map((h) => (
+              {['चित्र', 'शीर्षक', 'स्थिती', 'विभाग', 'तालुका', 'लेखक', 'अपडेट', ''].map((h) => (
                 <th
                   key={h}
                   className="font-poppins text-[11px] uppercase tracking-[.06em] text-grey text-left px-4 py-3 font-semibold"
@@ -184,13 +185,24 @@ export default function ArticlesPage({ onEdit }) {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="7" className="p-8 text-center font-mukta text-[15px] text-grey">
+                <td colSpan="8" className="p-8 text-center font-mukta text-[15px] text-grey">
                   लेख लोड होत आहेत...
                 </td>
               </tr>
             ) : filteredArticles.length > 0 ? (
               filteredArticles.map((a) => (
                 <tr key={a.id} style={{ borderTop: '1px solid var(--line)' }}>
+                  <td className="px-4 py-3.5">
+                    <img
+                      src={a.image ? getMediaUrl(a.image) : a.image_type ? getMediaUrl(`/posts/${a.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop'}
+                      alt={a.title}
+                      className="w-14 h-10 object-cover rounded-[6px] border border-line flex-shrink-0"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop';
+                      }}
+                    />
+                  </td>
                   <td className="font-tiro text-[16px] text-ink px-4 py-3.5 max-w-[280px]">{a.title}</td>
                   <td className="px-4 py-3.5">
                     <span
@@ -222,7 +234,7 @@ export default function ArticlesPage({ onEdit }) {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="p-8 text-center font-mukta text-[15px] text-grey">
+                <td colSpan="8" className="p-8 text-center font-mukta text-[15px] text-grey">
                   जुळणारे कोणतेही लेख सापडले नाहीत.
                 </td>
               </tr>

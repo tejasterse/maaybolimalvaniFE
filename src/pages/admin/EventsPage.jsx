@@ -86,7 +86,7 @@ export default function EventsPage() {
       setTitle(item.title);
       setEventDate(item.event_date);
       setLocation(item.location);
-      setExistingImage(item.image_type ? getMediaUrl(`/events/${item.id}/image`) : null);
+      setExistingImage(item.image ? getMediaUrl(item.image) : getMediaUrl(`/events/${item.id}/image`));
     } else {
       setEditingItem(null);
       setTitle('');
@@ -161,11 +161,15 @@ export default function EventsPage() {
             {items.map((item) => (
               <tr key={item.id} className="border-b border-line hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
-                  {item.image_type || item.image ? (
-                    <img src={getMediaUrl(item.image || `/events/${item.id}/image`)} alt={item.title} className="w-16 h-12 object-cover rounded" />
-                  ) : (
-                    <div className="w-16 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
-                  )}
+                  <img
+                    src={item.image ? getMediaUrl(item.image) : getMediaUrl(`/events/${item.id}/image`)}
+                    alt={item.title}
+                    className="w-16 h-12 object-cover rounded border border-line flex-shrink-0"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=200&fit=crop';
+                    }}
+                  />
                 </td>
                 <td className="px-6 py-4 font-medium text-ink">{item.title}</td>
                 <td className="px-6 py-4 text-grey">{item.event_date}</td>

@@ -88,7 +88,7 @@ export default function EntertainmentPage() {
       setAuthor(item.author || '');
       setType(item.type);
       setContent(item.content || '');
-      setExistingImage(item.image_type ? getMediaUrl(`/entertainment/${item.id}/image`) : null);
+      setExistingImage(item.image ? getMediaUrl(item.image) : getMediaUrl(`/entertainment/${item.id}/image`));
     } else {
       setEditingItem(null);
       setTitle('');
@@ -165,11 +165,15 @@ export default function EntertainmentPage() {
             {items.map((item) => (
               <tr key={item.id} className="border-b border-line hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
-                  {item.image_type || item.image ? (
-                    <img src={getMediaUrl(item.image || `/entertainment/${item.id}/image`)} alt={item.title} className="w-16 h-12 object-cover rounded" />
-                  ) : (
-                    <div className="w-16 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
-                  )}
+                  <img
+                    src={item.image ? getMediaUrl(item.image) : getMediaUrl(`/entertainment/${item.id}/image`)}
+                    alt={item.title}
+                    className="w-16 h-12 object-cover rounded border border-line flex-shrink-0"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&h=200&fit=crop';
+                    }}
+                  />
                 </td>
                 <td className="px-6 py-4 font-medium text-ink">{item.title}</td>
                 <td className="px-6 py-4">

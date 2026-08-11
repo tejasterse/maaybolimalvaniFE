@@ -146,14 +146,6 @@ export default function AdminLoginPage() {
           >
             {loginMutation.isPending ? 'प्रतीक्षा करा...' : <span className="flex items-center justify-center">Admin म्हणून प्रवेश करा <ArrowRight size={14} className="ml-1" /></span>}
           </button>
-
-          {/* Demo hint */}
-          <div
-            className="mt-5 px-4 py-3 rounded-lg font-poppins text-[11.5px] leading-relaxed"
-            style={{ background: 'rgba(255,255,255,.06)', color: '#9fb0c2', border: '1px solid rgba(255,255,255,.1)' }}
-          >
-            <b style={{ color: 'var(--gold-light)' }}>डेमो:</b> admin@maayboli.in / malvan@2026
-          </div>
         </form>
       </div>
 

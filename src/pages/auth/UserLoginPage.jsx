@@ -131,14 +131,6 @@ export default function UserLoginPage({ onLogin, onGoAdmin }) {
           >
             लॉगिन करा <ArrowRight size={14} className="inline ml-1" />
           </button>
-
-          {/* Demo hint */}
-          <div
-            className="mt-5 px-4 py-3 rounded-lg font-poppins text-[11.5px] leading-relaxed"
-            style={{ background: '#F6F1E6', color: 'var(--teal)' }}
-          >
-            <b>डेमो:</b> reader@maayboli.in / kokan@2026
-          </div>
         </form>
       </div>
 

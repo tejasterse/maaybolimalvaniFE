@@ -353,7 +353,7 @@ export default function ArticleEditorPage({ onBack }) {
             </div>
           </div>
 
-          {/* AI Translation Assist */}
+          {/* AI Translation Assist commented out
           <div
             className="rounded-[10px] p-5 mt-5 border-[1.5px] border-gold"
             style={{ background: 'linear-gradient(180deg,#FBF3E3 0%, #F6ECD6 100%)' }}
@@ -373,7 +373,6 @@ export default function ArticleEditorPage({ onBack }) {
               मराठी किंवा इंग्रजीतील मजकूर डावीकडे टाका — AI मालवणी ड्राफ्ट उजवीकडे तयार करेल. संपादकाने तपासून व दुरुस्त करूनच तो लेखात समाविष्ट होईल — AI आपोआप काहीही बदलत नाही.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              {/* Original */}
               <div className="bg-white rounded-lg p-3.5">
                 <div className="font-poppins text-[10px] font-bold uppercase tracking-[.06em] text-teal mb-2">
                   मूळ मजकूर (मराठी/इंग्रजी)
@@ -386,7 +385,6 @@ export default function ArticleEditorPage({ onBack }) {
                   style={{ minHeight: 110 }}
                 />
               </div>
-              {/* AI Draft */}
               <div className="bg-white rounded-lg p-3.5 border-[1.5px] border-dashed border-gold">
                 <div className="font-poppins text-[10px] font-bold uppercase tracking-[.06em] text-teal mb-2">
                   AI मालवणी ड्राफ्ट
@@ -423,6 +421,7 @@ export default function ArticleEditorPage({ onBack }) {
               </button>
             </div>
           </div>
+          */}
         </div>
 
         {/* Side Panel */}

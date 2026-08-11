@@ -109,6 +109,16 @@ export default function HomePage({ onNavigate }) {
 
   const [modalVideo, setModalVideo] = useState(null);
 
+  const getEmbedUrl = (item) => {
+    if (!item) return '';
+    const text = `${item.video_url || ''} ${item.videoUrl || ''} ${item.content || ''}`;
+    const ytMatch = text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+    if (ytMatch && ytMatch[1]) {
+      return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=1`;
+    }
+    return item.video_url || item.videoUrl || '';
+  };
+
   const defaultTalukas = [
     { name: 'मालवण', headline: 'किल्ल्याचेर विक्रमी गर्दी' },
     { name: 'कणकवली', headline: 'निवडणूक घोषणा' },
@@ -119,6 +129,24 @@ export default function HomePage({ onNavigate }) {
     { name: 'वैभववाडी', headline: 'काजू प्रक्रिया अनुदान' },
     { name: 'दोडामार्ग', headline: 'वनविभाग कारवाई' },
   ];
+
+  const defaultVideoNews = [
+    { id: 101, title: 'सिंधुदुर्ग किल्ला ड्रोन व्ह्यू २०२६', duration: '२:४५ मि.', thumbnail: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'पर्यटन', views: 2450 },
+    { id: 102, title: 'दशावतार नाट्य सादरीकरण थेट वार्तांकन', duration: '४:२० मि.', thumbnail: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=600&h=380&fit=crop', taluka: 'देवगड', categoryName: 'संस्कृती', views: 1890 },
+    { id: 103, title: 'मालवण मच्छिमार सहकारी सभा चर्चा', duration: '३:१५ मि.', thumbnail: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'मासेमारी', views: 1320 },
+    { id: 104, title: 'सावंतवाडी लाकडी खेळणी कारागीर मुलाखत', duration: '५:१० मि.', thumbnail: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&h=380&fit=crop', taluka: 'सावंतवाडी', categoryName: 'संस्कृती', views: 980 },
+  ];
+
+  const dbVideoPosts = posts.filter(p =>
+    p.video_type || p.video_url || p.videoUrl || p.hasVideo || p.isVideo ||
+    (p.content && (p.content.includes('youtube.com') || p.content.includes('youtu.be') || p.content.includes('.mp4')))
+  ).map(p => ({
+    ...p,
+    thumbnail: p.image ? getMediaUrl(p.image) : (p.image_type ? getMediaUrl(`/posts/${p.id}/image`) : null),
+    embedUrl: getEmbedUrl(p)
+  }));
+
+  const displayVideoNews = [...dbVideoPosts, ...defaultVideoNews.filter(d => !dbVideoPosts.some(vp => vp.id === d.id))].slice(0, 4);
 
   const listToUse = dbDistricts.length > 0 ? dbDistricts : defaultTalukas;
 
@@ -132,14 +160,6 @@ export default function HomePage({ onNavigate }) {
       headline: latestPost ? latestPost.title : (district.headline || 'सद्याक बातमी उपलब्ध नाय')
     };
   });
-
-  const videoPosts = posts.filter(p => p.video_type || p.video_url || p.hasVideo || p.isVideo);
-  const defaultVideoNews = [
-    { id: 101, title: 'सिंधुदुर्ग किल्ला ड्रोन व्ह्यू २०२६', duration: '२:४५ मि.', thumbnail: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'पर्यटन', views: 2450 },
-    { id: 102, title: 'दशावतार नाट्य सादरीकरण थेट वार्तांकन', duration: '४:२० मि.', thumbnail: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=600&h=380&fit=crop', taluka: 'देवगड', categoryName: 'संस्कृती', views: 1890 },
-    { id: 103, title: 'मालवण मच्छिमार सहकारी सभा चर्चा', duration: '३:१५ मि.', thumbnail: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'मासेमारी', views: 1320 },
-    { id: 104, title: 'सावंतवाडी लाकडी खेळणी कारागीर मुलाखत', duration: '५:१० मि.', thumbnail: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&h=380&fit=crop', taluka: 'सावंतवाडी', categoryName: 'संस्कृती', views: 980 },
-  ];
 
   const filteredLatest = activeTab === 'सर्व'
     ? posts
@@ -210,11 +230,11 @@ export default function HomePage({ onNavigate }) {
                     className="hero-inner flex flex-col md:flex-row gap-0 md:gap-6 bg-white h-[420px] md:h-[340px] flex-shrink-0 cursor-pointer w-full group overflow-hidden"
                     onClick={() => navigate(`/article/${hero.id}`)}
                   >
-                    <div className="relative w-full md:w-[55%] h-[180px] md:h-[340px]">
+                    <div className="relative overflow-hidden w-full md:w-[55%] h-[200px] md:h-full">
                       <img
-                        src={hero.image ? getMediaUrl(hero.image) : hero.image_type ? getMediaUrl(`/posts/${hero.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=800&h=500&fit=crop'}
+                        src={hero.image ? getMediaUrl(hero.image) : hero.image_type ? getMediaUrl(`/posts/${hero.id}/image`) : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=500&fit=crop'}
                         alt={hero.title}
-                        className="w-full h-full object-cover flex-shrink-0 block"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       {(hero.video_type || hero.video_url || hero.hasVideo || hero.isVideo) && (
                         <div className="absolute top-3 right-3 bg-black/75 text-white p-2 rounded-full backdrop-blur-xs shadow-md">
@@ -227,24 +247,20 @@ export default function HomePage({ onNavigate }) {
                         className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
                         style={{ background: 'var(--maroon)' }}
                       >
-                        ब्रेकिंग न्यूज
+                        {hero.categoryName || 'ताज्यो बातम्या'}
                       </span>
-                      <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 group-hover:text-teal transition-colors line-clamp-2 md:line-clamp-none">
+                      <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 line-clamp-2 md:line-clamp-none">
                         {hero.title}
                       </h2>
+                      <p className="font-mukta text-[14px] md:text-[16px] leading-relaxed mb-2 md:mb-4 line-clamp-2 md:line-clamp-3" style={{ color: '#5a4c3a' }}>
+                        {stripHtml(hero.content)}
+                      </p>
                       <div className="font-poppins text-[12px] text-grey flex items-center justify-between">
                         <span>{hero.districtName || 'सिंधुदुर्ग'} · {new Date(hero.createdAt).toLocaleDateString('mr-IN')}</span>
                         <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
                           <Eye size={12} className="text-teal" /> {hero.views || Math.floor(500 + (hero.id * 219) % 3000)} वाचक
                         </span>
                       </div>
-                      <button
-                        className="mt-5 self-start font-poppins font-semibold text-[13px] px-5 py-2.5 rounded-lg transition-colors hover:bg-opacity-90"
-                        style={{ background: 'var(--maroon)', color: '#fbe8c9' }}
-                        onClick={(e) => { e.stopPropagation(); navigate(`/article/${hero.id}`); }}
-                      >
-                        सगळी बातमी वाचा <ArrowRight size={14} className="inline ml-1" />
-                      </button>
                     </div>
                   </div>
                 ))}
@@ -316,21 +332,24 @@ export default function HomePage({ onNavigate }) {
           <div className="py-6"></div>
         )}
 
-        {/* 2. Taluka Highlights - 8 Talukas */}
+        {/* 2. Taluka Highlights - Centered & Responsive */}
         <div className="mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-tiro text-[24px] text-maroon-deep">तालुक्याच्यो बातम्या</h2>
+          <div className="flex flex-col items-center justify-center text-center mb-5">
+            <h2 className="font-tiro text-[24px] md:text-[26px] font-bold text-maroon-deep relative pb-1">
+              तालुक्याच्यो बातम्या
+            </h2>
+            <div className="w-12 h-[2.5px] bg-teal rounded-full mt-1"></div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-3.5">
             {dynamicTalukaHighlights.map((t) => (
               <div
                 key={t.name}
                 onClick={() => navigate('/listing', { state: { taluka: t.name } })}
-                className="rounded-xl p-3 cursor-pointer transition-transform hover:-translate-y-1 shadow-sm bg-white flex flex-col justify-center items-center text-center h-[105px] border-b-4 border-teal"
+                className="w-[calc(50%-6px)] sm:w-[calc(33.33%-10px)] md:w-[135px] lg:w-[145px] flex-shrink-0 rounded-xl p-3 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md bg-white flex flex-col justify-center items-center text-center h-[108px] border-b-4 border-teal"
                 style={{ borderTop: '1px solid var(--line)', borderLeft: '1px solid var(--line)', borderRight: '1px solid var(--line)' }}
               >
                 <div className="font-tiro font-bold text-[16px] text-maroon-deep mb-1">{t.name}</div>
-                <div className="font-mukta text-[10.5px] leading-tight text-grey line-clamp-2">{t.headline}</div>
+                <div className="font-mukta text-[11px] leading-tight text-grey line-clamp-2">{t.headline}</div>
               </div>
             ))}
           </div>
@@ -431,7 +450,7 @@ export default function HomePage({ onNavigate }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(videoPosts.length > 0 ? videoPosts : defaultVideoNews).slice(0, 4).map((v) => (
+            {displayVideoNews.map((v) => (
               <div
                 key={v.id}
                 onClick={() => setModalVideo(v)}
@@ -439,7 +458,7 @@ export default function HomePage({ onNavigate }) {
               >
                 <div className="relative overflow-hidden aspect-video">
                   <img
-                    src={v.image ? getMediaUrl(v.image) : v.thumbnail || 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=500&h=300&fit=crop'}
+                    src={v.thumbnail || (v.image ? getMediaUrl(v.image) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=500&h=300&fit=crop')}
                     alt={v.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
                   />
@@ -485,13 +504,33 @@ export default function HomePage({ onNavigate }) {
             >
               <div className="flex items-center justify-between px-5 py-3 bg-navy text-white border-b border-white/10">
                 <h3 className="font-tiro text-[18px] text-gold-light truncate pr-4">{modalVideo.title}</h3>
-                <button onClick={() => setModalVideo(null)} className="text-white hover:text-gold p-1">
+                <button onClick={() => setModalVideo(null)} className="text-white hover:text-gold p-1 cursor-pointer">
                   <X size={22} />
                 </button>
               </div>
               <div className="aspect-video w-full bg-black flex items-center justify-center">
-                {modalVideo.video_type || modalVideo.video_url || modalVideo.videoUrl ? (
-                  <video src={modalVideo.video_url || modalVideo.videoUrl || getMediaUrl(`/posts/${modalVideo.id}/video`)} controls autoPlay className="w-full h-full object-contain" />
+                {modalVideo.video_type ? (
+                  <video
+                    src={getMediaUrl(`/posts/${modalVideo.id}/video`)}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
+                  />
+                ) : (modalVideo.embedUrl || getEmbedUrl(modalVideo)) ? (
+                  <iframe
+                    src={modalVideo.embedUrl || getEmbedUrl(modalVideo)}
+                    title={modalVideo.title}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (modalVideo.video_url || modalVideo.videoUrl) ? (
+                  <video
+                    src={modalVideo.video_url || modalVideo.videoUrl}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
+                  />
                 ) : (
                   <iframe
                     src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1"
@@ -698,31 +737,7 @@ export default function HomePage({ onNavigate }) {
           </div>
         )}
 
-        {/* Chatbot CTA banner */}
-        <div
-          className="rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6"
-          style={{ background: 'linear-gradient(120deg, var(--navy) 0%, var(--teal) 100%)' }}
-        >
-          <div>
-            <div className="font-poppins text-[12px] font-bold uppercase tracking-[.1em] text-gold-light mb-2">
-              AI-powered · मायबोली मालवणी
-            </div>
-            <h2 className="font-tiro text-[26px] text-white mb-2">
-              तुमच्या गावातल्या बातम्यांबद्दल विचारा
-            </h2>
-            <p className="font-poppins text-[13px]" style={{ color: '#c9d6e2' }}>
-              AI बॉट फक्त छापून आयलेल्या बातम्यांवर आधारित उत्तर देता — नेहमी बातमीचे लिंकसकट.
-            </p>
-          </div>
-          <button
-            onClick={() => navigate('/chatbot')}
-            className="flex-shrink-0 font-poppins font-bold text-[14px] px-7 py-4 rounded-xl flex items-center gap-3 transition-transform hover:scale-105"
-            style={{ background: 'var(--gold)', color: 'var(--navy)' }}
-          >
-            <Bot size={20} />
-            AI क विचारा
-          </button>
-        </div>
+
 
       </div>
     </div>

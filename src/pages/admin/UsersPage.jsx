@@ -107,7 +107,7 @@ export default function UsersPage() {
       ) : isError ? (
         <div className="text-center py-12 font-poppins text-red-500">वापरकर्ते लोड करताना त्रुटी आली.</div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-line overflow-x-auto">
           <table className="w-full text-left font-poppins text-[13.5px]">
             <thead className="bg-[#FAF9F5] border-b border-line text-grey uppercase tracking-wider text-[11px] font-bold">
               <tr>

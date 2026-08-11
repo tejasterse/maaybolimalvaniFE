@@ -146,7 +146,7 @@ export default function EventsPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-line overflow-x-auto">
         <table className="w-full text-left font-poppins">
           <thead className="bg-[#fafafa] border-b border-line text-[12px] text-grey uppercase tracking-wider">
             <tr>

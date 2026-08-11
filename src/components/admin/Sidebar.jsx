@@ -1,11 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { BarChart2, FileText, Image as ImageIcon, CheckSquare, MapPin, Megaphone, Film, Tent, Images, Users, Settings, LogOut } from 'lucide-react';
 
-export default function Sidebar({ onLogout }) {
+export default function Sidebar({ onLogout, onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleNavigate = (key) => {
+    if (onClose) onClose();
     if (key === 'dashboard') navigate('/admin');
     else navigate(`/admin/${key}`);
   };

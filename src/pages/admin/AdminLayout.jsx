@@ -21,7 +21,7 @@ export default function AdminLayout() {
 
   return (
     <div
-      className="flex h-screen w-screen overflow-hidden"
+      className="flex h-screen w-full overflow-hidden"
       style={{ background: '#F6F1E6', color: 'var(--ink)', fontFamily: "'Mukta', sans-serif" }}
     >
       {/* Mobile sidebar overlay */}
@@ -34,10 +34,10 @@ export default function AdminLayout() {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:relative inset-y-0 left-0 z-[400] md:z-auto h-full flex-shrink-0 transition-transform duration-200 ease-in-out
+        className={`fixed md:relative inset-y-0 left-0 md:inset-auto z-[400] md:z-auto h-full flex-shrink-0 transition-transform duration-200 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
-        <Sidebar onLogout={handleLogout} />
+        <Sidebar onLogout={handleLogout} onClose={() => setSidebarOpen(false)} />
       </div>
 
       {/* Main */}

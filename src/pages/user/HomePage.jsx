@@ -40,7 +40,30 @@ const timetables = [
 const advertisementImg = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1180&h=200&fit=crop';
 
 const calendarEvent = { day: '१९', month: 'जुलै', year: '२०२६', tithi: 'आषाढ शुक्ल पक्ष, एकादशी' };
-const cricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करतहा' };
+const fallbackCricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करतहा' };
+
+const fetchLiveCricketScore = async () => {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch('https://cricket-api.vercel.app/currentMatches', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error('Failed to fetch live score');
+    const data = await res.json();
+    if (data && Array.isArray(data.data) && data.data.length > 0) {
+      const live = data.data.find(m => m.matchStarted || m.score) || data.data[0];
+      return {
+        team1: live.teams?.[0] || 'भारत',
+        team2: live.teams?.[1] || 'प्रतिस्पर्धी संघ',
+        score: live.score || live.status || 'सामना सुरु',
+        status: live.matchInfo || live.venue || 'थेट सामना अपडेट'
+      };
+    }
+  } catch (err) {
+    // Graceful fallback to default match details when API is unreachable
+  }
+  return fallbackCricketScore;
+};
 
 
 export default function HomePage({ onNavigate }) {
@@ -105,6 +128,13 @@ export default function HomePage({ onNavigate }) {
   const { data: dbGallery = [] } = useQuery({
     queryKey: ['gallery'],
     queryFn: fetchGallery
+  });
+
+  const { data: liveScore = fallbackCricketScore } = useQuery({
+    queryKey: ['liveCricketScore'],
+    queryFn: fetchLiveCricketScore,
+    refetchInterval: 30000, // Auto-refetch live match scores every 30 seconds
+    staleTime: 15000,
   });
 
   const [modalVideo, setModalVideo] = useState(null);
@@ -689,10 +719,10 @@ export default function HomePage({ onNavigate }) {
               <Trophy size={20} className="text-teal" />
             </div>
             <h3 className="font-poppins text-[18px] font-bold text-navy mb-1">
-              {cricketScore.team1} vs {cricketScore.team2}
+              {liveScore.team1} vs {liveScore.team2}
             </h3>
-            <div className="font-poppins text-[22px] font-bold text-teal mb-1">{cricketScore.score}</div>
-            <div className="font-mukta text-[14px] text-grey">{cricketScore.status}</div>
+            <div className="font-poppins text-[22px] font-bold text-teal mb-1">{liveScore.score}</div>
+            <div className="font-mukta text-[14px] text-grey">{liveScore.status}</div>
           </div>
         </div>
 

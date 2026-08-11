@@ -172,29 +172,29 @@ export default function ArticleEditorPage({ onBack }) {
   };
 
   return (
-    <div>
-      {/* Topbar */}
+    <div className="max-w-[1400px] mx-auto">
+      {/* Topbar Action Header */}
       <div
-        className="flex items-center justify-between px-7 py-3.5 text-white"
+        className="flex flex-wrap items-center justify-between px-6 py-4 text-white rounded-xl mb-5 shadow-sm gap-4"
         style={{ background: 'var(--navy)' }}
       >
         <div className="flex items-center gap-3.5">
           <span
             onClick={handleBack}
-            className="font-poppins text-[13px] text-gold-light cursor-pointer flex items-center gap-1"
+            className="font-poppins text-[13px] text-gold-light cursor-pointer flex items-center gap-1 hover:underline"
           >
-            <ArrowLeft size={14} /> लेखांकडे परत
+            <ArrowLeft size={16} /> लेखांकडे परत
           </span>
-          <span className="font-tiro text-[15px] text-white">मायबोली मालवणी</span>
+          <span className="font-tiro text-[16px] text-white font-medium border-l border-white/20 pl-3.5">मायबोली मालवणी लेख संपादक</span>
         </div>
-        <div className="font-poppins text-[11.5px]" style={{ color: '#9fb0c2' }}>
+        <div className="font-poppins text-[11.5px] hidden sm:flex items-center" style={{ color: '#9fb0c2' }}>
           <span
-            className="inline-block w-1.5 h-1.5 rounded-full mr-1.5 align-middle"
+            className="inline-block w-2 h-2 rounded-full mr-2"
             style={{ background: '#4CAF7D' }}
           />
           स्वयं-जतन झाले · २ मिनिटांपूर्वी
         </div>
-        <div className="flex gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <button
             onClick={() => handlePublish('DRAFT')}
             disabled={saveMutation.isPending}
@@ -223,10 +223,7 @@ export default function ArticleEditorPage({ onBack }) {
       </div>
 
       {/* Layout */}
-      <div
-        className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 p-6 max-w-[1400px] mx-auto"
-        style={{ background: '#F6F1E6', minHeight: 'calc(100vh - 56px)' }}
-      >
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
         {/* Editor Column */}
         <div>
           <div className="bg-white rounded-[10px] p-6 shadow-sm">
@@ -429,7 +426,7 @@ export default function ArticleEditorPage({ onBack }) {
         </div>
 
         {/* Side Panel */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:sticky lg:top-4 self-start">
           {/* Publication Details */}
           <div className="bg-white rounded-[10px] p-4 shadow-sm">
             <h4 className="font-poppins text-[12px] font-bold uppercase tracking-[.06em] text-grey mb-3.5">

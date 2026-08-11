@@ -78,18 +78,12 @@ button { font-family: 'Poppins', sans-serif; cursor: pointer; border: none; }
 /* Tablet — max 1024px */
 @media (max-width: 1024px) {
   .masonry-grid { columns: 3; }
-
-  /* Admin layout — sidebar collapses */
-  .admin-sidebar { width: 200px !important; }
   .admin-content-grid { grid-template-columns: 1fr 1fr !important; }
 }
 
 /* Mobile — max 768px */
 @media (max-width: 768px) {
   .masonry-grid { columns: 2; }
-
-  /* Admin — hide sidebar, show top nav */
-  .admin-sidebar { display: none !important; }
   .admin-main    { width: 100% !important; }
 
   /* Stats 2 columns */

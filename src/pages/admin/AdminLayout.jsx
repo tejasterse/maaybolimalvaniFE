@@ -21,32 +21,31 @@ export default function AdminLayout() {
 
   return (
     <div
-      className="flex min-h-screen"
+      className="flex h-screen w-screen overflow-hidden"
       style={{ background: '#F6F1E6', color: 'var(--ink)', fontFamily: "'Mukta', sans-serif" }}
     >
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-[300] md:hidden"
-          style={{ background: 'rgba(0,0,0,.5)' }}
+          className="fixed inset-0 z-[300] bg-black/50 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`admin-sidebar fixed md:relative z-[400] md:z-auto h-full md:h-auto transition-transform md:translate-x-0
+        className={`fixed md:relative inset-y-0 left-0 z-[400] md:z-auto h-full flex-shrink-0 transition-transform duration-200 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         <Sidebar onLogout={handleLogout} />
       </div>
 
       {/* Main */}
-      <div className="admin-main flex-1 flex flex-col min-w-0 w-full">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <AdminTopbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
         />
-        <div className="flex-1 overflow-auto p-4 md:p-7">
+        <div className="flex-1 overflow-y-auto p-4 md:p-7">
           <Outlet />
         </div>
       </div>

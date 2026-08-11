@@ -40,7 +40,7 @@ export default function Sidebar({ onLogout }) {
 
   return (
     <aside
-      className="w-[230px] flex-shrink-0 flex flex-col py-5 min-h-screen"
+      className="w-[240px] flex-shrink-0 flex flex-col py-5 h-full overflow-y-auto"
       style={{ background: 'var(--navy)', color: '#cfd9e4' }}
     >
       {/* Brand */}

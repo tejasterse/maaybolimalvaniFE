@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Eye, EyeOff } from 'lucide-react';
 import { fetchUsers, createUser, updateUserRole, updateUserStatus, deleteUser } from '../../api/users.js';
 import toast from 'react-hot-toast';
 
@@ -10,6 +11,7 @@ export default function UsersPage() {
   const [emailInput, setEmailInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('123456');
+  const [showPassword, setShowPassword] = useState(false);
   const [roleInput, setRoleInput] = useState('USER');
 
   // Edit role modal
@@ -202,13 +204,23 @@ export default function UsersPage() {
               </div>
               <div>
                 <label className="block text-grey mb-1">संकेतशब्द (Password)</label>
-                <input
-                  type="password"
-                  required
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    className="w-full px-3 py-2 pr-10 border rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800 transition-colors"
+                    aria-label={showPassword ? 'पासवर्ड लपवा' : 'पासवर्ड दाखवा'}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-grey mb-1">भूमिका (Role)</label>

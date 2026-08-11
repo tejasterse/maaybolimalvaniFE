@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, AlertTriangle } from 'lucide-react';
+import { ArrowRight, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import apiClient from '../../api/apiClient.js';
 import { useMutation } from '@tanstack/react-query';
 
@@ -10,6 +10,7 @@ export default function AdminLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const loginMutation = useMutation({
     mutationFn: async (credentials) => {
@@ -108,20 +109,30 @@ export default function AdminLoginPage() {
             <label className="block font-poppins text-[11.5px] mb-1.5 font-semibold" style={{ color: '#9fb0c2' }}>
               पासवर्ड
             </label>
-            <input
-              type="password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              placeholder="••••••••"
-              required
-              className="w-full px-4 py-3 rounded-lg font-poppins text-[14px] text-white outline-none transition-all"
-              style={{
-                border: '1.5px solid rgba(255,255,255,.15)',
-                background: 'rgba(255,255,255,.07)',
-              }}
-              onFocus={(e) => (e.target.style.borderColor = 'var(--gold)')}
-              onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,.15)')}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={pass}
+                onChange={(e) => setPass(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full px-4 py-3 pr-11 rounded-lg font-poppins text-[14px] text-white outline-none transition-all"
+                style={{
+                  border: '1.5px solid rgba(255,255,255,.15)',
+                  background: 'rgba(255,255,255,.07)',
+                }}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--gold)')}
+                onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,.15)')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                aria-label={showPassword ? 'पासवर्ड लपवा' : 'पासवर्ड दाखवा'}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <button

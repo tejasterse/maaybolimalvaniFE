@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { ArrowRight, AlertTriangle } from 'lucide-react';
+import { ArrowRight, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import apiClient from '../../api/apiClient.js';
 
 export default function UserLoginPage({ onLogin, onGoAdmin }) {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,20 +95,30 @@ export default function UserLoginPage({ onLogin, onGoAdmin }) {
             <label className="block font-poppins text-[11.5px] text-grey mb-1.5 font-semibold">
               पासवर्ड
             </label>
-            <input
-              type="password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              placeholder="••••••••"
-              required
-              className="w-full px-4 py-3 rounded-lg font-mukta text-[15px] text-ink outline-none transition-all"
-              style={{
-                border: '1.5px solid var(--line)',
-                background: '#FDFAF4',
-              }}
-              onFocus={(e) => (e.target.style.borderColor = 'var(--gold)')}
-              onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={pass}
+                onChange={(e) => setPass(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full px-4 py-3 pr-11 rounded-lg font-mukta text-[15px] text-ink outline-none transition-all"
+                style={{
+                  border: '1.5px solid var(--line)',
+                  background: '#FDFAF4',
+                }}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--gold)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+                aria-label={showPassword ? 'पासवर्ड लपवा' : 'पासवर्ड दाखवा'}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <button

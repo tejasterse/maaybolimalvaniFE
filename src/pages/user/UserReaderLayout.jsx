@@ -172,52 +172,70 @@ export default function UserReaderLayout({ onAdminLogin }) {
 
       <UtilityBar onAdminLogin={onAdminLogin} onNavigate={navigate} />
 
-      {/* Header with Logo on Left and Navbar on Right */}
-      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }}>
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-6 py-2">
-          {/* Logo */}
-          <div
-            className="cursor-pointer flex-shrink-0 p-0 m-0 leading-none flex items-center"
-            onClick={() => navigate('home')}
-          >
-            <img
-              src="/header-logo.jpg"
-              alt="मायबोली मालवणी"
-              className="h-[85px] sm:h-[100px] lg:h-[110px] w-auto max-w-[320px] sm:max-w-[400px] object-contain rounded-xl border border-gold/40 shadow-sm transition-transform hover:scale-[1.01] block"
-            />
+      {/* Header with BOTH Logos (logo.png enlarged + header-logo.jpg) and Maroon Pill Navbar */}
+      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }} className="py-3 relative">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+          
+          {/* Top Row: Both Logos side by side */}
+          <div className="flex items-center justify-between gap-4 mb-3">
+            {/* 1. Primary Circular Badge Logo (logo.png) - Extra Large */}
+            <div
+              className="cursor-pointer flex-shrink-0 leading-none flex items-center"
+              onClick={() => navigate('home')}
+            >
+              <img
+                src="/logo.png"
+                alt="मायबोली मालवणी"
+                className="h-[125px] sm:h-[160px] lg:h-[190px] w-auto object-contain drop-shadow-xl transition-transform hover:scale-[1.02] block -my-3"
+              />
+            </div>
+
+            {/* 2. Banner Header Logo (header-logo.jpg) - Matched Size */}
+            <div
+              className="cursor-pointer flex-shrink-0 flex items-center"
+              onClick={() => navigate('home')}
+            >
+              <img
+                src="/header-logo.jpg"
+                alt="मायबोली मालवणी डिजिटल बातम्या"
+                className="h-[80px] sm:h-[110px] lg:h-[135px] w-auto max-w-[280px] sm:max-w-[460px] lg:max-w-[580px] object-contain rounded-2xl border-2 border-gold/50 shadow-md transition-transform hover:scale-[1.01] block"
+              />
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              className="lg:hidden text-maroon bg-white p-2.5 rounded-xl border border-line shadow-sm flex items-center justify-center"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+            >
+              {showMobileMenu ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
 
-          {/* Primary Nav */}
-          <nav className="hidden lg:flex items-center gap-1 bg-maroon p-2 px-3 rounded-xl border border-gold/40 shadow-md">
-            {navItems.map(({ key, label }) => (
+          {/* Bottom Row: Primary Maroon Pill Nav Bar */}
+          <nav className="hidden lg:flex items-center bg-maroon p-1.5 px-4 rounded-full border border-gold/40 shadow-lg justify-between w-full">
+            <div className="flex items-center justify-between w-full gap-0.5 no-scrollbar overflow-x-auto">
+              {navItems.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => navigate(key)}
+                  className={`px-3 py-1.5 rounded-full font-poppins text-[12.5px] font-semibold transition-all whitespace-nowrap ${
+                    activeNavKey === key
+                      ? 'bg-maroon-deep text-gold-light shadow-sm border border-gold/40'
+                      : 'text-[#fbe8c9] hover:bg-maroon-deep hover:text-gold-light'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
               <button
-                key={key}
-                onClick={() => navigate(key)}
-                className={`px-3 py-2 rounded-lg font-poppins text-[12.5px] font-semibold transition-all whitespace-nowrap ${
-                  activeNavKey === key
-                    ? 'bg-maroon-deep text-gold-light shadow'
-                    : 'text-[#fbe8c9] hover:bg-maroon-deep hover:text-gold-light'
-                }`}
+                onClick={() => navigate('search')}
+                className="p-1.5 rounded-full text-gold-light hover:bg-maroon-deep flex items-center justify-center flex-shrink-0 ml-1 border border-transparent hover:border-gold/30 transition-colors"
+                title="शोधा"
               >
-                {label}
+                <Search size={16} />
               </button>
-            ))}
-            <button
-              onClick={() => navigate('search')}
-              className="p-2 rounded-lg text-gold-light hover:bg-maroon-deep flex items-center justify-center ml-1"
-              title="शोधा"
-            >
-              <Search size={16} />
-            </button>
+            </div>
           </nav>
-
-          {/* Mobile hamburger */}
-          <button
-            className="lg:hidden text-maroon bg-white p-2 rounded-xl border border-line shadow-sm flex items-center justify-center"
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-          >
-            {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
 
         {/* Mobile menu */}

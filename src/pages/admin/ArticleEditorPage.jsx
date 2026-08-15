@@ -568,25 +568,6 @@ export default function ArticleEditorPage({ onBack }) {
               <p className="font-poppins text-[10.5px] text-grey mt-1.5">User तक्त्यातील 'REPORTER' रोल असलेले वापरकर्ते येथे उपलब्ध आहेत.</p>
             </div>
           </div>
-
-          {/* Author */}
-          <div className="bg-white rounded-[10px] p-4 shadow-sm">
-            <h4 className="font-poppins text-[12px] font-bold uppercase tracking-[.06em] text-grey mb-3.5">
-              लेखक
-            </h4>
-            <div>
-              <label className="block font-poppins text-[11.5px] text-grey mb-1.5">लेखक निवडा</label>
-              <select
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                className="w-full px-2.5 py-2 border border-line rounded-[6px] font-poppins text-[13px] text-ink bg-white cursor-pointer"
-              >
-                <option value="सारिका पवार">सारिका पवार</option>
-                <option value="राजेश कदम">राजेश कदम</option>
-                <option value="मीना जाधव">मीना जाधव</option>
-              </select>
-            </div>
-          </div>
         </div>
       </div>
     </div>

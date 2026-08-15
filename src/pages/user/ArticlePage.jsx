@@ -50,7 +50,7 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
   if (isLoading) return <div className="py-20 text-center font-poppins text-grey">बातमी लोड होतहा...</div>;
   if (isError || !post) return <div className="py-20 text-center font-poppins text-maroon font-semibold">बातमी गावूक नाय.</div>;
 
-  const viewsCount = post.viewer_count ?? post.views ?? Math.floor(250 + (post.id * 317) % 2400);
+  const viewsCount = Number(post.viewer_count ?? post.views ?? 0);
 
   const mainImageUrl = post.image
     ? getMediaUrl(post.image)
@@ -187,8 +187,8 @@ ${pageUrl}
                 <div className="text-[11.5px] text-grey flex items-center gap-2 mt-0.5">
                   <span className="flex items-center gap-1"><Calendar size={12} /> {formattedDate}</span>
                   <span>•</span>
-                  <span className="flex items-center gap-1 font-semibold text-navy">
-                    <Eye size={12} className="text-teal" /> {viewsCount} वाचक
+                  <span className="flex items-center gap-1 font-bold text-navy">
+                    <Eye size={13} className="text-teal" /> {viewsCount.toLocaleString('en-IN')} वाचक
                   </span>
                 </div>
               </div>

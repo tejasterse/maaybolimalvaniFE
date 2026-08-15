@@ -556,7 +556,7 @@ export default function HomePage({ onNavigate }) {
                   <div className="font-poppins text-[11px] text-white/60 flex items-center justify-between border-t border-white/10 pt-2">
                     <span>{v.districtName || v.taluka || 'सिंधुदुर्ग'}</span>
                     <span className="flex items-center gap-1 font-semibold text-gold-light">
-                      <Eye size={12} /> {v.views || Math.floor(400 + (v.id * 149) % 2500)} वाचक
+                      <Eye size={12} /> {Number(v.viewer_count ?? v.views ?? 0).toLocaleString('en-IN')} वाचक
                     </span>
                   </div>
                 </div>

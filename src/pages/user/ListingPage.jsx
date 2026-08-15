@@ -134,7 +134,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
             className="font-poppins text-[13px] text-white px-[18px] py-2.5 rounded-[20px]"
             style={{ background: 'rgba(255,255,255,.12)' }}
           >
-            {detail.count}
+            एकूण {sortedArticles.length} लेख
           </div>
         </div>
       </div>
@@ -148,24 +148,27 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
                 key={f}
                 onClick={() => setSelectedTaluka(f)}
                 className="font-poppins text-[12.5px] px-3.5 py-[7px] rounded-[18px] cursor-pointer border-[1.5px] nav-transition"
-                style={
-                  selectedTaluka === f
-                    ? { background: 'var(--maroon)', color: '#fbe8c9', borderColor: 'var(--maroon)' }
-                    : { background: '#fff', color: 'var(--maroon-deep)', borderColor: 'var(--line)' }
-                }
+                style={{
+                  background: selectedTaluka === f ? 'var(--navy)' : '#fff',
+                  color: selectedTaluka === f ? '#fff' : 'var(--ink)',
+                  borderColor: selectedTaluka === f ? 'var(--navy)' : 'var(--line)'
+                }}
               >
                 {f}
               </span>
             ))}
           </div>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="font-poppins text-[12.5px] text-teal bg-white border-[1.5px] border-line px-3.5 py-2 rounded-lg outline-none"
-          >
-            <option value="latest">नव्यो आधी</option>
-            <option value="popular">लोकप्रिय आधी</option>
-          </select>
+          <div className="flex items-center gap-2">
+            <span className="font-poppins text-[12px] text-grey">क्रमवारी:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="font-poppins text-[12.5px] bg-white border border-line rounded-lg px-3 py-1.5 text-navy font-medium focus:outline-none focus:border-teal"
+            >
+              <option value="latest">नवीनतम (Latest)</option>
+              <option value="oldest">जुने (Oldest)</option>
+            </select>
+          </div>
         </div>
 
         {/* Listing */}
@@ -176,7 +179,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
             <div
               key={item.id}
               onClick={() => navigate(`/article/${item.id}`)}
-              className="listing-item-inner flex gap-5 bg-white rounded-[10px] p-4 mb-4 shadow-sm cursor-pointer transition-transform hover:-translate-y-0.5"
+              className="bg-white rounded-[10px] p-4 flex gap-4 cursor-pointer transition-transform hover:-translate-y-0.5 border border-line/60 shadow-sm mb-4"
             >
               <div className="relative flex-shrink-0 hidden sm:block">
                 <img
@@ -206,8 +209,8 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
                 </div>
                 <div className="font-poppins text-[11px] text-grey flex items-center justify-between">
                   <span>{item.districtName || 'सिंधुदुर्ग'} · {new Date(item.createdAt).toLocaleDateString('mr-IN')}</span>
-                  <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
-                    <Eye size={12} className="text-teal" /> {item.views || Math.floor(100 + (item.id * 173) % 1800)} वाचक
+                  <span className="flex items-center gap-1 font-bold text-navy bg-cream px-2.5 py-0.5 rounded-md border border-line shadow-xs">
+                    <Eye size={12} className="text-teal" /> {Number(item.viewer_count ?? item.views ?? 0).toLocaleString('en-IN')} वाचक
                   </span>
                 </div>
               </div>

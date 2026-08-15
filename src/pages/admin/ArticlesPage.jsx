@@ -172,7 +172,7 @@ export default function ArticlesPage({ onEdit }) {
         <table className="w-full border-collapse">
           <thead>
             <tr style={{ background: '#F6F1E6' }}>
-              {['चित्र', 'शीर्षक', 'स्थिती', 'विभाग', 'तालुका', 'लेखक', 'अपडेट', ''].map((h) => (
+              {['चित्र', 'शीर्षक', 'स्थिती', 'वाचक', 'विभाग', 'तालुका', 'लेखक', 'अपडेट', ''].map((h) => (
                 <th
                   key={h}
                   className="font-poppins text-[11px] uppercase tracking-[.06em] text-grey text-left px-4 py-3 font-semibold"
@@ -185,7 +185,7 @@ export default function ArticlesPage({ onEdit }) {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="8" className="p-8 text-center font-mukta text-[15px] text-grey">
+                <td colSpan="9" className="p-8 text-center font-mukta text-[15px] text-grey">
                   लेख लोड होत आहेत...
                 </td>
               </tr>
@@ -212,6 +212,7 @@ export default function ArticlesPage({ onEdit }) {
                       {a.statusLabel}
                     </span>
                   </td>
+                  <td className="font-poppins text-[12px] font-bold text-teal px-4 py-3.5">👁 {(a.viewer_count || 0).toLocaleString('en-IN')}</td>
                   <td className="font-poppins text-[12px] text-grey px-4 py-3.5">{a.category}</td>
                   <td className="font-poppins text-[12px] text-grey px-4 py-3.5">{a.taluka}</td>
                   <td className="font-poppins text-[12px] text-grey px-4 py-3.5">{a.author}</td>
@@ -234,7 +235,7 @@ export default function ArticlesPage({ onEdit }) {
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="p-8 text-center font-mukta text-[15px] text-grey">
+                <td colSpan="9" className="p-8 text-center font-mukta text-[15px] text-grey">
                   जुळणारे कोणतेही लेख सापडले नाहीत.
                 </td>
               </tr>

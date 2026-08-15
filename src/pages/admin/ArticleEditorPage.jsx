@@ -48,7 +48,7 @@ export default function ArticleEditorPage({ onBack }) {
   const [existingVideo, setExistingVideo] = useState(false);
   const [selectedTaluka, setSelectedTaluka] = useState(article?.taluka || article?.districtName || 'मालवण');
   const [category, setCategory] = useState(article?.category || article?.categoryName || 'पर्यटन');
-  const [pubDate, setPubDate] = useState(article?.createdAt ? new Date(article.createdAt).toISOString().split('T')[0] : '2026-07-18');
+  const [pubDate, setPubDate] = useState(article?.createdAt ? new Date(article.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
   const [author, setAuthor] = useState(article?.author || article?.authorName || 'सारिका पवार');
   const [reporterName, setReporterName] = useState(article?.reporter_name || article?.reporterName || '');
   const [breakingOn, setBreakingOn] = useState(article?.is_breaking ? true : false);
@@ -60,14 +60,18 @@ export default function ArticleEditorPage({ onBack }) {
     if (article) {
       setTitle(article.title || '');
       setBody(article.content || '');
-      setBreakingOn(article.is_breaking === 1);
+      setBreakingOn(Boolean(article.is_breaking));
+      setFeatureOn(Boolean(article.is_featured));
       setReporterName(article.reporter_name || article.reporterName || '');
-      setCategory(article.categoryName || '');
-      setSelectedTaluka(article.districtName || '');
+      setCategory(article.categoryName || article.category || '');
+      setSelectedTaluka(article.districtName || article.taluka || '');
+      if (article.createdAt) {
+        setPubDate(new Date(article.createdAt).toISOString().split('T')[0]);
+      }
       if (article.image_type || article.image) {
         setExistingImage(getMediaUrl(article.image || `/posts/${article.id}/image`));
       }
-      if (article.video_type) {
+      if (article.video_type || article.video_url) {
         setExistingVideo(true);
       }
     }
@@ -151,7 +155,9 @@ export default function ArticleEditorPage({ onBack }) {
     formData.append('category_id', cat ? cat.id : (article?.category_id || 1));
     if (dist) formData.append('district_id', dist.id);
     formData.append('is_breaking', breakingOn ? 1 : 0);
+    formData.append('is_featured', featureOn ? 1 : 0);
     formData.append('reporter_name', reporterName || '');
+    if (pubDate) formData.append('createdAt', pubDate);
     formData.append('status', status);
 
     if (imageFile) {

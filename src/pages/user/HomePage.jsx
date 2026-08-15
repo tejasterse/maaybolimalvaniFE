@@ -403,7 +403,7 @@ export default function HomePage({ onNavigate }) {
                       <div className="font-poppins text-[12px] text-grey flex items-center justify-between">
                         <span>{hero.districtName || 'सिंधुदुर्ग'} · {new Date(hero.createdAt).toLocaleDateString('mr-IN')}</span>
                         <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
-                          <Eye size={12} className="text-teal" /> {hero.views || Math.floor(500 + (hero.id * 219) % 3000)} वाचक
+                          <Eye size={12} className="text-teal" /> {Number(hero.viewer_count ?? hero.views ?? 0).toLocaleString('en-IN')} वाचक
                         </span>
                       </div>
                     </div>
@@ -460,7 +460,7 @@ export default function HomePage({ onNavigate }) {
                 <div className="font-poppins text-[12px] text-grey flex items-center justify-between">
                   <span>{activeHero.districtName || 'सिंधुदुर्ग'} · {new Date(activeHero.createdAt).toLocaleDateString('mr-IN')}</span>
                   <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
-                    <Eye size={12} className="text-teal" /> {activeHero.views || Math.floor(500 + (activeHero.id * 219) % 3000)} वाचक
+                    <Eye size={12} className="text-teal" /> {Number(activeHero.viewer_count ?? activeHero.views ?? 0).toLocaleString('en-IN')} वाचक
                   </span>
                 </div>
                 <button
@@ -560,7 +560,7 @@ export default function HomePage({ onNavigate }) {
                   <div className="px-4 pb-4 font-poppins text-[11px] text-grey flex items-center justify-between pt-2 border-t border-line/60">
                     <span>{a.districtName || 'सिंधुदुर्ग'} · {new Date(a.createdAt).toLocaleDateString('mr-IN')}</span>
                     <span className="flex items-center gap-1 font-semibold text-navy bg-cream px-2 py-0.5 rounded border border-line">
-                      <Eye size={12} className="text-teal" /> {a.views || Math.floor(120 + (a.id * 183) % 1900)} वाचक
+                      <Eye size={12} className="text-teal" /> {Number(a.viewer_count ?? a.views ?? 0).toLocaleString('en-IN')} वाचक
                     </span>
                   </div>
                 </div>

@@ -20,56 +20,255 @@
   --line-maroon: rgba(122, 30, 36, 0.14);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-body { font-family: 'Mukta', sans-serif; }
+body {
+  font-family: 'Mukta', sans-serif;
+}
 
-a { color: inherit; text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-button { font-family: 'Poppins', sans-serif; cursor: pointer; border: none; }
+button {
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  border: none;
+}
 
 /* ── Clip-path flag tags ── */
-.flag-tag   { clip-path: polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%); }
-.flag-tag-90{ clip-path: polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%); }
+.flag-tag {
+  clip-path: polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%);
+}
+
+.flag-tag-90 {
+  clip-path: polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%);
+}
 
 /* ── CSS masonry columns ── */
-.masonry-grid { columns: 4; column-gap: 16px; }
-.masonry-item { break-inside: avoid; margin-bottom: 16px; }
+.masonry-grid {
+  columns: 4;
+  column-gap: 16px;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 16px;
+}
 
 /* ── Toggle switch ── */
 .switch {
-  width: 38px; height: 20px; background: var(--line);
-  border-radius: 10px; position: relative; cursor: pointer; flex-shrink: 0;
+  width: 38px;
+  height: 20px;
+  background: var(--line);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
 }
-.switch.on { background: var(--maroon); }
+
+.switch.on {
+  background: var(--maroon);
+}
+
 .switch::after {
-  content: ''; position: absolute; width: 16px; height: 16px;
-  background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: .15s;
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: .15s;
 }
-.switch.on::after { left: 20px; }
+
+.switch.on::after {
+  left: 20px;
+}
 
 /* ── Sidebar ── */
-.sidebar-item-active { border-left: 3px solid var(--gold); background: var(--navy-light); color: #fff; }
-.sidebar-item        { border-left: 3px solid transparent; }
+.sidebar-item-active {
+  border-left: 3px solid var(--gold);
+  background: var(--navy-light);
+  color: #fff;
+}
+
+.sidebar-item {
+  border-left: 3px solid transparent;
+}
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 4px;
+}
 
 /* ── Breaking news ticker animation ── */
 @keyframes ticker {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
-.ticker-inner { display: inline-block; animation: ticker 28s linear infinite; white-space: nowrap; }
+
+.ticker-inner {
+  display: inline-block;
+  animation: ticker 28s linear infinite;
+  white-space: nowrap;
+}
 
 /* ── Smooth transitions ── */
-.nav-transition { transition: background .15s, color .15s; }
+.nav-transition {
+  transition: background .15s, color .15s;
+}
 
 /* ── Quill Editor Content Alignment ── */
-.ql-align-center { text-align: center; }
-.ql-align-right { text-align: right; }
-.ql-align-justify { text-align: justify; }
+.ql-align-center {
+  text-align: center;
+}
+
+.ql-align-right {
+  text-align: right;
+}
+
+.ql-align-justify {
+  text-align: justify;
+}
+
+/* ──────────────────────────────────────────
+   ARTICLE BODY PARAGRAPH TYPOGRAPHY & STYLING
+────────────────────────────────────────── */
+.article-body-content {
+  font-family: 'Mukta', sans-serif;
+  font-size: 19px;
+  line-height: 2.05;
+  color: #2b2319;
+}
+
+.article-body-content p {
+  margin-bottom: 1.4rem;
+  font-size: 19px;
+  line-height: 2.05;
+  color: #2b2319;
+  letter-spacing: 0.01em;
+}
+
+.article-body-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Location / City Header Tag Badge (e.g., रत्नागिरी-, सिंधुदुर्ग:) */
+.article-body-content strong,
+.article-body-content b {
+  font-weight: 700;
+  color: var(--maroon-deep);
+}
+
+.article-body-content p>strong:first-child,
+.article-body-content p>b:first-child {
+  display: inline-block;
+  background: #FFF8EE;
+  color: var(--maroon-deep);
+  border: 1.5px solid var(--gold);
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-family: 'Tiro Devanagari Marathi', sans-serif;
+  font-weight: 700;
+  font-size: 17.5px;
+  margin-right: 6px;
+  box-shadow: 0 1px 3px rgba(122, 30, 36, 0.08);
+}
+
+.article-body-content h1,
+.article-body-content h2,
+.article-body-content h3,
+.article-body-content h4 {
+  font-family: 'Tiro Devanagari Marathi', 'Mukta', serif;
+  font-weight: 700;
+  color: var(--maroon-deep);
+  margin-top: 1.8rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.35;
+}
+
+.article-body-content h1 {
+  font-size: 26px;
+}
+
+.article-body-content h2 {
+  font-size: 23px;
+  border-left: 4px solid var(--teal);
+  padding-left: 10px;
+}
+
+.article-body-content h3 {
+  font-size: 20px;
+}
+
+.article-body-content blockquote {
+  font-family: 'Tiro Devanagari Marathi', serif;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--maroon-deep);
+  background: var(--cream);
+  border-left: 4px solid var(--gold);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 0 10px 10px 0;
+}
+
+.article-body-content ul,
+.article-body-content ol {
+  margin-bottom: 1.4rem;
+  padding-left: 1.5rem;
+}
+
+.article-body-content ul {
+  list-style-type: disc;
+}
+
+.article-body-content ol {
+  list-style-type: decimal;
+}
+
+.article-body-content li {
+  margin-bottom: 0.4rem;
+  line-height: 1.95;
+}
+
+.article-body-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 1.5rem auto;
+  display: block;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.article-body-content a {
+  color: var(--teal);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.article-body-content a:hover {
+  color: var(--maroon);
+}
 
 /* ──────────────────────────────────────────
    RESPONSIVE MEDIA QUERIES
@@ -77,63 +276,134 @@ button { font-family: 'Poppins', sans-serif; cursor: pointer; border: none; }
 
 /* Tablet — max 1024px */
 @media (max-width: 1024px) {
-  .masonry-grid { columns: 3; }
-  .admin-content-grid { grid-template-columns: 1fr 1fr !important; }
+  .masonry-grid {
+    columns: 3;
+  }
+
+  .admin-content-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
 }
 
 /* Mobile — max 768px */
 @media (max-width: 768px) {
-  .masonry-grid { columns: 2; }
-  .admin-main    { width: 100% !important; }
+  .masonry-grid {
+    columns: 2;
+  }
+
+  .admin-main {
+    width: 100% !important;
+  }
 
   /* Stats 2 columns */
-  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 
   /* Dash grid → stack */
-  .dash-grid { grid-template-columns: 1fr !important; }
+  .dash-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Related grid → 2 cols */
-  .related-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 
   /* Search layout → stack */
-  .search-layout { grid-template-columns: 1fr !important; }
+  .search-layout {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Listing items → column */
-  .listing-item-inner { flex-direction: column !important; }
-  .listing-item-inner img { width: 100% !important; height: 180px !important; }
+  .listing-item-inner {
+    flex-direction: column !important;
+  }
+
+  .listing-item-inner img {
+    width: 100% !important;
+    height: 180px !important;
+  }
 
   /* Article editor grid → stack */
-  .editor-grid { grid-template-columns: 1fr !important; }
+  .editor-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Tag manage grid */
-  .tag-manage-grid { grid-template-columns: 1fr !important; }
+  .tag-manage-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Media grid → 3 cols */
-  .media-grid-inner { grid-template-columns: repeat(3, 1fr) !important; }
+  .media-grid-inner {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
 
   /* Hero article → stack */
-  .hero-inner { flex-direction: column !important; }
-  .hero-inner img { width: 100% !important; height: 220px !important; }
+  .hero-inner {
+    flex-direction: column !important;
+  }
+
+  .hero-inner img {
+    width: 100% !important;
+    height: 220px !important;
+  }
 
   /* Settings grid */
-  .settings-grid-inner { grid-template-columns: 1fr !important; }
+  .settings-grid-inner {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Nav primary → scroll */
-  nav.primary ul { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
-  nav.primary ul::-webkit-scrollbar { height: 2px; }
+  nav.primary ul {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  nav.primary ul::-webkit-scrollbar {
+    height: 2px;
+  }
 
   /* Review card */
-  .review-card-inner { flex-direction: column !important; }
-  .review-card-inner img { width: 100% !important; height: 160px !important; }
+  .review-card-inner {
+    flex-direction: column !important;
+  }
+
+  .review-card-inner img {
+    width: 100% !important;
+    height: 160px !important;
+  }
 }
 
 /* Small mobile — max 480px */
 @media (max-width: 480px) {
-  .masonry-grid { columns: 1; }
-  .stats-grid { grid-template-columns: 1fr !important; }
-  .media-grid-inner { grid-template-columns: repeat(2, 1fr) !important; }
-  .related-grid { grid-template-columns: 1fr !important; }
-  .home-cat-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .home-latest-grid { grid-template-columns: 1fr !important; }
-  .ai-cols-inner { grid-template-columns: 1fr !important; }
+  .masonry-grid {
+    columns: 1;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .media-grid-inner {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .home-cat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .home-latest-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ai-cols-inner {
+    grid-template-columns: 1fr !important;
+  }
 }

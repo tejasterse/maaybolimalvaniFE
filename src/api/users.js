@@ -5,6 +5,16 @@ export const fetchUsers = async (params = {}) => {
   return data;
 };
 
+export const fetchReporters = async () => {
+  try {
+    const { data } = await apiClient.get('/users/reporters');
+    return Array.isArray(data) ? data : (data.users || []);
+  } catch (error) {
+    const { data } = await apiClient.get('/users', { params: { role: 'REPORTER', limit: 100 } });
+    return data.users || [];
+  }
+};
+
 export const fetchUserById = async (id) => {
   const { data } = await apiClient.get(`/users/${id}`);
   return data;

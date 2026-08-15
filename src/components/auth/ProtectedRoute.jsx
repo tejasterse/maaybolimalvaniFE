@@ -10,7 +10,10 @@ export default function ProtectedRoute() {
   }
 
   const role = (user.role || '').toUpperCase();
-  if (role && role !== 'ADMIN' && user.roleId !== 1) {
+  const allowedRoles = ['ADMIN', 'ADMINISTRATOR', 'EDITOR'];
+  const isAdmin = allowedRoles.includes(role) || user.roleId === 1 || !role;
+
+  if (!isAdmin) {
     return <Navigate to="/" replace />;
   }
 

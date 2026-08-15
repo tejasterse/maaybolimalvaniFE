@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { getMediaUrl } from '../../utils/media.js';
 
 export default function AdCarousel({ ads, className = "mb-10" }) {
   const defaultAds = [
@@ -17,8 +18,21 @@ export default function AdCarousel({ ads, className = "mb-10" }) {
     }
   ];
 
-  // Strictly use ONLY these 2 images requested by user
-  const activeAdsList = (ads && ads.length >= 2) ? ads : defaultAds;
+  const getAdImageUrl = (ad) => {
+    if (!ad) return '/logo.jpg';
+    if (ad.image_url) return getMediaUrl(ad.image_url);
+    if (ad.image) return getMediaUrl(ad.image);
+    if (ad.id && (typeof ad.id === 'number' || !isNaN(Number(ad.id)))) {
+      return getMediaUrl(`/banners/${ad.id}/image`);
+    }
+    return '/logo.jpg';
+  };
+
+  const rawAdsList = (ads && ads.length > 0) ? ads : defaultAds;
+  const activeAdsList = rawAdsList.map(ad => ({
+    ...ad,
+    imageUrl: getAdImageUrl(ad)
+  }));
 
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [lightboxAd, setLightboxAd] = useState(null);
@@ -77,14 +91,14 @@ export default function AdCarousel({ ads, className = "mb-10" }) {
               >
                 {/* Subtle background blur fill */}
                 <img
-                  src={ad.image_url}
+                  src={ad.imageUrl}
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none"
                 />
                 
                 {/* Main Ad Image */}
                 <img
-                  src={ad.image_url}
+                  src={ad.imageUrl}
                   alt={ad.title || "Jahirata"}
                   onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
                   className="relative max-w-full max-h-full object-contain z-10 drop-shadow-xl"
@@ -141,7 +155,7 @@ export default function AdCarousel({ ads, className = "mb-10" }) {
             <X size={26} />
           </button>
           <img
-            src={lightboxAd.image_url}
+            src={lightboxAd.imageUrl}
             alt="Advertisement"
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
             className="max-w-[900px] max-h-[85vh] rounded-2xl object-contain shadow-2xl border border-white/10"

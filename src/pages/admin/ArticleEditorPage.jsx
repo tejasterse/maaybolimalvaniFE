@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { createPost, updatePost } from '../../api/posts.js';
 import { fetchCategories } from '../../api/categories.js';
 import { fetchDistricts } from '../../api/districts.js';
+import { fetchReporters } from '../../api/users.js';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -49,6 +50,7 @@ export default function ArticleEditorPage({ onBack }) {
   const [category, setCategory] = useState(article?.category || article?.categoryName || 'पर्यटन');
   const [pubDate, setPubDate] = useState(article?.createdAt ? new Date(article.createdAt).toISOString().split('T')[0] : '2026-07-18');
   const [author, setAuthor] = useState(article?.author || article?.authorName || 'सारिका पवार');
+  const [reporterName, setReporterName] = useState(article?.reporter_name || article?.reporterName || '');
   const [breakingOn, setBreakingOn] = useState(article?.is_breaking ? true : false);
   const [featureOn, setFeatureOn] = useState(false);
   const [originalText, setOriginalText] = useState(article?.excerpt || '');
@@ -59,6 +61,7 @@ export default function ArticleEditorPage({ onBack }) {
       setTitle(article.title || '');
       setBody(article.content || '');
       setBreakingOn(article.is_breaking === 1);
+      setReporterName(article.reporter_name || article.reporterName || '');
       setCategory(article.categoryName || '');
       setSelectedTaluka(article.districtName || '');
       if (article.image_type || article.image) {
@@ -72,6 +75,17 @@ export default function ArticleEditorPage({ onBack }) {
 
   const { data: categoriesData = [] } = useQuery({ queryKey: ['categories'], queryFn: fetchCategories });
   const { data: districtsData = [] } = useQuery({ queryKey: ['districts'], queryFn: fetchDistricts });
+  const { data: reportersData = [] } = useQuery({ queryKey: ['reporters'], queryFn: fetchReporters });
+
+  const defaultReporters = [
+    { id: 'rep1', name: 'संतोष मुळीक' },
+    { id: 'rep2', name: 'राजू तावडे' },
+    { id: 'rep3', name: 'संदीप मुळीक' },
+    { id: 'rep4', name: 'ऋतीका पालकर' },
+    { id: 'rep5', name: 'दादा मडकईकर' }
+  ];
+
+  const availableReporters = (reportersData && reportersData.length > 0) ? reportersData : defaultReporters;
 
   const saveMutation = useMutation({
     mutationFn: (formData) => article ? updatePost({ id: article.id, formData }) : createPost(formData),
@@ -137,6 +151,7 @@ export default function ArticleEditorPage({ onBack }) {
     formData.append('category_id', cat ? cat.id : (article?.category_id || 1));
     if (dist) formData.append('district_id', dist.id);
     formData.append('is_breaking', breakingOn ? 1 : 0);
+    formData.append('reporter_name', reporterName || '');
     formData.append('status', status);
 
     if (imageFile) {
@@ -488,6 +503,29 @@ export default function ArticleEditorPage({ onBack }) {
           </div>
 
 
+
+          {/* Reporter Name Dropdown */}
+          <div className="bg-white rounded-[10px] p-4 shadow-sm">
+            <h4 className="font-poppins text-[12px] font-bold uppercase tracking-[.06em] text-grey mb-3.5">
+              प्रतिनिधी / रिपोर्टर (Reporter)
+            </h4>
+            <div>
+              <label className="block font-poppins text-[11.5px] text-grey mb-1.5">रिपोर्टर निवडा (User तक्त्यातून)</label>
+              <select
+                value={reporterName}
+                onChange={(e) => setReporterName(e.target.value)}
+                className="w-full px-2.5 py-2 border border-line rounded-[6px] font-poppins text-[13px] text-ink bg-white cursor-pointer outline-none focus:border-teal"
+              >
+                <option value="">-- रिपोर्टर निवडा --</option>
+                {availableReporters.map((rep, idx) => (
+                  <option key={rep.id || idx} value={rep.name}>
+                    {rep.name}
+                  </option>
+                ))}
+              </select>
+              <p className="font-poppins text-[10.5px] text-grey mt-1.5">User तक्त्यातील 'REPORTER' रोल असलेले वापरकर्ते येथे उपलब्ध आहेत.</p>
+            </div>
+          </div>
 
           {/* Author */}
           <div className="bg-white rounded-[10px] p-4 shadow-sm">

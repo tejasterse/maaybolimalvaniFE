@@ -60,19 +60,25 @@ export default function App() {
         <Route path="privacy" element={<PrivacyPage />} />
       </Route>
 
-      {/* 2. Admin Login */}
+      {/* 2. Admin Login & Aliases */}
       <Route path="/admin-login" element={<AdminLoginPage />} />
+      <Route path="/login" element={<Navigate to="/admin-login" replace />} />
+      <Route path="/admin/login" element={<Navigate to="/admin-login" replace />} />
+      <Route path="/adminlogin" element={<Navigate to="/admin-login" replace />} />
 
       {/* 3. Admin Panel Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
+          <Route path="dashboard" element={<DashboardPage />} />
           <Route path="articles" element={<ArticlesPage />} />
           <Route path="articles/new" element={<ArticleEditorPage />} />
           <Route path="articles/edit" element={<ArticleEditorPage />} />
+          <Route path="articles/edit/:id" element={<ArticleEditorPage />} />
           <Route path="media" element={<MediaPage />} />
           <Route path="review" element={<ReviewPage />} />
           <Route path="taluka" element={<TalukaPage />} />
+          <Route path="talukas" element={<TalukaPage />} />
           <Route path="ads" element={<AdsPage />} />
           <Route path="entertainment" element={<EntertainmentPage />} />
           <Route path="events" element={<EventsPage />} />

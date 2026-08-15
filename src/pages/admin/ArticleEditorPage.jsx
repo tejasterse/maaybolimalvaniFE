@@ -8,10 +8,17 @@ import { fetchReporters } from '../../api/users.js';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Globe, ArrowRight } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Globe, ArrowRight, Video } from 'lucide-react';
 
 import { getMediaUrl } from '../../utils/media.js';
 import toast from 'react-hot-toast';
+
+function getYouTubeId(url) {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
 
 const talukaOptions = ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'वैभववाडी', 'दोडामार्ग'];
 
@@ -51,6 +58,7 @@ export default function ArticleEditorPage({ onBack }) {
   const [pubDate, setPubDate] = useState(article?.createdAt ? new Date(article.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
   const [author, setAuthor] = useState(article?.author || article?.authorName || 'सारिका पवार');
   const [reporterName, setReporterName] = useState(article?.reporter_name || article?.reporterName || '');
+  const [youtubeUrl, setYoutubeUrl] = useState(article?.video_url || '');
   const [breakingOn, setBreakingOn] = useState(article?.is_breaking ? true : false);
   const [featureOn, setFeatureOn] = useState(false);
   const [originalText, setOriginalText] = useState(article?.excerpt || '');
@@ -63,6 +71,7 @@ export default function ArticleEditorPage({ onBack }) {
       setBreakingOn(Boolean(article.is_breaking));
       setFeatureOn(Boolean(article.is_featured));
       setReporterName(article.reporter_name || article.reporterName || '');
+      setYoutubeUrl(article.video_url || '');
       setCategory(article.categoryName || article.category || '');
       setSelectedTaluka(article.districtName || article.taluka || '');
       if (article.createdAt) {
@@ -159,6 +168,8 @@ export default function ArticleEditorPage({ onBack }) {
     formData.append('reporter_name', reporterName || '');
     if (pubDate) formData.append('createdAt', pubDate);
     formData.append('status', status);
+
+    if (youtubeUrl) formData.append('video_url', youtubeUrl);
 
     if (imageFile) {
       const optimizedImage = await compressImage(imageFile);
@@ -371,6 +382,31 @@ export default function ArticleEditorPage({ onBack }) {
                   व्हिडिओ निवडा
                 </label>
               </div>
+            </div>
+
+            {/* YouTube Video Link Field */}
+            <div className="mt-4 pt-4 border-t border-line">
+              <label className="block font-poppins text-[13px] font-bold text-red-600 mb-1.5 flex items-center gap-1.5">
+                <Video size={16} className="text-red-600" /> युट्यूब व्हिडिओ लिंक (YouTube Video URL)
+              </label>
+              <input
+                type="text"
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                placeholder="उदा. https://www.youtube.com/watch?v=... किंवा https://youtu.be/..."
+                className="w-full border-2 border-red-200 rounded-[8px] px-3.5 py-2.5 font-poppins text-sm outline-none focus:border-red-500 bg-red-50/20 transition-colors"
+              />
+              {getYouTubeId(youtubeUrl) && (
+                <div className="mt-3 bg-black rounded-xl overflow-hidden aspect-video max-w-[440px] mx-auto border border-red-300 shadow-md">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${getYouTubeId(youtubeUrl)}`}
+                    title="YouTube Video Preview"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                  />
+                </div>
+              )}
             </div>
           </div>
 

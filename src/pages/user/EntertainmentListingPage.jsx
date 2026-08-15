@@ -68,7 +68,7 @@ export default function EntertainmentListingPage({ onNavigate, onGoBack }) {
                   {item.title}
                 </h3>
                 <div className="font-poppins text-[12px] text-grey mt-auto">
-                  लेखक: <span className="font-medium text-navy">{item.author || 'अज्ञात'}</span>
+                  <span className="font-medium text-navy">{item.author || 'मायबोली मालवणी'}</span>
                 </div>
               </div>
             </div>

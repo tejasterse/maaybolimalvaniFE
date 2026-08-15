@@ -72,7 +72,7 @@ export default function EntertainmentArticlePage({ articleId, onNavigate, onGoBa
             </div>
             <div>
               <div className="font-poppins text-[14px] font-semibold text-navy">
-                {item.author || 'अज्ञात लेखक'}
+                {item.author || 'मायबोली मालवणी'}
               </div>
             </div>
           </div>

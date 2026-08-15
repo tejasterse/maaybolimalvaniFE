@@ -16,10 +16,12 @@ import { AboutUsPage, TermsPage, PrivacyPage } from './StaticPages.jsx';
 import EntertainmentListingPage from './EntertainmentListingPage.jsx';
 import EntertainmentArticlePage from './EntertainmentArticlePage.jsx';
 import EventsListingPage from './EventsListingPage.jsx';
+import VideosPage from './VideosPage.jsx';
 
 const navItems = [
   { key: 'home', label: 'होम' },
   { key: 'listing', label: 'तालुक्याच्यो बातम्या' },
+  { key: 'videos', label: 'युट्यूब व्हिडिओ' },
   { key: 'rajkaran', label: 'राजकारण' },
   { key: 'maasemari', label: 'मासेमारी-शेती' },
   { key: 'paryatan', label: 'पर्यटन' },
@@ -89,6 +91,9 @@ export default function UserReaderLayout({ onAdminLogin }) {
     } else if (path === '/events') {
       setActivePage('events');
       setPageParams(null);
+    } else if (path === '/videos') {
+      setActivePage('videos');
+      setPageParams(null);
     } else if (path === '/utsav') {
       setActivePage('utsav');
       setPageParams(null);
@@ -156,6 +161,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
     if (activePage === 'entertainment') return <EntertainmentListingPage onNavigate={navigate} onGoBack={goBack} />;
     if (activePage === 'entertainment-article') return <EntertainmentArticlePage onNavigate={navigate} onGoBack={goBack} articleId={pageParams} />;
     if (activePage === 'events') return <EventsListingPage onNavigate={navigate} onGoBack={goBack} />;
+    if (activePage === 'videos') return <VideosPage onNavigate={navigate} onGoBack={goBack} />;
     return <HomePage onNavigate={navigate} />;
   };
 
@@ -168,17 +174,21 @@ export default function UserReaderLayout({ onAdminLogin }) {
 
       {/* Header with Logo on Left and Navbar on Right */}
       <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }}>
-        <div className="max-w-[1240px] mx-auto px-4 flex items-center justify-between gap-3 py-1">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-6 py-2">
           {/* Logo */}
           <div
             className="cursor-pointer flex-shrink-0 p-0 m-0 leading-none flex items-center"
             onClick={() => navigate('home')}
           >
-            <img src="/logo.png" alt="मायबोली मालवणी" className="h-[100px] md:h-[125px] object-contain drop-shadow-md transition-transform hover:scale-105 p-0 m-0 block" />
+            <img
+              src="/header-logo.jpg"
+              alt="मायबोली मालवणी"
+              className="h-[85px] sm:h-[100px] lg:h-[110px] w-auto max-w-[320px] sm:max-w-[400px] object-contain rounded-xl border border-gold/40 shadow-sm transition-transform hover:scale-[1.01] block"
+            />
           </div>
 
-          {/* Primary Nav — positioned directly on right side of logo */}
-          <nav className="hidden lg:flex items-center flex-1 justify-end gap-1 bg-maroon p-1.5 rounded-xl border border-gold/40 shadow-sm overflow-x-auto">
+          {/* Primary Nav */}
+          <nav className="hidden lg:flex items-center gap-1 bg-maroon p-2 px-3 rounded-xl border border-gold/40 shadow-md">
             {navItems.map(({ key, label }) => (
               <button
                 key={key}

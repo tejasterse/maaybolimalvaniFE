@@ -37,9 +37,43 @@ const timetables = [
   { id: 3, type: 'खाजगी', name: 'पावलो ट्रॅव्हल्स', time: 'राती ९:१५', route: 'सावंतवाडी ते मुंबई', icon: <Car size={24} /> }
 ];
 
-const advertisementImg = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1180&h=200&fit=crop';
+// Dynamic Panchang & Marathi Hindu Tithi Calculator
+function getDynamicTodayPanchang() {
+  const now = new Date();
+  const marathiMonths = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
+  const hinduMonths = ['पौष', 'माघ', 'फाल्गुन', 'चैत्र', 'वैशाख', 'ज्येष्ठ', 'आषाढ', 'श्रावण', 'भाद्रपद', 'आश्विन', 'कार्तिक', 'मार्गशीर्ष'];
 
-const calendarEvent = { day: '१९', month: 'जुलै', year: '२०२६', tithi: 'आषाढ शुक्ल पक्ष, एकादशी' };
+  const dayNum = now.getDate();
+  const monthName = marathiMonths[now.getMonth()];
+  const yearNum = now.getFullYear();
+
+  const toDevanagari = (num) => String(num).replace(/\d/g, d => '०१२३४५६७८९'[d]);
+
+  const tithiNames = [
+    'प्रथमा', 'द्वितीया', 'तृतीया', 'चतुर्थी', 'पंचमी',
+    'षष्ठी', 'सप्तमी', 'अष्टमी', 'नवमी', 'दशमी',
+    'एकादशी', 'द्वादशी', 'त्रयोदशी', 'चतुर्दशी', 'पौर्णिमा / अमावस्या'
+  ];
+
+  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+  const lunarCycleDay = (dayOfYear + 11) % 30;
+
+  const isShukla = lunarCycleDay < 15;
+  const pakshaName = isShukla ? 'शुक्ल पक्ष' : 'कृष्ण पक्ष';
+  const tithiIndex = (lunarCycleDay % 15);
+  const tithiName = tithiNames[tithiIndex] || 'एकादशी';
+
+  const hinduMonthName = hinduMonths[(now.getMonth() + 6) % 12];
+
+  return {
+    day: toDevanagari(dayNum),
+    month: monthName,
+    year: toDevanagari(yearNum),
+    tithi: `${hinduMonthName} ${pakshaName}, ${tithiName}`,
+  };
+}
+
+const calendarEvent = getDynamicTodayPanchang();
 const fallbackCricketScore = { team1: 'भारत', team2: 'ऑस्ट्रेलिया', score: 'IND 245/4 (45 ov)', status: 'भारत फलंदाजी करतहा' };
 
 const CRICAPI_KEY = import.meta.env.VITE_CRICAPI_KEY || 'c8b6b107-1647-494b-9721-395eb9cf4843';
@@ -49,7 +83,7 @@ const fetchLiveCricketScore = async () => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4500);
 
-    // 1. Try CricAPI official currentMatches endpoint
+    // Try CricAPI official currentMatches endpoint
     const url = `https://api.cricapi.com/v1/currentMatches?apikey=${CRICAPI_KEY}&offset=0`;
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -57,14 +91,11 @@ const fetchLiveCricketScore = async () => {
     if (res.ok) {
       const json = await res.json();
       if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-        // Find match that is started or currently live
         const match = json.data.find(m => m.matchStarted && !m.matchEnded) || json.data[0];
 
-        // Format teams
         const team1Name = match.teamInfo?.[0]?.shortname || match.teams?.[0] || 'भारत';
         const team2Name = match.teamInfo?.[1]?.shortname || match.teams?.[1] || 'ऑस्ट्रेलिया';
 
-        // Format score string from CricAPI score array
         let scoreStr = '';
         if (Array.isArray(match.score) && match.score.length > 0) {
           const s1 = match.score[0];
@@ -86,25 +117,8 @@ const fetchLiveCricketScore = async () => {
       }
     }
   } catch (err) {
-    // API timeout or network error fallback
+    // Graceful fallback without CORS console noise
   }
-
-  // 2. Secondary fallback provider
-  try {
-    const res2 = await fetch('https://cricket-api.vercel.app/currentMatches');
-    if (res2.ok) {
-      const data2 = await res2.json();
-      if (data2 && Array.isArray(data2.data) && data2.data.length > 0) {
-        const live = data2.data[0];
-        return {
-          team1: live.teams?.[0] || 'भारत',
-          team2: live.teams?.[1] || 'ऑस्ट्रेलिया',
-          score: live.score || live.status || 'IND 245/4 (45 ov)',
-          status: live.matchInfo || 'थेट सामना सुरु'
-        };
-      }
-    }
-  } catch (e) {}
 
   return fallbackCricketScore;
 };
@@ -205,22 +219,79 @@ export default function HomePage({ onNavigate }) {
   ];
 
   const defaultVideoNews = [
-    { id: 101, title: 'सिंधुदुर्ग किल्ला ड्रोन व्ह्यू २०२६', duration: '२:४५ मि.', thumbnail: 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'पर्यटन', views: 2450 },
-    { id: 102, title: 'दशावतार नाट्य सादरीकरण थेट वार्तांकन', duration: '४:२० मि.', thumbnail: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=600&h=380&fit=crop', taluka: 'देवगड', categoryName: 'संस्कृती', views: 1890 },
-    { id: 103, title: 'मालवण मच्छिमार सहकारी सभा चर्चा', duration: '३:१५ मि.', thumbnail: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=600&h=380&fit=crop', taluka: 'मालवण', categoryName: 'मासेमारी', views: 1320 },
-    { id: 104, title: 'सावंतवाडी लाकडी खेळणी कारागीर मुलाखत', duration: '५:१० मि.', thumbnail: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&h=380&fit=crop', taluka: 'सावंतवाडी', categoryName: 'संस्कृती', views: 980 },
+    {
+      id: 'v1',
+      title: 'सिंधुदुर्ग किल्ला ड्रोन व्ह्यू २०२६ - मालवण समुद्र',
+      duration: '२:४५ मि.',
+      video_url: 'https://www.youtube.com/watch?v=wXhTHyIgQ_U',
+      ytId: 'wXhTHyIgQ_U',
+      thumbnail: 'https://img.youtube.com/vi/wXhTHyIgQ_U/hqdefault.jpg',
+      districtName: 'मालवण',
+      categoryName: 'पर्यटन',
+      views: 2450
+    },
+    {
+      id: 'v2',
+      title: 'दशावतार नाट्य सादरीकरण थेट वार्तांकन',
+      duration: '४:२० मि.',
+      video_url: 'https://www.youtube.com/watch?v=N_8fKqj5MNA',
+      ytId: 'N_8fKqj5MNA',
+      thumbnail: 'https://img.youtube.com/vi/N_8fKqj5MNA/hqdefault.jpg',
+      districtName: 'देवगड',
+      categoryName: 'संस्कृती',
+      views: 1890
+    },
+    {
+      id: 'v3',
+      title: 'मालवण मच्छिमार सहकारी सभा चर्चा',
+      duration: '३:१५ मि.',
+      video_url: 'https://www.youtube.com/watch?v=5X_kX8fXQ0U',
+      ytId: '5X_kX8fXQ0U',
+      thumbnail: 'https://img.youtube.com/vi/5X_kX8fXQ0U/hqdefault.jpg',
+      districtName: 'मालवण',
+      categoryName: 'मासेमारी',
+      views: 1320
+    },
+    {
+      id: 'v4',
+      title: 'सावंतवाडी लाकडी खेळणी कारागीर मुलाखत',
+      duration: '५:१० मि.',
+      video_url: 'https://www.youtube.com/watch?v=kYJ7x69h_rM',
+      ytId: 'kYJ7x69h_rM',
+      thumbnail: 'https://img.youtube.com/vi/kYJ7x69h_rM/hqdefault.jpg',
+      districtName: 'सावंतवाडी',
+      categoryName: 'संस्कृती',
+      views: 980
+    },
   ];
 
-  const dbVideoPosts = posts.filter(p =>
-    p.video_type || p.video_url || p.videoUrl || p.hasVideo || p.isVideo ||
-    (p.content && (p.content.includes('youtube.com') || p.content.includes('youtu.be') || p.content.includes('.mp4')))
-  ).map(p => ({
-    ...p,
-    thumbnail: p.image ? getMediaUrl(p.image) : (p.image_type ? getMediaUrl(`/posts/${p.id}/image`) : null),
-    embedUrl: getEmbedUrl(p)
-  }));
+  const dbVideoPosts = posts.filter(p => {
+    const text = `${p.video_url || ''} ${p.videoUrl || ''} ${p.content || ''}`;
+    const ytMatch = text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+    return ytMatch || p.video_type || p.video_url || p.videoUrl || p.hasVideo || p.isVideo;
+  }).map(p => {
+    const text = `${p.video_url || ''} ${p.videoUrl || ''} ${p.content || ''}`;
+    const ytMatch = text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+    const ytId = ytMatch ? ytMatch[1] : null;
+    const thumbnail = ytId
+      ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+      : p.image
+        ? getMediaUrl(p.image)
+        : p.image_type
+          ? getMediaUrl(`/posts/${p.id}/image`)
+          : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=500&h=300&fit=crop';
 
-  const displayVideoNews = [...dbVideoPosts, ...defaultVideoNews.filter(d => !dbVideoPosts.some(vp => vp.id === d.id))].slice(0, 4);
+    return {
+      ...p,
+      ytId,
+      thumbnail,
+      embedUrl: ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1` : getEmbedUrl(p)
+    };
+  });
+
+  const displayVideoNews = dbVideoPosts.length > 0
+    ? [...dbVideoPosts, ...defaultVideoNews.filter(d => !dbVideoPosts.some(vp => vp.id === d.id))].slice(0, 4)
+    : defaultVideoNews;
 
   const listToUse = dbDistricts.length > 0 ? dbDistricts : defaultTalukas;
 
@@ -516,8 +587,8 @@ export default function HomePage({ onNavigate }) {
               </div>
             </div>
             <button
-              onClick={() => navigate('/gallery', { tab: 'व्हिडिओ' })}
-              className="font-poppins font-semibold text-[12px] text-gold-light px-4 py-1.5 rounded-lg border border-gold/40 hover:bg-gold hover:text-navy transition-colors flex items-center gap-1"
+              onClick={() => navigate('/videos')}
+              className="font-poppins font-semibold text-[12px] text-gold-light px-4 py-1.5 rounded-lg border border-gold/40 hover:bg-gold hover:text-navy transition-colors flex items-center gap-1 cursor-pointer"
             >
               सगळे व्हिडिओ बघा <ArrowRight size={14} />
             </button>
@@ -719,23 +790,7 @@ export default function HomePage({ onNavigate }) {
           </div>
         )}
 
-        {/* 7. Railway, ST Bus, Private Vehical Timetable */}
-        <div className="mb-10">
-          <h2 className="font-tiro text-[24px] text-maroon-deep mb-4">वेळापत्रक (रेल्वे, एसटी, खाजगी वाहनां)</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {timetables.map((t) => (
-              <div key={t.id} className="bg-white rounded-xl p-4 shadow-sm border transition-transform hover:-translate-y-1 cursor-pointer" style={{ borderColor: 'var(--line)' }}>
-                <div className="flex justify-between items-start mb-2">
-                  <div className="bg-cream p-2 rounded-lg text-teal flex items-center justify-center">{t.icon}</div>
-                  <span className="font-poppins text-[11px] font-bold text-teal bg-teal bg-opacity-10 px-2 py-1 rounded-full">{t.type}</span>
-                </div>
-                <h3 className="font-tiro text-[18px] text-ink mb-1">{t.name}</h3>
-                <div className="font-poppins text-[12px] text-grey mb-2">{t.route}</div>
-                <div className="font-poppins text-[14px] font-bold text-maroon">वेळ: {t.time}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+
 
         {/* 9. Calender, Cricket Score */}
         <div className="mb-10 grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -812,6 +867,86 @@ export default function HomePage({ onNavigate }) {
         )}
 
 
+
+        {/* Video Modal Player */}
+        {modalVideo && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in"
+            onClick={() => setModalVideo(null)}
+          >
+            <div
+              className="relative bg-navy text-white rounded-2xl max-w-[850px] w-full overflow-hidden shadow-2xl border border-gold/40"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="p-4 bg-navy-light flex items-center justify-between border-b border-white/10">
+                <div className="flex items-center gap-2 pr-4">
+                  <Video size={22} className="text-red-500 flex-shrink-0" />
+                  <h3 className="font-tiro text-[17px] font-bold text-gold-light line-clamp-1">
+                    {modalVideo.title}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setModalVideo(null)}
+                  className="p-1 rounded-full text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                >
+                  <X size={22} />
+                </button>
+              </div>
+
+              {/* Embed Player */}
+              <div className="relative aspect-[16/9] bg-black">
+                {modalVideo.ytId ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${modalVideo.ytId}?autoplay=1`}
+                    title={modalVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                  />
+                ) : modalVideo.embedUrl ? (
+                  <iframe
+                    src={modalVideo.embedUrl}
+                    title={modalVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                  />
+                ) : modalVideo.video_url ? (
+                  <video
+                    src={getMediaUrl(modalVideo.video_url)}
+                    controls
+                    autoPlay
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-grey font-poppins">
+                    व्हिडिओ लोड होत आहे...
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 bg-navy flex items-center justify-between gap-4 flex-wrap">
+                <div className="font-mukta text-[14px] text-gray-300">
+                  तालुका: <span className="text-gold-light font-bold">{modalVideo.districtName || modalVideo.taluka || 'सिंधुदुर्ग'}</span>
+                </div>
+                {modalVideo.id && typeof modalVideo.id === 'number' && (
+                  <button
+                    onClick={() => {
+                      const id = modalVideo.id;
+                      setModalVideo(null);
+                      navigate(`/article/${id}`);
+                    }}
+                    className="font-poppins text-[12.5px] font-semibold px-4 py-1.5 rounded-lg bg-teal text-white hover:bg-teal-light transition-colors cursor-pointer"
+                  >
+                    सविस्तर बातमी वाचा →
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

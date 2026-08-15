@@ -181,7 +181,7 @@ ${pageUrl}
                   </div>
                 ) : (
                   <div className="font-semibold text-navy">
-                    लेखक: <strong className="text-teal">{post.authorName || 'संपादक'}</strong>
+                    <strong className="text-teal font-bold">मायबोली मालवणी</strong>
                   </div>
                 )}
                 <div className="text-[11.5px] text-grey flex items-center gap-2 mt-0.5">

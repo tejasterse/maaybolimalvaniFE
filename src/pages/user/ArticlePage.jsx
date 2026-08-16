@@ -8,6 +8,13 @@ import { getMediaUrl } from '../../utils/media.js';
 import AdCarousel from '../../components/shared/AdCarousel.jsx';
 import toast from 'react-hot-toast';
 
+function getYouTubeId(url) {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
 export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
   const { id: routeId } = useParams();
   const id = articleData || routeId;
@@ -46,6 +53,18 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
     queryKey: ['ads'],
     queryFn: fetchAds
   });
+
+  const youtubeId = post ? getYouTubeId(post.video_url || (post.videos && post.videos[0]?.video_url)) : null;
+
+  useEffect(() => {
+    if (post) {
+      if (youtubeId || post.video_type || (post.videos && post.videos.length > 0)) {
+        if (!post.image && !post.image_type) {
+          setActiveMedia('video');
+        }
+      }
+    }
+  }, [post, youtubeId]);
 
   if (isLoading) return <div className="py-20 text-center font-poppins text-grey">बातमी लोड होतहा...</div>;
   if (isError || !post) return <div className="py-20 text-center font-poppins text-maroon font-semibold">बातमी गावूक नाय.</div>;
@@ -260,17 +279,37 @@ ${pageUrl}
         </div>
       )}
 
-      {/* Main Image / Video View */}
-      {activeMedia === 'video' && hasVideo ? (
-        <video
-          src={videoUrl}
-          controls
-          className="w-full max-w-[900px] h-auto max-h-[500px] object-contain rounded-[12px] mx-auto block mb-3 shadow-md bg-black/5"
-        />
+      {/* Main Image / Video / YouTube View */}
+      {(activeMedia === 'video' || (!post.image && !post.image_type && youtubeId)) ? (
+        youtubeId ? (
+          <div className="w-full max-w-[900px] aspect-video rounded-[12px] overflow-hidden mx-auto block mb-4 shadow-xl bg-black border border-gold/40">
+            <iframe
+              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0`}
+              title={post.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full border-0"
+            />
+          </div>
+        ) : (
+          <video
+            src={videoUrl}
+            controls
+            className="w-full max-w-[900px] h-auto max-h-[500px] object-contain rounded-[12px] mx-auto block mb-3 shadow-md bg-black/5"
+          />
+        )
       ) : (
         <img
           src={selectedGalleryImage || mainImageUrl}
           alt={post.title}
+          onError={(e) => {
+            if (youtubeId) {
+              setActiveMedia('video');
+            } else {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop';
+            }
+          }}
           className="w-full max-w-[900px] h-auto max-h-[500px] object-contain rounded-[12px] mx-auto block mb-3 shadow-md bg-black/5 transition-all duration-300"
         />
       )}

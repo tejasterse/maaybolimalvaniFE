@@ -169,7 +169,7 @@ export default function ArticleEditorPage({ onBack }) {
     if (pubDate) formData.append('createdAt', pubDate);
     formData.append('status', status);
 
-    if (youtubeUrl) formData.append('video_url', youtubeUrl);
+    formData.append('video_url', youtubeUrl || '');
 
     if (imageFile) {
       const optimizedImage = await compressImage(imageFile);

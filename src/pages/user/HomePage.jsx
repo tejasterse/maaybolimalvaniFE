@@ -37,6 +37,14 @@ const timetables = [
   { id: 3, type: 'खाजगी', name: 'पावलो ट्रॅव्हल्स', time: 'राती ९:१५', route: 'सावंतवाडी ते मुंबई', icon: <Car size={24} /> }
 ];
 
+// YouTube Video ID Extractor
+function getYouTubeId(url) {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
 // Dynamic Panchang & Marathi Hindu Tithi Calculator
 function getDynamicTodayPanchang() {
   const now = new Date();
@@ -218,53 +226,6 @@ export default function HomePage({ onNavigate }) {
     { name: 'दोडामार्ग', headline: 'वनविभाग कारवाई' },
   ];
 
-  const defaultVideoNews = [
-    {
-      id: 'v1',
-      title: 'सिंधुदुर्ग किल्ला ड्रोन व्ह्यू २०२६ - मालवण समुद्र',
-      duration: '२:४५ मि.',
-      video_url: 'https://www.youtube.com/watch?v=wXhTHyIgQ_U',
-      ytId: 'wXhTHyIgQ_U',
-      thumbnail: 'https://img.youtube.com/vi/wXhTHyIgQ_U/hqdefault.jpg',
-      districtName: 'मालवण',
-      categoryName: 'पर्यटन',
-      views: 2450
-    },
-    {
-      id: 'v2',
-      title: 'दशावतार नाट्य सादरीकरण थेट वार्तांकन',
-      duration: '४:२० मि.',
-      video_url: 'https://www.youtube.com/watch?v=N_8fKqj5MNA',
-      ytId: 'N_8fKqj5MNA',
-      thumbnail: 'https://img.youtube.com/vi/N_8fKqj5MNA/hqdefault.jpg',
-      districtName: 'देवगड',
-      categoryName: 'संस्कृती',
-      views: 1890
-    },
-    {
-      id: 'v3',
-      title: 'मालवण मच्छिमार सहकारी सभा चर्चा',
-      duration: '३:१५ मि.',
-      video_url: 'https://www.youtube.com/watch?v=5X_kX8fXQ0U',
-      ytId: '5X_kX8fXQ0U',
-      thumbnail: 'https://img.youtube.com/vi/5X_kX8fXQ0U/hqdefault.jpg',
-      districtName: 'मालवण',
-      categoryName: 'मासेमारी',
-      views: 1320
-    },
-    {
-      id: 'v4',
-      title: 'सावंतवाडी लाकडी खेळणी कारागीर मुलाखत',
-      duration: '५:१० मि.',
-      video_url: 'https://www.youtube.com/watch?v=kYJ7x69h_rM',
-      ytId: 'kYJ7x69h_rM',
-      thumbnail: 'https://img.youtube.com/vi/kYJ7x69h_rM/hqdefault.jpg',
-      districtName: 'सावंतवाडी',
-      categoryName: 'संस्कृती',
-      views: 980
-    },
-  ];
-
   const dbVideoPosts = posts.filter(p => {
     const text = `${p.video_url || ''} ${p.videoUrl || ''} ${p.content || ''}`;
     const ytMatch = text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
@@ -289,9 +250,7 @@ export default function HomePage({ onNavigate }) {
     };
   });
 
-  const displayVideoNews = dbVideoPosts.length > 0
-    ? [...dbVideoPosts, ...defaultVideoNews.filter(d => !dbVideoPosts.some(vp => vp.id === d.id))].slice(0, 4)
-    : defaultVideoNews;
+  const displayVideoNews = dbVideoPosts;
 
   const listToUse = dbDistricts.length > 0 ? dbDistricts : defaultTalukas;
 
@@ -595,44 +554,67 @@ export default function HomePage({ onNavigate }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {displayVideoNews.map((v) => (
-              <div
-                key={v.id}
-                onClick={() => setModalVideo(v)}
-                className="bg-white/5 rounded-xl overflow-hidden border border-white/10 cursor-pointer group hover:border-gold/60 transition-all flex flex-col justify-between"
-              >
-                <div className="relative overflow-hidden aspect-video">
-                  <img
-                    src={v.thumbnail || (v.image ? getMediaUrl(v.image) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=500&h=300&fit=crop')}
-                    alt={v.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/10 transition-colors">
-                    <div className="w-11 h-11 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Play size={20} fill="currentColor" className="ml-0.5" />
+            {displayVideoNews.length === 0 ? (
+              <div className="col-span-full bg-white/5 rounded-xl p-8 text-center border border-white/10">
+                <Video size={36} className="text-white/40 mx-auto mb-2" />
+                <div className="font-tiro text-[16px] text-white/80 font-semibold">ह्या विभागात सद्याक खंयचीच व्हिडिओ बातमी उपलब्ध नाय.</div>
+              </div>
+            ) : (
+              displayVideoNews.map((v) => {
+                const ytId = getYouTubeId(v.video_url || v.videoUrl || v.url);
+                const videoThumb = ytId
+                  ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+                  : (v.thumbnail || (v.image ? getMediaUrl(v.image) : v.image_type ? getMediaUrl(`/posts/${v.id}/image`) : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=500&h=300&fit=crop'));
+
+                return (
+                  <div
+                    key={v.id}
+                    onClick={() => setModalVideo({ ...v, ytId })}
+                    className="bg-white/5 rounded-xl overflow-hidden border border-white/10 cursor-pointer group hover:border-gold/60 transition-all flex flex-col justify-between"
+                  >
+                    <div className="relative overflow-hidden aspect-video bg-black">
+                      <img
+                        src={videoThumb}
+                        alt={v.title}
+                        onError={(e) => {
+                          if (ytId) {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+                          } else {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=500&h=300&fit=crop';
+                          }
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
+                      />
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/10 transition-colors">
+                        <div className="w-11 h-11 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                          <Play size={20} fill="currentColor" className="ml-0.5" />
+                        </div>
+                      </div>
+                      <span className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-poppins px-2 py-0.5 rounded font-medium">
+                        {v.duration || '२:४५ मि.'}
+                      </span>
+                      <span className="absolute top-2 left-2 bg-maroon text-gold-light text-[10px] font-poppins px-2.5 py-0.5 rounded font-bold uppercase">
+                        {v.categoryName || v.tag || 'व्हिडिओ'}
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 flex flex-col justify-between flex-1">
+                      <h3 className="font-tiro text-[16px] leading-snug text-white group-hover:text-gold-light transition-colors line-clamp-2 mb-3">
+                        {v.title}
+                      </h3>
+                      <div className="font-poppins text-[11px] text-white/60 flex items-center justify-between border-t border-white/10 pt-2">
+                        <span>{v.districtName || v.taluka || 'सिंधुदुर्ग'}</span>
+                        <span className="flex items-center gap-1 font-semibold text-gold-light">
+                          <Eye size={12} /> {Number(v.viewer_count ?? v.views ?? 0).toLocaleString('en-IN')} वाचक
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <span className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-poppins px-2 py-0.5 rounded font-medium">
-                    {v.duration || '२:४५ मि.'}
-                  </span>
-                  <span className="absolute top-2 left-2 bg-maroon text-gold-light text-[10px] font-poppins px-2.5 py-0.5 rounded font-bold uppercase">
-                    {v.categoryName || v.tag || 'व्हिडिओ'}
-                  </span>
-                </div>
-
-                <div className="p-3.5 flex flex-col justify-between flex-1">
-                  <h3 className="font-tiro text-[16px] leading-snug text-white group-hover:text-gold-light transition-colors line-clamp-2 mb-3">
-                    {v.title}
-                  </h3>
-                  <div className="font-poppins text-[11px] text-white/60 flex items-center justify-between border-t border-white/10 pt-2">
-                    <span>{v.districtName || v.taluka || 'सिंधुदुर्ग'}</span>
-                    <span className="flex items-center gap-1 font-semibold text-gold-light">
-                      <Eye size={12} /> {Number(v.viewer_count ?? v.views ?? 0).toLocaleString('en-IN')} वाचक
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -654,7 +636,15 @@ export default function HomePage({ onNavigate }) {
                 </button>
               </div>
               <div className="aspect-video w-full bg-black flex items-center justify-center">
-                {modalVideo.video_type ? (
+                {modalVideo.ytId || getYouTubeId(modalVideo.video_url || modalVideo.videoUrl || modalVideo.url) ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${modalVideo.ytId || getYouTubeId(modalVideo.video_url || modalVideo.videoUrl || modalVideo.url)}?autoplay=1`}
+                    title={modalVideo.title}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : modalVideo.video_type ? (
                   <video
                     src={getMediaUrl(`/posts/${modalVideo.id}/video`)}
                     controls
@@ -677,13 +667,7 @@ export default function HomePage({ onNavigate }) {
                     className="w-full h-full object-contain"
                   />
                 ) : (
-                  <iframe
-                    src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1"
-                    title={modalVideo.title}
-                    className="w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <div className="p-10 text-center font-poppins text-white">व्हिडिओ प्लेअर उपलब्ध नाही</div>
                 )}
               </div>
             </div>

@@ -15,6 +15,7 @@ import FestivalsPage from './pages/user/FestivalsPage.jsx';
 import EntertainmentListingPage from './pages/user/EntertainmentListingPage.jsx';
 import EntertainmentArticlePage from './pages/user/EntertainmentArticlePage.jsx';
 import EventsListingPage from './pages/user/EventsListingPage.jsx';
+import VideosPage from './pages/user/VideosPage.jsx';
 import { AboutUsPage, TermsPage, PrivacyPage } from './pages/user/StaticPages.jsx';
 import TalukaNewsPage from './pages/user/TalukaNewsPage.jsx';
 

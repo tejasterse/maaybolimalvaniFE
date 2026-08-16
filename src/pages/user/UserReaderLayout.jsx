@@ -176,9 +176,9 @@ export default function UserReaderLayout({ onAdminLogin }) {
       <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }} className="py-3 relative">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
           
-          {/* Top Row: Both Logos side by side */}
-          <div className="flex items-center justify-between gap-4 mb-3">
-            {/* 1. Primary Circular Badge Logo (logo.png) - Extra Large */}
+          {/* Top Row: Both Logos with Center Website Title */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mb-3">
+            {/* 1. Primary Circular Badge Logo (logo.png) */}
             <div
               className="cursor-pointer flex-shrink-0 leading-none flex items-center"
               onClick={() => navigate('home')}
@@ -186,11 +186,28 @@ export default function UserReaderLayout({ onAdminLogin }) {
               <img
                 src="/logo.png"
                 alt="मायबोली मालवणी"
-                className="h-[125px] sm:h-[160px] lg:h-[190px] w-auto object-contain drop-shadow-xl transition-transform hover:scale-[1.02] block -my-3"
+                className="h-[95px] sm:h-[130px] lg:h-[155px] w-auto object-contain drop-shadow-xl transition-transform hover:scale-[1.02] block -my-2"
               />
             </div>
 
-            {/* 2. Banner Header Logo (header-logo.jpg) - Matched Size */}
+            {/* 2. Center Website Title */}
+            <div
+              className="hidden sm:flex flex-col items-center justify-center text-center cursor-pointer px-2 flex-1 select-none"
+              onClick={() => navigate('home')}
+            >
+              <h1 className="font-tiro text-[26px] sm:text-[34px] lg:text-[40px] font-extrabold text-maroon-deep leading-none tracking-tight drop-shadow-sm">
+                मायबोली मालवणी
+              </h1>
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="h-[1.5px] w-5 sm:w-8 bg-gold/70"></span>
+                <p className="font-poppins text-[11px] sm:text-[12.5px] lg:text-[13.5px] font-bold text-[#b47a12] tracking-wide">
+                  कोकणाचो आवाज, मालवणी अभिमान!
+                </p>
+                <span className="h-[1.5px] w-5 sm:w-8 bg-gold/70"></span>
+              </div>
+            </div>
+
+            {/* 3. Banner Header Logo (header-logo.jpg) */}
             <div
               className="cursor-pointer flex-shrink-0 flex items-center"
               onClick={() => navigate('home')}
@@ -198,7 +215,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
               <img
                 src="/header-logo.jpg"
                 alt="मायबोली मालवणी डिजिटल बातम्या"
-                className="h-[80px] sm:h-[110px] lg:h-[135px] w-auto max-w-[280px] sm:max-w-[460px] lg:max-w-[580px] object-contain rounded-2xl border-2 border-gold/50 shadow-md transition-transform hover:scale-[1.01] block"
+                className="h-[75px] sm:h-[105px] lg:h-[125px] w-auto max-w-[220px] sm:max-w-[360px] lg:max-w-[460px] object-contain rounded-2xl border-2 border-gold/50 shadow-md transition-transform hover:scale-[1.01] block"
               />
             </div>
 

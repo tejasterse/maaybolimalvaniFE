@@ -6,6 +6,9 @@ import { fetchPostById, fetchPosts } from '../../api/posts.js';
 import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
 import AdCarousel from '../../components/shared/AdCarousel.jsx';
+import SEOHead from '../../components/shared/SEOHead.jsx';
+import AEOFactsBox from '../../components/shared/AEOFactsBox.jsx';
+import { generateNewsArticleSchema, generateBreadcrumbSchema, createExcerpt } from '../../utils/seo.js';
 import toast from 'react-hot-toast';
 
 function getYouTubeId(url) {
@@ -135,8 +138,29 @@ ${pageUrl}
     }
   };
 
+  const articleUrl = `/news/${post.slug || post.id}`;
+  const newsArticleSchema = generateNewsArticleSchema(post, mainImageUrl, articleUrl);
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'होम', url: '/' },
+    { name: post.categoryName || 'बातमी', url: '/listing' },
+    ...(post.districtName ? [{ name: post.districtName, url: `/${post.districtName.toLowerCase()}` }] : []),
+    { name: post.title, url: articleUrl }
+  ]);
+
   return (
     <div>
+      <SEOHead
+        title={post.seo_title || post.title}
+        description={post.seo_description || createExcerpt(post.content)}
+        canonicalUrl={articleUrl}
+        ogImage={mainImageUrl}
+        ogType="article"
+        publishedTime={post.createdAt}
+        modifiedTime={post.updatedAt}
+        author={post.reporter_name || post.authorName}
+        section={post.categoryName}
+        jsonLd={[newsArticleSchema, breadcrumbSchema]}
+      />
       <div className="max-w-[1180px] mx-auto px-4 sm:px-6">
         {/* Breadcrumb */}
         <div className="font-poppins font-medium text-[12.5px] text-grey mb-4 flex items-center gap-1.5 flex-wrap">
@@ -364,6 +388,13 @@ ${pageUrl}
         className="article-body-content max-w-[760px] w-full mx-auto mb-6 p-6 sm:p-8 bg-white border border-line/80 border-t-4 border-t-maroon rounded-2xl shadow-sm text-left overflow-hidden break-words box-border"
         style={{ color: '#2b2319' }}
       >
+        <AEOFactsBox
+          title={post.title}
+          date={formattedDate}
+          location={post.districtName}
+          reporter={post.reporter_name || post.authorName}
+          summary={createExcerpt(post.content, 180)}
+        />
         <div className="w-full max-w-full overflow-hidden break-words" dangerouslySetInnerHTML={{ __html: post.content }} />
 
         {/* Reporter Credit Sign-off at bottom of article */}

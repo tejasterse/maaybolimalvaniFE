@@ -16,6 +16,7 @@ import EntertainmentListingPage from './pages/user/EntertainmentListingPage.jsx'
 import EntertainmentArticlePage from './pages/user/EntertainmentArticlePage.jsx';
 import EventsListingPage from './pages/user/EventsListingPage.jsx';
 import { AboutUsPage, TermsPage, PrivacyPage } from './pages/user/StaticPages.jsx';
+import TalukaNewsPage from './pages/user/TalukaNewsPage.jsx';
 
 // Admin Pages
 import DashboardPage from './pages/admin/DashboardPage.jsx';
@@ -37,6 +38,7 @@ export default function App() {
       {/* 1. Public Reader Routes */}
       <Route path="/" element={<UserReaderLayout />}>
         <Route index element={<HomePage />} />
+        <Route path="news/:id" element={<ArticlePage />} />
         <Route path="article/:id" element={<ArticlePage />} />
         <Route path="listing" element={<ListingPage />} />
         <Route path="category/:categoryKey" element={<ListingPage />} />
@@ -46,6 +48,18 @@ export default function App() {
         <Route path="sanskriti" element={<ListingPage categoryKey="sanskriti" />} />
         <Route path="krida" element={<ListingPage categoryKey="krida" />} />
         <Route path="gunhe" element={<ListingPage categoryKey="gunhe" />} />
+        
+        {/* Dedicated Local SEO Taluka Routes */}
+        <Route path="sindhudurg" element={<TalukaNewsPage talukaKey="sindhudurg" />} />
+        <Route path="malvan" element={<TalukaNewsPage talukaKey="malvan" />} />
+        <Route path="sawantwadi" element={<TalukaNewsPage talukaKey="sawantwadi" />} />
+        <Route path="kankavli" element={<TalukaNewsPage talukaKey="kankavli" />} />
+        <Route path="kudal" element={<TalukaNewsPage talukaKey="kudal" />} />
+        <Route path="vengurla" element={<TalukaNewsPage talukaKey="vengurla" />} />
+        <Route path="devgad" element={<TalukaNewsPage talukaKey="devgad" />} />
+        <Route path="vaibhavwadi" element={<TalukaNewsPage talukaKey="vaibhavwadi" />} />
+        <Route path="dodamarg" element={<TalukaNewsPage talukaKey="dodamarg" />} />
+
         <Route path="utsav" element={<FestivalsPage />} />
         <Route path="kavita-lekh" element={<KavitaLekhPage />} />
         <Route path="kavita" element={<KavitaLekhPage />} />
@@ -54,6 +68,7 @@ export default function App() {
         <Route path="entertainment" element={<EntertainmentListingPage />} />
         <Route path="entertainment/:id" element={<EntertainmentArticlePage />} />
         <Route path="events" element={<EventsListingPage />} />
+        <Route path="videos" element={<VideosPage />} />
         <Route path="chatbot" element={<Navigate to="/" replace />} />
         <Route path="about-us" element={<AboutUsPage />} />
         <Route path="terms" element={<TermsPage />} />

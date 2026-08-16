@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Play, Eye, Calendar, MapPin, Video, ArrowLeft, X } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
 import { getMediaUrl } from '../../utils/media.js';
+import SEOHead from '../../components/shared/SEOHead.jsx';
+import { generateVideoObjectSchema } from '../../utils/seo.js';
 
 // Extract YouTube Video ID from any YouTube URL format
 function getYouTubeId(url) {
@@ -27,8 +29,20 @@ export default function VideosPage({ onNavigate, onGoBack }) {
     return ytId || hasVideoField;
   });
 
+  const videoSchemas = videoPosts.slice(0, 5).map(post => {
+    const ytId = getYouTubeId(post.video_url);
+    const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null;
+    return generateVideoObjectSchema(post.title, post.video_url || '', thumb, post.createdAt);
+  }).filter(Boolean);
+
   return (
     <div className="max-w-[1240px] mx-auto px-4 sm:px-6 py-6 font-mukta">
+      <SEOHead
+        title="मालवणी व्हिडिओ बातम्या | Konkan Video News | मायबोली मालवणी"
+        description="सिंधुदुर्ग आणि कोकणातील सर्व महत्त्वाच्या ताज्या व्हिडिओ बातम्या, ग्राउंड रिपोर्ट व मुलाखती पहा."
+        canonicalUrl="/videos"
+        jsonLd={videoSchemas}
+      />
       {/* Header Bar */}
       <div className="flex items-center justify-between gap-4 mb-6 border-b border-line pb-4">
         <div className="flex items-center gap-3">

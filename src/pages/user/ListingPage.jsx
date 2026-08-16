@@ -5,6 +5,8 @@ import { Search, ArrowRight, Eye, Play } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
 import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
+import SEOHead from '../../components/shared/SEOHead.jsx';
+import { generateBreadcrumbSchema } from '../../utils/seo.js';
 import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
 const talukaFilters = ['सगळे तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'वैभववाडी', 'दोडामार्ग'];
@@ -110,8 +112,19 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
 
   const paginatedArticles = sortedArticles.slice((safePageIndex - 1) * itemsPerPage, safePageIndex * itemsPerPage);
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'होम', url: '/' },
+    { name: details.title, url: `/${categoryKey}` }
+  ]);
+
   return (
     <div>
+      <SEOHead
+        title={`${details.title} | मायबोली मालवणी`}
+        description={details.desc}
+        canonicalUrl={`/${categoryKey}`}
+        jsonLd={[breadcrumbSchema]}
+      />
       {/* Category Banner */}
       <div
         className="py-10"

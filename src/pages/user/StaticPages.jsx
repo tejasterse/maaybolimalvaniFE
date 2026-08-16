@@ -1,6 +1,13 @@
+import SEOHead from '../../components/shared/SEOHead.jsx';
+
 export function AboutUsPage() {
   return (
     <div className="max-w-[800px] mx-auto px-6 py-12">
+      <SEOHead
+        title="आमच्याबद्दल | About Us | मायबोली मालवणी"
+        description="मायबोली मालवणी हे कोकणातील पहिले डिजिटल बातमीपत्र - कोकणाचो आवाज, मालवणी अभिमान!"
+        canonicalUrl="/about-us"
+      />
       <h1 className="font-tiro text-[32px] text-maroon-deep mb-6 text-center border-b pb-4">आमच्याबद्दल (About Us)</h1>
       <div className="font-mukta text-[17px] leading-[1.8] text-ink space-y-6">
         <p>
@@ -25,6 +32,11 @@ export function AboutUsPage() {
 export function TermsPage() {
   return (
     <div className="max-w-[800px] mx-auto px-6 py-12">
+      <SEOHead
+        title="नियम आणि अटी | Terms & Conditions | मायबोली मालवणी"
+        description="मायबोली मालवणी संकेतस्थळ वापराचे नियम व अटी."
+        canonicalUrl="/terms"
+      />
       <h1 className="font-tiro text-[32px] text-maroon-deep mb-6 text-center border-b pb-4">नियम आनि अटी (Terms & Conditions)</h1>
       <div className="font-mukta text-[16px] leading-[1.8] text-ink space-y-6">
         <p>
@@ -49,6 +61,11 @@ export function TermsPage() {
 export function PrivacyPage() {
   return (
     <div className="max-w-[800px] mx-auto px-6 py-12">
+      <SEOHead
+        title="गोपनीयता धोरण | Privacy Policy | मायबोली मालवणी"
+        description="मायबोली मालवणी डिजिटल वृत्तपत्र गोपनीयता धोरण."
+        canonicalUrl="/privacy"
+      />
       <h1 className="font-tiro text-[32px] text-maroon-deep mb-6 text-center border-b pb-4">गोपनीयता धोरण (Privacy Policy)</h1>
       <div className="font-mukta text-[16px] leading-[1.8] text-ink space-y-6">
         <p>

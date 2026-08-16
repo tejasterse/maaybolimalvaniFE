@@ -17,6 +17,7 @@ import EntertainmentListingPage from './EntertainmentListingPage.jsx';
 import EntertainmentArticlePage from './EntertainmentArticlePage.jsx';
 import EventsListingPage from './EventsListingPage.jsx';
 import VideosPage from './VideosPage.jsx';
+import TalukaNewsPage from './TalukaNewsPage.jsx';
 
 const navItems = [
   { key: 'home', label: 'होम' },
@@ -46,19 +47,27 @@ export default function UserReaderLayout({ onAdminLogin }) {
   const [pageParams, setPageParams] = useState(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
+  const talukas = ['sindhudurg', 'malvan', 'sawantwadi', 'kankavli', 'kudal', 'vengurla', 'devgad', 'vaibhavwadi', 'dodamarg'];
+
   // Sync URL changes to activePage state
   useEffect(() => {
     const path = location.pathname;
     if (path === '/') {
       setActivePage('home');
       setPageParams(null);
+    } else if (path.startsWith('/news/')) {
+      const id = path.split('/').pop();
+      setActivePage('article');
+      setPageParams(id);
     } else if (path.startsWith('/article/')) {
       const id = path.split('/').pop();
       setActivePage('article');
       setPageParams(id);
+    } else if (talukas.includes(path.substring(1))) {
+      setActivePage('taluka');
+      setPageParams(path.substring(1));
     } else if (path === '/listing') {
       setActivePage('listing');
-      // If we entered listing via history or direct link, check state
       setPageParams(location.state || null);
     } else if (['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'].includes(path.substring(1))) {
       setActivePage(path.substring(1));
@@ -108,6 +117,15 @@ export default function UserReaderLayout({ onAdminLogin }) {
     if (key !== activePage) {
       setPageHistory((prev) => [...prev, key]);
     }
+    if (talukas.includes(key)) {
+      setActivePage('taluka');
+      setPageParams(key);
+      setShowMobileMenu(false);
+      window.scrollTo(0, 0);
+      routerNavigate(`/${key}`);
+      return;
+    }
+
     setActivePage(key);
     setPageParams(params);
     setShowMobileMenu(false);
@@ -115,7 +133,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
 
     // Sync state actions back to react-router URL
     if (key === 'home') routerNavigate('/');
-    else if (key === 'article') routerNavigate(`/article/${params}`);
+    else if (key === 'article') routerNavigate(`/news/${params}`);
     else if (key === 'entertainment-article') routerNavigate(`/entertainment/${params}`);
     else if (key === 'listing') {
       if (params?.taluka) {
@@ -148,6 +166,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
   const renderPage = () => {
     if (activePage === 'home') return <HomePage onNavigate={navigate} />;
     if (activePage === 'article') return <ArticlePage onNavigate={navigate} onGoBack={goBack} articleData={pageParams} />;
+    if (activePage === 'taluka') return <TalukaNewsPage talukaKey={pageParams} onNavigate={navigate} onGoBack={goBack} />;
     if (activePage === 'listing' || categoryPages.includes(activePage))
       return <ListingPage onNavigate={navigate} onGoBack={goBack} categoryKey={activePage} initialTaluka={pageParams?.taluka} />;
     if (activePage === 'kavita-lekh') return <KavitaLekhPage onNavigate={navigate} onGoBack={goBack} initialSection={pageParams?.section || 'kavita'} />;

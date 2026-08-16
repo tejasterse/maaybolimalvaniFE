@@ -10,6 +10,8 @@ import { fetchEntertainment } from '../../api/entertainment.js';
 import { fetchEvents } from '../../api/events.js';
 import { fetchGallery } from '../../api/gallery.js';
 import { getMediaUrl } from '../../utils/media.js';
+import SEOHead from '../../components/shared/SEOHead.jsx';
+import { generateWebSiteSchema, generateOrganizationSchema } from '../../utils/seo.js';
 
 import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
@@ -285,8 +287,17 @@ export default function HomePage({ onNavigate }) {
     ? breakingNewsData[currentHeroIndex]
     : (posts.length > 0 ? posts[0] : null);
 
+  const websiteSchema = generateWebSiteSchema();
+  const orgSchema = generateOrganizationSchema();
+
   return (
-    <div>
+    <div className="font-mukta">
+      <SEOHead
+        title="मायबोली मालवणी | सिंधुदुर्ग आणि कोकणातील ताज्या बातम्या"
+        description="मायबोली मालवणी - सावंतवाडी, मालवण, कणकवली, कुडाळ, वेंगुर्ला, देवगड, वैभववाडी, दोडामार्ग आणि संपूर्ण कोकणातील ताज्या ब्रेकिंग बातम्या."
+        canonicalUrl="/"
+        jsonLd={[websiteSchema, orgSchema]}
+      />
       {/* 1. Breaking news ticker */}
       {breakingNewsData.length > 0 && (
         <div

@@ -64,6 +64,12 @@ export default function ArticleEditorPage({ onBack }) {
   const [originalText, setOriginalText] = useState(article?.excerpt || '');
   const [aiDraft, setAiDraft] = useState('');
 
+  // SEO State
+  const [seoTitle, setSeoTitle] = useState(article?.seo_title || '');
+  const [seoDescription, setSeoDescription] = useState(article?.seo_description || '');
+  const [seoKeywords, setSeoKeywords] = useState(article?.seo_keywords || '');
+  const [customSlug, setCustomSlug] = useState(article?.slug || '');
+
   useEffect(() => {
     if (article) {
       setTitle(article.title || '');
@@ -74,6 +80,10 @@ export default function ArticleEditorPage({ onBack }) {
       setYoutubeUrl(article.video_url || '');
       setCategory(article.categoryName || article.category || '');
       setSelectedTaluka(article.districtName || article.taluka || '');
+      setSeoTitle(article.seo_title || '');
+      setSeoDescription(article.seo_description || '');
+      setSeoKeywords(article.seo_keywords || '');
+      setCustomSlug(article.slug || '');
       if (article.createdAt) {
         setPubDate(new Date(article.createdAt).toISOString().split('T')[0]);
       }
@@ -170,6 +180,10 @@ export default function ArticleEditorPage({ onBack }) {
     formData.append('status', status);
 
     formData.append('video_url', youtubeUrl || '');
+    formData.append('seo_title', seoTitle || '');
+    formData.append('seo_description', seoDescription || '');
+    formData.append('seo_keywords', seoKeywords || '');
+    formData.append('slug', customSlug || '');
 
     if (imageFile) {
       const optimizedImage = await compressImage(imageFile);
@@ -566,6 +580,114 @@ export default function ArticleEditorPage({ onBack }) {
                 ))}
               </select>
               <p className="font-poppins text-[10.5px] text-grey mt-1.5">User तक्त्यातील 'REPORTER' रोल असलेले वापरकर्ते येथे उपलब्ध आहेत.</p>
+            </div>
+          </div>
+
+          {/* SEO Management & Live Previews */}
+          <div className="bg-white rounded-[10px] p-5 shadow-sm border border-gold/40">
+            <h4 className="font-poppins text-[13px] font-bold uppercase tracking-[.06em] text-maroon mb-4 flex items-center gap-1.5 border-b pb-2">
+              <Globe size={16} className="text-gold-dark" /> SEO आणि सोशल मीडिया ऑप्टिमायझेशन
+            </h4>
+
+            {/* Health Check Warnings */}
+            {(!imageFile && !existingImage) && (
+              <div className="mb-3 p-2.5 bg-amber-50 border border-gold/40 rounded-md text-xs text-maroon-deep font-poppins">
+                ⚠️ बातमीचा फोटो अपलोड केलेला नाही. (Google Discover साठी मुख्य फोटो महत्त्वाचा आहे.)
+              </div>
+            )}
+            {(!seoDescription && !body) && (
+              <div className="mb-3 p-2.5 bg-amber-50 border border-gold/40 rounded-md text-xs text-maroon-deep font-poppins">
+                ⚠️ SEO डिस्क्रिप्शन मोकळे आहे.
+              </div>
+            )}
+
+            {/* Custom SEO Title */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-1">
+                <label className="font-poppins text-[11.5px] font-semibold text-grey">SEO शीर्षक (Meta Title)</label>
+                <span className={`text-[10.5px] font-poppins font-semibold ${(seoTitle || title).length > 60 ? 'text-amber-600' : 'text-emerald-600'}`}>
+                  {(seoTitle || title).length} / 60 अक्षरे
+                </span>
+              </div>
+              <input
+                type="text"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+                placeholder={title || 'गूगल सर्चसाठी सानुकूल शीर्षक लिहा'}
+                className="w-full px-3 py-2 border border-line rounded-md text-xs font-poppins text-ink focus:border-teal outline-none"
+              />
+            </div>
+
+            {/* Custom Meta Description */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-1">
+                <label className="font-poppins text-[11.5px] font-semibold text-grey">SEO डिस्क्रिप्शन (Meta Description)</label>
+                <span className={`text-[10.5px] font-poppins font-semibold ${seoDescription.length > 160 ? 'text-amber-600' : 'text-emerald-600'}`}>
+                  {seoDescription.length} / 160 अक्षरे
+                </span>
+              </div>
+              <textarea
+                value={seoDescription}
+                onChange={(e) => setSeoDescription(e.target.value)}
+                placeholder="बातमीचा मुख्य सारांश लिहा जो गूगल आणि व्हॉट्सॲपवर दिसेल..."
+                rows={3}
+                className="w-full px-3 py-2 border border-line rounded-md text-xs font-poppins text-ink focus:border-teal outline-none resize-none"
+              />
+            </div>
+
+            {/* Custom URL Slug */}
+            <div className="mb-4">
+              <label className="block font-poppins text-[11.5px] font-semibold text-grey mb-1">सानुकूल URL स्लग (Custom Slug)</label>
+              <input
+                type="text"
+                value={customSlug}
+                onChange={(e) => setCustomSlug(e.target.value)}
+                placeholder="उदा. sindhudurg-malvan-rain-news"
+                className="w-full px-3 py-2 border border-line rounded-md text-xs font-poppins text-ink focus:border-teal outline-none"
+              />
+            </div>
+
+            {/* SEO Keywords */}
+            <div className="mb-5">
+              <label className="block font-poppins text-[11.5px] font-semibold text-grey mb-1">SEO कीवर्ड्स (अल्पविरामाने वेगळे करा)</label>
+              <input
+                type="text"
+                value={seoKeywords}
+                onChange={(e) => setSeoKeywords(e.target.value)}
+                placeholder="सिंधुदुर्ग बातम्या, मालवण ताज्या घडामोडी, कोकण न्यूज"
+                className="w-full px-3 py-2 border border-line rounded-md text-xs font-poppins text-ink focus:border-teal outline-none"
+              />
+            </div>
+
+            {/* Google Search Live Preview */}
+            <div className="mb-5 p-3.5 bg-slate-50 border border-slate-200 rounded-lg">
+              <span className="block text-[10.5px] font-poppins font-bold uppercase text-slate-500 mb-2">Google सर्च पूर्वावलोकन (Preview)</span>
+              <div className="text-xs font-poppins">
+                <div className="text-[11px] text-slate-600 truncate mb-0.5">https://maaybolimalvani.com › news › {customSlug || 'article-url'}</div>
+                <div className="text-sm font-semibold text-blue-800 line-clamp-1 hover:underline cursor-pointer">{seoTitle || title || 'बातमीचे शीर्षक'} | मायबोली मालवणी</div>
+                <div className="text-xs text-slate-600 line-clamp-2 mt-0.5">{seoDescription || (body ? body.replace(/<[^>]*>/g, '').substring(0, 150) : 'बातमीचा सारांश गूगुल शोध परिणामांमध्ये असा दिसेल.')}</div>
+              </div>
+            </div>
+
+            {/* Social Share Live Preview */}
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-lg">
+              <span className="block text-[10.5px] font-poppins font-bold uppercase text-slate-500 mb-2">व्हॉट्सॲप / फेसबूक कार्ड पूर्वावलोकन</span>
+              <div className="border border-slate-300 rounded-lg overflow-hidden bg-white shadow-xs">
+                {(existingImage || imageFile) ? (
+                  <img
+                    src={imageFile ? URL.createObjectURL(imageFile) : existingImage}
+                    alt="Social Preview"
+                    className="w-full h-36 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-36 bg-slate-200 flex items-center justify-center text-slate-400 text-xs font-poppins">फोटो उपलब्ध नाही</div>
+                )}
+                <div className="p-3">
+                  <div className="text-[10px] uppercase tracking-wider text-slate-400 font-poppins">MAAYBOLIMALVANI.COM</div>
+                  <div className="font-tiro text-sm font-bold text-slate-900 line-clamp-1 mt-0.5">{seoTitle || title || 'बातमीचे शीर्षक'}</div>
+                  <div className="text-xs text-slate-600 line-clamp-2 mt-1">{seoDescription || (body ? body.replace(/<[^>]*>/g, '').substring(0, 100) : 'बातमीचा सारांश')}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

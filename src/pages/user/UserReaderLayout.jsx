@@ -195,15 +195,15 @@ export default function UserReaderLayout({ onAdminLogin }) {
               className="hidden sm:flex flex-col items-center justify-center text-center cursor-pointer px-2 flex-1 select-none"
               onClick={() => navigate('home')}
             >
-              <h1 className="font-tiro text-[26px] sm:text-[34px] lg:text-[40px] font-extrabold text-maroon-deep leading-none tracking-tight drop-shadow-sm">
+              <h1 className="font-tiro text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-maroon-deep leading-tight tracking-tight drop-shadow-md">
                 मायबोली मालवणी
               </h1>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="h-[1.5px] w-5 sm:w-8 bg-gold/70"></span>
-                <p className="font-poppins text-[11px] sm:text-[12.5px] lg:text-[13.5px] font-bold text-[#b47a12] tracking-wide">
+              <div className="flex items-center gap-2.5 mt-1">
+                <span className="h-[2px] w-6 sm:w-12 bg-gold"></span>
+                <p className="font-poppins text-[13px] sm:text-[16px] lg:text-[18.5px] font-extrabold text-[#a36b08] tracking-wide">
                   कोकणाचो आवाज, मालवणी अभिमान!
                 </p>
-                <span className="h-[1.5px] w-5 sm:w-8 bg-gold/70"></span>
+                <span className="h-[2px] w-6 sm:w-12 bg-gold"></span>
               </div>
             </div>
 

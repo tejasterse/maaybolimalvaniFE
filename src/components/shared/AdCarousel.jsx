@@ -70,9 +70,16 @@ export default function AdCarousel({ ads, className = "mb-10" }) {
   };
 
   return (
-    <>
+    <div className={className}>
+      {/* Section Heading */}
+      <div className="flex items-center justify-between mb-2.5 px-1">
+        <h3 className="font-tiro text-[17px] font-bold text-maroon-deep flex items-center gap-2">
+          जाहिरात <span className="font-poppins text-[11px] text-grey font-medium tracking-wider">(SPONSORED)</span>
+        </h3>
+      </div>
+
       <div 
-        className={`relative w-full rounded-2xl overflow-hidden shadow-md bg-white border border-line group ${className}`}
+        className="relative w-full rounded-2xl overflow-hidden shadow-md bg-white border border-line group"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -103,10 +110,6 @@ export default function AdCarousel({ ads, className = "mb-10" }) {
                   onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.jpg'; }}
                   className="relative max-w-full max-h-full object-contain z-10 drop-shadow-xl"
                 />
-
-                <div className="absolute top-3 left-3 bg-black/75 text-gold-light text-[10px] font-poppins px-3.5 py-1 rounded-full backdrop-blur-md uppercase tracking-wider font-semibold z-20 shadow-md border border-gold/40">
-                  जाहिरात (SPONSORED)
-                </div>
               </div>
             ))}
           </div>
@@ -128,17 +131,19 @@ export default function AdCarousel({ ads, className = "mb-10" }) {
           <ChevronRight size={22} />
         </button>
         
-        {/* Horizontal Slide Indicators */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2 bg-black/50 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/20">
-          {activeAdsList.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={(e) => { e.stopPropagation(); setCurrentAdIndex(idx); }}
-              className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentAdIndex ? 'w-8 bg-gold shadow-md' : 'w-2.5 bg-white/60 hover:bg-white'}`}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
-        </div>
+        {/* Horizontal Slide Indicators (positioned at the bottom of the box) */}
+        {activeAdsList.length > 1 && (
+          <div className="flex justify-center items-center gap-2 py-2 bg-slate-950 border-t border-white/10">
+            {activeAdsList.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={(e) => { e.stopPropagation(); setCurrentAdIndex(idx); }}
+                className={`h-2 rounded-full transition-all duration-300 ${idx === currentAdIndex ? 'w-7 bg-gold shadow-md' : 'w-2 bg-white/40 hover:bg-white'}`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Lightbox Modal */}
@@ -162,6 +167,6 @@ export default function AdCarousel({ ads, className = "mb-10" }) {
           />
         </div>
       )}
-    </>
+    </div>
   );
 }

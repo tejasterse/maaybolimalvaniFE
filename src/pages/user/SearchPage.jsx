@@ -48,7 +48,7 @@ export default function SearchPage({ onNavigate, onGoBack }) {
 
       <div className="max-w-[1180px] mx-auto px-6 py-8">
         <h2 className="font-tiro text-[22px] text-ink mb-6">
-          {activeQuery ? `"${activeQuery}" संदर्भांतले निकाल (${posts.length})` : `सगळ्यो ताज्यो बातम्या (${posts.length})`}
+          {activeQuery ? `"${activeQuery}" संदर्भांतले निकाल (${posts.length})` : `सगळ्यो ताज्यो बातमे (${posts.length})`}
         </h2>
 
         {isLoading ? (

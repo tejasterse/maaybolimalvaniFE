@@ -27,7 +27,8 @@ const navItems = [
   { key: 'maasemari', label: 'मासेमारी-शेती' },
   { key: 'paryatan', label: 'पर्यटन' },
   { key: 'sanskriti', label: 'संस्कृती' },
-  { key: 'krida', label: 'क्रीडा' },
+  { key: 'krida', label: 'खेळ' },
+  { key: 'itar-batme', label: 'इतर बातमे' },
   { key: 'gunhe', label: 'गुन्हे' },
   { key: 'kavita-lekh', label: 'कविता-लेख-विनोद' },
   { key: 'utsav', label: 'सण आनि उत्सव' },
@@ -36,7 +37,7 @@ const navItems = [
 ];
 
 // Category pages all use ListingPage with different labels
-const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'];
+const categoryPages = ['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe', 'itar-batme', 'itar'];
 
 export default function UserReaderLayout({ onAdminLogin }) {
   const routerNavigate = useNavigate();
@@ -69,7 +70,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
     } else if (path === '/listing') {
       setActivePage('listing');
       setPageParams(location.state || null);
-    } else if (['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe'].includes(path.substring(1))) {
+    } else if (['rajkaran', 'maasemari', 'paryatan', 'sanskriti', 'krida', 'gunhe', 'itar-batme', 'itar'].includes(path.substring(1))) {
       setActivePage(path.substring(1));
       setPageParams(null);
     } else if (path === '/search') {

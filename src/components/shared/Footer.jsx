@@ -111,6 +111,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
                     { label: 'पर्यटन', key: 'paryatan' },
                     { label: 'मासेमारी-शेती', key: 'maasemari' },
                     { label: 'संस्कृती', key: 'sanskriti' },
+                    { label: 'इतर बातमे', key: 'itar-batme' },
                     { label: 'सण व उत्सव', key: 'utsav' },
                   ].map(({ label, key }) => (
                     <button

@@ -1,6 +1,6 @@
 // Shared Masthead + Primary Nav for user-facing pages
 export default function Masthead({ activeNav = 'होम' }) {
-  const navItems = ['होम', 'तालुक्याच्यो बातम्या', 'राजकारण', 'मासेमारी-शेती', 'पर्यटन', 'संस्कृती', 'क्रीडा', 'गॅलरी', 'शोधा'];
+  const navItems = ['होम', 'तालुक्याच्यो बातम्या', 'राजकारण', 'मासेमारी-शेती', 'पर्यटन', 'संस्कृती', 'खेळ', 'इतर बातमे', 'गॅलरी', 'शोधा'];
 
   return (
     <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)', paddingTop: 20 }}>

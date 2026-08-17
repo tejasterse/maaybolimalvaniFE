@@ -163,7 +163,8 @@ export default function ArticleEditorPage({ onBack }) {
       (category === 'Tourism' && c.name === 'पर्यटन') ||
       (category === 'Fishing-farming' && c.name === 'मासेमारी-शेती') ||
       (category === 'Culture' && c.name === 'संस्कृती') ||
-      (category === 'Sports' && c.name === 'क्रीडा') ||
+      (category === 'Sports' && (c.name === 'क्रीडा' || c.name === 'खेळ')) ||
+      (category === 'Other' && (c.name === 'इतर बातमे' || c.name === 'इतर बातम्या' || c.name === 'इतर')) ||
       (category === 'Crimes' && c.name === 'गुन्हे')
     );
     const dist = districtsData.find(d => d.name === selectedTaluka || d.id === selectedTaluka);

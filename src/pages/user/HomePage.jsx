@@ -29,7 +29,8 @@ const categories = [
   { name: 'पर्यटन', icon: <Palmtree size={28} />, color: 'var(--teal)' },
   { name: 'मासेमारी-शेती', icon: <Fish size={28} />, color: '#2e7d4f' },
   { name: 'संस्कृती', icon: <Film size={28} />, color: 'var(--maroon)' },
-  { name: 'क्रीडा', icon: <Trophy size={28} />, color: 'var(--amber)' },
+  { name: 'खेळ', icon: <Trophy size={28} />, color: 'var(--amber)' },
+  { name: 'इतर बातमे', icon: <Newspaper size={28} />, color: '#4a5568' },
   { name: 'गुन्हे', icon: <Scale size={28} />, color: '#6d4c41' },
 ];
 
@@ -145,7 +146,7 @@ export default function HomePage({ onNavigate }) {
       } else if (cleanPath.startsWith('entertainment/')) {
         const id = cleanPath.split('/')[1];
         onNavigate('entertainment-article', id);
-      } else if (['listing', 'rajkaran', 'paryatan', 'maasemari', 'sanskriti', 'krida', 'gunhe', 'utsav', 'kavita-lekh', 'kavita', 'search', 'gallery', 'chatbot', 'entertainment', 'events', 'about-us', 'terms', 'privacy'].includes(cleanPath)) {
+      } else if (['listing', 'rajkaran', 'paryatan', 'maasemari', 'sanskriti', 'krida', 'gunhe', 'itar-batme', 'itar', 'utsav', 'kavita-lekh', 'kavita', 'search', 'gallery', 'chatbot', 'entertainment', 'events', 'about-us', 'terms', 'privacy'].includes(cleanPath)) {
         onNavigate(cleanPath === 'kavita' ? 'kavita-lekh' : cleanPath);
       } else {
         onNavigate('home');
@@ -362,7 +363,7 @@ export default function HomePage({ onNavigate }) {
                         className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
                         style={{ background: 'var(--maroon)' }}
                       >
-                        {hero.categoryName || 'ताज्यो बातम्या'}
+                        {hero.categoryName || 'ताज्यो बातमे'}
                       </span>
                       <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 line-clamp-2 md:line-clamp-none">
                         {hero.title}
@@ -419,7 +420,7 @@ export default function HomePage({ onNavigate }) {
                   className="flag-tag inline-block font-poppins font-bold text-[10.5px] text-white px-4 py-1 mb-4 self-start"
                   style={{ background: 'var(--maroon)' }}
                 >
-                  {activeHero.categoryName || 'ताज्यो बातम्या'}
+                  {activeHero.categoryName || 'ताज्यो बातमे'}
                 </span>
                 <h2 className="font-tiro text-[20px] md:text-[28px] leading-[1.35] text-ink mb-2 md:mb-4 line-clamp-2 md:line-clamp-none">
                   {activeHero.title}
@@ -476,7 +477,7 @@ export default function HomePage({ onNavigate }) {
         {/* 3. Latest Articles - includes other district & national and other news */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-tiro text-[24px] text-maroon-deep">ताज्यो बातम्या</h2>
+            <h2 className="font-tiro text-[24px] text-maroon-deep">ताज्यो बातमे</h2>
             <button
               onClick={() => navigate('/listing')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
@@ -640,7 +641,11 @@ export default function HomePage({ onNavigate }) {
                 'पर्यटन': 'paryatan',
                 'मासेमारी-शेती': 'maasemari',
                 'संस्कृती': 'sanskriti',
+                'खेळ': 'krida',
                 'क्रीडा': 'krida',
+                'इतर बातमे': 'itar-batme',
+                'इतर बातम्या': 'itar-batme',
+                'इतर': 'itar-batme',
                 'गुन्हे': 'gunhe',
               };
               const targetKey = categoryMapping[cat.name] || 'listing';
@@ -667,7 +672,7 @@ export default function HomePage({ onNavigate }) {
               onClick={() => navigate('/entertainment')}
               className="font-poppins font-semibold text-[12.5px] text-teal px-4 py-1.5 rounded-lg border border-teal hover:bg-teal hover:text-white transition-colors"
             >
-              सगळें साहित्य बघा <ArrowRight size={14} className="inline ml-1" />
+              सगळा वाचा <ArrowRight size={14} className="inline ml-1" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

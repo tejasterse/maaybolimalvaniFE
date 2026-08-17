@@ -151,7 +151,8 @@ export default function ArticlesPage({ onEdit }) {
             <option>राजकारण</option>
             <option>मासेमारी-शेती</option>
             <option>संस्कृती</option>
-            <option>क्रीडा</option>
+            <option>खेळ</option>
+            <option>इतर बातमे</option>
           </select>
 
           <select

@@ -48,6 +48,8 @@ export default function App() {
         <Route path="paryatan" element={<ListingPage categoryKey="paryatan" />} />
         <Route path="sanskriti" element={<ListingPage categoryKey="sanskriti" />} />
         <Route path="krida" element={<ListingPage categoryKey="krida" />} />
+        <Route path="itar-batme" element={<ListingPage categoryKey="itar-batme" />} />
+        <Route path="itar" element={<ListingPage categoryKey="itar-batme" />} />
         <Route path="gunhe" element={<ListingPage categoryKey="gunhe" />} />
         
         {/* Dedicated Local SEO Taluka Routes */}

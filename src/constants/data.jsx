@@ -114,7 +114,8 @@ export const categories = [
   { name: 'पर्यटन', count: '२९ लेख' },
   { name: 'संस्कृती', count: '४१ लेख' },
   { name: 'गुन्हे', count: '१२ लेख' },
-  { name: 'क्रीडा', count: '१७ लेख' },
+  { name: 'खेळ', count: '१७ लेख' },
+  { name: 'इतर बातमे', count: '१५ लेख' },
 ];
 
 export const talukas = [

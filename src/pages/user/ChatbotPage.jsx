@@ -4,7 +4,7 @@ import { generateBotResponse } from '../../utils/chatbot.js';
 import { fetchPosts } from '../../api/posts.js';
 
 const quickQuestions = [
-  'आजच्या ब्रेकिंग न्यूज दाखवा',
+  'आजची ताजी फडफडीत बातमी दाखवा',
   'आज कोणती बातमी अपडेट झाली?',
   'पर्यटन बातम्या',
   'माझ्या तालुक्याची बातमी'

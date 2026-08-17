@@ -309,7 +309,7 @@ export default function HomePage({ onNavigate }) {
               className="flex-shrink-0 font-poppins font-bold text-[10px] uppercase tracking-[.12em] text-navy px-3 py-1 rounded-full"
               style={{ background: 'var(--gold)' }}
             >
-              ताज्यो बातम्या
+              ताजी फडफडीत बातमी
             </span>
             <div className="overflow-hidden flex-1">
               <div className="ticker-inner font-poppins text-[12.5px] text-[#fbe8c9] whitespace-nowrap flex items-center">

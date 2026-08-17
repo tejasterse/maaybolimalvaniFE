@@ -198,7 +198,7 @@ ${pageUrl}
             {/* Breaking News Tag */}
             {Boolean(post.is_breaking) && (
               <span className="font-poppins text-[11px] font-bold text-white bg-red-600 px-3.5 py-1 rounded-full animate-pulse flex items-center gap-1 shadow-sm">
-                <Flame size={12} /> ब्रेकिंग न्यूज
+                <Flame size={12} /> ताजी फडफडीत बातमी
               </span>
             )}
           </div>

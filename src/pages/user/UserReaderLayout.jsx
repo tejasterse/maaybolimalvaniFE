@@ -322,7 +322,7 @@ export default function UserReaderLayout({ onAdminLogin }) {
               className="flex items-center gap-2 font-poppins font-bold text-[13px] text-maroon hover:text-maroon-deep bg-white border border-gold/50 px-4 py-1.5 rounded-full shadow-sm hover:shadow transition-all"
             >
               <ArrowLeft size={14} />
-              <span>फाटी वचा (Go Back)</span>
+              <span>फाटी‌ बघा(Go Back)</span>
             </button>
             <button
               onClick={() => navigate('home')}

@@ -546,7 +546,7 @@ export default function ArticleEditorPage({ onBack }) {
               className="flex items-center justify-between py-2.5"
               style={{ borderTop: '1px solid var(--line)' }}
             >
-              <span className="font-poppins text-[13px] text-ink">ब्रेकिंग न्यूज</span>
+              <span className="font-poppins text-[13px] text-ink font-medium">ताजी फडफडीत बातमी</span>
               <ToggleSwitch on={breakingOn} onToggle={() => setBreakingOn(!breakingOn)} />
             </div>
             <div

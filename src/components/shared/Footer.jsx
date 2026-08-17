@@ -61,7 +61,7 @@ export default function Footer({ onNavigate, onAdminLogin }) {
                 </h4>
               </div>
               <p className="font-mukta text-[13px] leading-relaxed text-[#9fb0c2] bg-white/5 p-3.5 rounded-xl border border-white/10">
-                या संकेतस्थळावर प्रसिद्ध करण्यात आलेल्या बातम्या व लेख मायबोली मालवणी चे मुख्य संपादक संतोष शांताराम मुळीक यांनी प्रसारित केले असून प्रत्येक मताशी ते सहमत असतीलच असे नाही.
+                ह्या संकेतस्थळार इलेले बातमे, लेख हे संपादक म्हणान संतोष शांताराम मुळीक हेनी प्रसिध्दीक घातले असले तरी सगळ्याच बातमेक ते राजी असतीत असा नाय
               </p>
             </div>
 
@@ -85,11 +85,11 @@ export default function Footer({ onNavigate, onAdminLogin }) {
             <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
               <div className="border-b border-white/15 pb-2 mb-2.5">
                 <h4 className="font-tiro text-[16.5px] font-bold text-gold-light flex items-center gap-2">
-                  <UserPlus size={18} className="text-teal" /> प्रतिनिधी नोंदणी (Reporter Join)
+                  <UserPlus size={18} className="text-teal" /> बातमीदार होतल्यात (Reporter Join)
                 </h4>
               </div>
               <p className="font-mukta text-[12.5px] text-[#8fa0b3] mb-3 leading-snug">
-                सिंधुदुर्ग जिल्ह्यातून वार्ताहर किंवा प्रतिनिधी म्हणून काम करण्यासाठी नोंदणी करा.
+                आमच्या मालवणी मायबोली मालवणीसाठी तुमका खबरी म्हणजे बातमीदार होवचा आसा तर ह्यो नमुनो भरा
               </p>
               <button
                 onClick={() => setIsReporterModalOpen(true)}

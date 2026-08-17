@@ -103,15 +103,15 @@ export const generateBotResponse = async (userText) => {
     }
   }
 
-  // 3. Querying Breaking news
-  if (lowerText.includes('ब्रेकिंग') || lowerText.includes('breaking')) {
+  // 3. Querying Breaking news / ताजी फडफडीत बातमी
+  if (lowerText.includes('ब्रेकिंग') || lowerText.includes('breaking') || lowerText.includes('फडफडीत')) {
     const breakingPosts = validPosts.filter(p => p.is_breaking === 1 || p.is_breaking === true);
     if (breakingPosts.length > 0) {
       const topBreaking = breakingPosts[0];
       const timeStr = formatPostDate(topBreaking.createdAt);
       const cleanContent = topBreaking.content ? topBreaking.content.replace(/<[^>]*>?/gm, '').trim() : '';
       return {
-        text: `🚨 *ब्रेकिंग न्यूज (डेटाबेसमधून थेट)*\n\n📌 *${topBreaking.title}*\n\n📅 अपलोड वेळ/तारीख: ${timeStr}\n📍 विभाग/तालुका: ${topBreaking.categoryName || '-'} / ${topBreaking.districtName || 'सिंधुदुर्ग'}\n✍️ लेखक: ${topBreaking.authorName || 'संपादक'}\n\n📝 *मूळ मजकूर:*\n${cleanContent}`,
+        text: `🚨 *ताजी फडफडीत बातमी (डेटाबेसमधून थेट)*\n\n📌 *${topBreaking.title}*\n\n📅 अपलोड वेळ/तारीख: ${timeStr}\n📍 विभाग/तालुका: ${topBreaking.categoryName || '-'} / ${topBreaking.districtName || 'सिंधुदुर्ग'}\n✍️ लेखक: ${topBreaking.authorName || 'संपादक'}\n\n📝 *मूळ मजकूर:*\n${cleanContent}`,
         source: topBreaking.title,
         posts: breakingPosts
       };

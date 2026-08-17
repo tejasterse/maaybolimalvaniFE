@@ -22,8 +22,16 @@ export const createPost = async (formData) => {
 };
 
 export const updatePost = async ({ id, formData }) => {
-  const { data } = await apiClient.put(`/posts/${id}`, formData);
-  return data;
+  try {
+    const { data } = await apiClient.put(`/posts/${id}`, formData);
+    return data;
+  } catch (err) {
+    if (err.response?.status === 503 || err.response?.status === 405 || !err.response) {
+      const { data } = await apiClient.post(`/posts/${id}`, formData);
+      return data;
+    }
+    throw err;
+  }
 };
 
 export const deletePost = async (id) => {
@@ -32,6 +40,14 @@ export const deletePost = async (id) => {
 };
 
 export const updatePostStatus = async (id, status) => {
-  const { data } = await apiClient.put(`/posts/${id}/status`, { status });
-  return data;
+  try {
+    const { data } = await apiClient.put(`/posts/${id}/status`, { status });
+    return data;
+  } catch (err) {
+    if (err.response?.status === 503 || err.response?.status === 405 || !err.response) {
+      const { data } = await apiClient.post(`/posts/${id}/status`, { status });
+      return data;
+    }
+    throw err;
+  }
 };

@@ -629,61 +629,6 @@ export default function HomePage({ onNavigate }) {
           </div>
         </div>
 
-        {/* Video Player Modal */}
-        {modalVideo && (
-          <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
-            style={{ background: 'rgba(10, 25, 41, 0.94)' }}
-            onClick={() => setModalVideo(null)}
-          >
-            <div
-              className="relative bg-black rounded-2xl overflow-hidden max-w-[850px] w-full border border-white/20 shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between px-5 py-3 bg-navy text-white border-b border-white/10">
-                <h3 className="font-tiro text-[18px] text-gold-light truncate pr-4">{modalVideo.title}</h3>
-                <button onClick={() => setModalVideo(null)} className="text-white hover:text-gold p-1 cursor-pointer">
-                  <X size={22} />
-                </button>
-              </div>
-              <div className="aspect-video w-full bg-black flex items-center justify-center">
-                {modalVideo.ytId || getYouTubeId(modalVideo.video_url || modalVideo.videoUrl || modalVideo.url) ? (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${modalVideo.ytId || getYouTubeId(modalVideo.video_url || modalVideo.videoUrl || modalVideo.url)}?autoplay=1`}
-                    title={modalVideo.title}
-                    className="w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : modalVideo.video_type ? (
-                  <video
-                    src={getMediaUrl(`/posts/${modalVideo.id}/video`)}
-                    controls
-                    autoPlay
-                    className="w-full h-full object-contain"
-                  />
-                ) : (modalVideo.embedUrl || getEmbedUrl(modalVideo)) ? (
-                  <iframe
-                    src={modalVideo.embedUrl || getEmbedUrl(modalVideo)}
-                    title={modalVideo.title}
-                    className="w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (modalVideo.video_url || modalVideo.videoUrl) ? (
-                  <video
-                    src={modalVideo.video_url || modalVideo.videoUrl}
-                    controls
-                    autoPlay
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="p-10 text-center font-poppins text-white">व्हिडिओ प्लेअर उपलब्ध नाही</div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* 4. Category Cards */}
         <div className="mb-10">
@@ -891,32 +836,39 @@ export default function HomePage({ onNavigate }) {
 
               {/* Embed Player */}
               <div className="relative aspect-[16/9] bg-black">
-                {modalVideo.ytId ? (
+                {modalVideo.ytId || getYouTubeId(modalVideo.video_url || modalVideo.videoUrl || modalVideo.url) ? (
                   <iframe
-                    src={`https://www.youtube.com/embed/${modalVideo.ytId}?autoplay=1`}
+                    src={`https://www.youtube.com/embed/${modalVideo.ytId || getYouTubeId(modalVideo.video_url || modalVideo.videoUrl || modalVideo.url)}?autoplay=1`}
                     title={modalVideo.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full border-0"
                   />
-                ) : modalVideo.embedUrl ? (
-                  <iframe
-                    src={modalVideo.embedUrl}
-                    title={modalVideo.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                  />
-                ) : modalVideo.video_url ? (
+                ) : modalVideo.video_type ? (
                   <video
-                    src={getMediaUrl(modalVideo.video_url)}
+                    src={getMediaUrl(`/posts/${modalVideo.id}/video`)}
                     controls
                     autoPlay
-                    className="w-full h-full"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (modalVideo.embedUrl || getEmbedUrl(modalVideo)) ? (
+                  <iframe
+                    src={modalVideo.embedUrl || getEmbedUrl(modalVideo)}
+                    title={modalVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                  />
+                ) : (modalVideo.video_url || modalVideo.videoUrl) ? (
+                  <video
+                    src={getMediaUrl(modalVideo.video_url || modalVideo.videoUrl)}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full text-grey font-poppins">
-                    व्हिडिओ लोड होत आहे...
+                    व्हिडिओ प्लेअर उपलब्ध नाही
                   </div>
                 )}
               </div>

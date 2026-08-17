@@ -191,57 +191,58 @@ export default function UserReaderLayout({ onAdminLogin }) {
 
       <UtilityBar onAdminLogin={onAdminLogin} onNavigate={navigate} />
 
-      {/* Header with BOTH Logos (logo.png enlarged + header-logo.jpg) and Maroon Pill Navbar */}
-      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }} className="py-3 relative">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+      {/* Header with Logos and Responsive Navigation */}
+      <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)' }} className="py-2.5 sm:py-3 relative">
+        <div className="max-w-[1280px] mx-auto px-3 sm:px-6">
           
           {/* Top Row: Both Logos with Center Website Title */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mb-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2 sm:mb-3">
             {/* 1. Primary Circular Badge Logo (logo.png) */}
             <div
-              className="cursor-pointer flex-shrink-0 leading-none flex items-center"
+              className="cursor-pointer flex-shrink-0 leading-none flex items-center gap-2"
               onClick={() => navigate('home')}
             >
               <img
                 src="/logo.png"
                 alt="मायबोली मालवणी"
-                className="h-[95px] sm:h-[130px] lg:h-[155px] w-auto object-contain drop-shadow-xl transition-transform hover:scale-[1.02] block -my-2"
+                className="h-[60px] xs:h-[75px] sm:h-[130px] lg:h-[155px] w-auto object-contain drop-shadow-xl transition-transform hover:scale-[1.02] block -my-2"
               />
             </div>
 
-            {/* 2. Center Website Title */}
+            {/* 2. Center Website Title - Prominent & Large in Mobile View */}
             <div
-              className="hidden sm:flex flex-col items-center justify-center text-center cursor-pointer px-2 flex-1 select-none"
+              className="flex flex-col items-center justify-center text-center cursor-pointer px-1 flex-1 select-none"
               onClick={() => navigate('home')}
             >
-              <h1 className="font-tiro text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-maroon-deep leading-tight tracking-tight drop-shadow-md">
+              <h1 className="font-tiro text-[25px] xs:text-[29px] sm:text-[44px] lg:text-[56px] font-black text-maroon-deep leading-tight tracking-tight drop-shadow-md whitespace-nowrap">
                 मायबोली मालवणी
               </h1>
-              <div className="flex items-center gap-2.5 mt-1">
-                <span className="h-[2px] w-6 sm:w-12 bg-gold"></span>
-                <p className="font-poppins text-[13px] sm:text-[16px] lg:text-[18.5px] font-extrabold text-[#a36b08] tracking-wide">
+              <div className="flex items-center gap-1 sm:gap-2.5 mt-0.5 sm:mt-1">
+                <span className="hidden xs:inline-block h-[1.5px] sm:h-[2px] w-3 sm:w-12 bg-gold"></span>
+                <p className="font-poppins text-[11px] xs:text-[13px] sm:text-[16px] lg:text-[18.5px] font-extrabold text-[#a36b08] tracking-wide whitespace-nowrap">
                   कोकणाचो आवाज, मालवणी अभिमान!
                 </p>
-                <span className="h-[2px] w-6 sm:w-12 bg-gold"></span>
+                <span className="hidden xs:inline-block h-[1.5px] sm:h-[2px] w-3 sm:w-12 bg-gold"></span>
               </div>
             </div>
 
-            {/* 3. Banner Header Logo (header-logo.jpg) */}
+            {/* 3. Banner Header Logo (header-logo.jpg) - ONLY IN DESKTOP VIEW */}
             <div
-              className="cursor-pointer flex-shrink-0 flex items-center"
+              className="cursor-pointer flex-shrink-0 items-center hidden lg:flex header-right-image"
               onClick={() => navigate('home')}
             >
               <img
                 src="/header-logo.jpg"
                 alt="मायबोली मालवणी डिजिटल बातम्या"
-                className="h-[75px] sm:h-[105px] lg:h-[125px] w-auto max-w-[220px] sm:max-w-[360px] lg:max-w-[460px] object-contain rounded-2xl border-2 border-gold/50 shadow-md transition-transform hover:scale-[1.01] block"
+                className="h-[75px] sm:h-[105px] lg:h-[125px] w-auto max-w-[220px] sm:max-w-[360px] lg:max-w-[460px] object-contain rounded-2xl border-2 border-gold/50 shadow-md transition-transform hover:scale-[1.01] block opacity-100"
               />
             </div>
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden text-maroon bg-white p-2.5 rounded-xl border border-line shadow-sm flex items-center justify-center"
+              className="lg:hidden text-maroon bg-white p-2 sm:p-2.5 rounded-xl border border-line shadow-sm flex items-center justify-center hover:bg-cream transition-colors flex-shrink-0"
               onClick={() => setShowMobileMenu(!showMobileMenu)}
+              aria-label="Toggle menu"
             >
               {showMobileMenu ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -274,19 +275,40 @@ export default function UserReaderLayout({ onAdminLogin }) {
           </nav>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile hamburger menu overlay */}
         {showMobileMenu && (
-          <div className="lg:hidden" style={{ background: 'var(--maroon-deep)', borderTop: '1px solid rgba(255,255,255,.1)' }}>
-            {navItems.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => navigate(key)}
-                className="block w-full text-left px-6 py-3 font-poppins text-[14px] font-medium border-b border-white/10"
-                style={{ color: activeNavKey === key ? 'var(--gold-light)' : '#fbe8c9' }}
+          <div className="lg:hidden animate-fadeIn" style={{ background: 'var(--maroon-deep)', borderTop: '1px solid rgba(255,255,255,.1)' }}>
+            
+            {/* Header image at right side now rendered inside hamburger with reduced opacity on mobile */}
+            <div className="p-4 bg-black/25 flex flex-col items-center justify-center border-b border-white/10 text-center">
+              <div
+                className="cursor-pointer"
+                onClick={() => { navigate('home'); setShowMobileMenu(false); }}
               >
-                {label}
-              </button>
-            ))}
+                <img
+                  src="/header-logo.jpg"
+                  alt="मायबोली मालवणी डिजिटल बातम्या"
+                  className="h-[85px] sm:h-[110px] w-auto object-contain rounded-xl border border-gold/40 shadow-md mobile-hamburger-image transition-opacity duration-200"
+                />
+              </div>
+              <p className="font-poppins text-[12.5px] text-gold-light mt-2 font-bold tracking-wide">
+                मायबोली मालवणी डिजिटल बातम्या
+              </p>
+            </div>
+
+            <div className="py-2">
+              {navItems.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => navigate(key)}
+                  className="block w-full text-left px-6 py-3 font-poppins text-[14px] font-medium border-b border-white/10 hover:bg-white/5 transition-colors flex items-center justify-between"
+                  style={{ color: activeNavKey === key ? 'var(--gold-light)' : '#fbe8c9' }}
+                >
+                  <span>{label}</span>
+                  {activeNavKey === key && <span className="w-2 h-2 rounded-full bg-gold"></span>}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </header>

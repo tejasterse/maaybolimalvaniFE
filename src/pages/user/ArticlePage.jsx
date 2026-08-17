@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MessageCircle, X, ArrowRight, Camera, Video, Link2, Eye, MapPin, Calendar, UserCheck, Flame, Share2 } from 'lucide-react';
+
+function YoutubeIcon({ size = 14, className = "" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    </svg>
+  );
+}
 import { fetchPostById, fetchPosts } from '../../api/posts.js';
 import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
@@ -38,7 +46,7 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
     }
   };
 
-  const [activeMedia, setActiveMedia] = useState('photo'); // 'photo' | 'video'
+  const [activeMedia, setActiveMedia] = useState('photo'); // 'photo' | 'video' | 'youtube'
   const [selectedGalleryImage, setSelectedGalleryImage] = useState(null);
 
   const { data: post, isLoading, isError } = useQuery({
@@ -59,15 +67,25 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
 
   const youtubeId = post ? getYouTubeId(post.video_url || (post.videos && post.videos[0]?.video_url)) : null;
 
+  const hasDirectVideo = !!(
+    post?.video_type || 
+    (post?.videos && post.videos.length > 0 && !getYouTubeId(post.videos[0]?.video_url)) || 
+    (post?.video_url && !youtubeId)
+  );
+  const hasYouTube = !!youtubeId;
+  const hasVideoMedia = hasDirectVideo || hasYouTube;
+
   useEffect(() => {
     if (post) {
-      if (youtubeId || post.video_type || (post.videos && post.videos.length > 0)) {
-        if (!post.image && !post.image_type) {
+      if (!post.image && !post.image_type) {
+        if (hasDirectVideo) {
           setActiveMedia('video');
+        } else if (hasYouTube) {
+          setActiveMedia('youtube');
         }
       }
     }
-  }, [post, youtubeId]);
+  }, [post, hasDirectVideo, hasYouTube]);
 
   if (isLoading) return <div className="py-20 text-center font-poppins text-grey">बातमी लोड होतहा...</div>;
   if (isError || !post) return <div className="py-20 text-center font-poppins text-maroon font-semibold">बातमी गावूक नाय.</div>;
@@ -80,13 +98,12 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
       ? getMediaUrl(`/posts/${post.id}/image`)
       : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop';
 
-  const hasVideo = !!(post.video_type || post.video_url || post.hasVideo || post.isVideo || (post.videos && post.videos.length > 0));
-  const videoUrl = post.video_url
-    ? getMediaUrl(post.video_url)
-    : post.video_type
-      ? getMediaUrl(`/posts/${post.id}/video`)
-      : (post.videos && post.videos.length > 0)
-        ? getMediaUrl(post.videos[0].video_url)
+  const videoUrl = post.video_type
+    ? getMediaUrl(`/posts/${post.id}/video`)
+    : (post.videos && post.videos.length > 0 && !getYouTubeId(post.videos[0]?.video_url))
+      ? getMediaUrl(post.videos[0].video_url)
+      : (post.video_url && !youtubeId)
+        ? getMediaUrl(post.video_url)
         : null;
 
   const formattedDate = new Date(post.createdAt).toLocaleDateString('mr-IN', {
@@ -277,8 +294,8 @@ ${pageUrl}
         </div>
       </div>
 
-      {/* Media Toggle Buttons (If Video Available) */}
-      {hasVideo && (
+      {/* Media Toggle Buttons (If Direct Video or YouTube Available) */}
+      {hasVideoMedia && (
         <div className="max-w-[900px] mx-auto px-4 mb-4 flex justify-center">
           <div className="inline-flex items-center gap-1.5 p-1 bg-gray-100/90 rounded-full border border-line shadow-inner">
             <button
@@ -290,45 +307,58 @@ ${pageUrl}
             >
               <Camera size={14} /> फोटो (Photos)
             </button>
-            <button
-              onClick={() => setActiveMedia('video')}
-              className={`py-1.5 px-4 rounded-full font-poppins font-semibold text-[12px] transition-all flex items-center gap-1.5 cursor-pointer ${activeMedia === 'video'
-                ? 'bg-maroon text-gold-light shadow-sm'
-                : 'bg-transparent text-navy hover:bg-white/60'
-                }`}
-            >
-              <Video size={14} /> व्हिडिओ (Videos)
-            </button>
+            {hasDirectVideo && (
+              <button
+                onClick={() => setActiveMedia('video')}
+                className={`py-1.5 px-4 rounded-full font-poppins font-semibold text-[12px] transition-all flex items-center gap-1.5 cursor-pointer ${activeMedia === 'video'
+                  ? 'bg-maroon text-gold-light shadow-sm'
+                  : 'bg-transparent text-navy hover:bg-white/60'
+                  }`}
+              >
+                <Video size={14} /> व्हिडिओ (Videos)
+              </button>
+            )}
+            {hasYouTube && (
+              <button
+                onClick={() => setActiveMedia('youtube')}
+                className={`py-1.5 px-4 rounded-full font-poppins font-semibold text-[12px] transition-all flex items-center gap-1.5 cursor-pointer ${activeMedia === 'youtube'
+                  ? 'bg-red-600 text-white shadow-sm'
+                  : 'bg-transparent text-navy hover:bg-white/60'
+                  }`}
+              >
+                <YoutubeIcon size={14} /> युट्यूब व्हिडिओ (YouTube)
+              </button>
+            )}
           </div>
         </div>
       )}
 
       {/* Main Image / Video / YouTube View */}
-      {(activeMedia === 'video' || (!post.image && !post.image_type && youtubeId)) ? (
-        youtubeId ? (
-          <div className="w-full max-w-[900px] aspect-video rounded-[12px] overflow-hidden mx-auto block mb-4 shadow-xl bg-black border border-gold/40">
-            <iframe
-              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0`}
-              title={post.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full border-0"
-            />
-          </div>
-        ) : (
-          <video
-            src={videoUrl}
-            controls
-            className="w-full max-w-[900px] h-auto max-h-[500px] object-contain rounded-[12px] mx-auto block mb-3 shadow-md bg-black/5"
+      {activeMedia === 'youtube' && youtubeId ? (
+        <div className="w-full max-w-[900px] aspect-video rounded-[12px] overflow-hidden mx-auto block mb-4 shadow-xl bg-black border border-gold/40">
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0`}
+            title={post.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full border-0"
           />
-        )
+        </div>
+      ) : activeMedia === 'video' && videoUrl ? (
+        <video
+          src={videoUrl}
+          controls
+          className="w-full max-w-[900px] h-auto max-h-[500px] object-contain rounded-[12px] mx-auto block mb-3 shadow-md bg-black/5"
+        />
       ) : (
         <img
           src={selectedGalleryImage || mainImageUrl}
           alt={post.title}
           onError={(e) => {
-            if (youtubeId) {
+            if (hasDirectVideo) {
               setActiveMedia('video');
+            } else if (hasYouTube) {
+              setActiveMedia('youtube');
             } else {
               e.currentTarget.onerror = null;
               e.currentTarget.src = 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop';

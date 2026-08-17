@@ -210,20 +210,22 @@ export default function UserReaderLayout({ onAdminLogin }) {
               />
             </div>
 
-            {/* 2. Center Website Header Images - "मायबोली" & "मालवणी" */}
+            {/* 2. Center Website Header Images - "मायबोली" (First) & "मालवणी" (Second) */}
             <div
-              className="flex items-center justify-center gap-2 sm:gap-3 cursor-pointer px-1 flex-1 select-none py-1 overflow-hidden"
+              className="flex items-center justify-center gap-1.5 sm:gap-3 cursor-pointer px-1 flex-1 select-none py-1 overflow-hidden"
               onClick={() => navigate('home')}
             >
               <img
                 src="/header-mayboli.jpeg"
-                alt="मायबोली"
-                className="h-[50px] xs:h-[65px] sm:h-[95px] lg:h-[115px] w-auto max-w-[48%] object-contain rounded-xl sm:rounded-2xl border-2 border-gold/40 shadow-lg transition-transform hover:scale-[1.01] block"
+                alt="मायबोली (आपली बोली... आपली ओळख... आपली माती!)"
+                title="मायबोली"
+                className="h-[52px] xs:h-[68px] sm:h-[100px] lg:h-[125px] w-auto max-w-[48%] object-contain rounded-xl sm:rounded-2xl border-2 border-gold/60 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-gold block"
               />
               <img
                 src="/header-malvani.jpeg"
-                alt="मालवणी"
-                className="h-[50px] xs:h-[65px] sm:h-[95px] lg:h-[115px] w-auto max-w-[48%] object-contain rounded-xl sm:rounded-2xl border-2 border-gold/40 shadow-lg transition-transform hover:scale-[1.01] block"
+                alt="मालवणी (मालवणी मातीचा गंध... मालवणी माणसांची आपुलकी!)"
+                title="मालवणी"
+                className="h-[52px] xs:h-[68px] sm:h-[100px] lg:h-[125px] w-auto max-w-[48%] object-contain rounded-xl sm:rounded-2xl border-2 border-gold/60 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-gold block"
               />
             </div>
 

@@ -210,21 +210,21 @@ export default function UserReaderLayout({ onAdminLogin }) {
               />
             </div>
 
-            {/* 2. Center Website Title - Prominent & Large in Mobile View */}
+            {/* 2. Center Website Header Images - "मायबोली" & "मालवणी" */}
             <div
-              className="flex flex-col items-center justify-center text-center cursor-pointer px-1 flex-1 select-none"
+              className="flex items-center justify-center gap-2 sm:gap-3 cursor-pointer px-1 flex-1 select-none py-1 overflow-hidden"
               onClick={() => navigate('home')}
             >
-              <h1 className="font-tiro text-[25px] xs:text-[29px] sm:text-[44px] lg:text-[56px] font-black text-maroon-deep leading-tight tracking-tight drop-shadow-md whitespace-nowrap">
-                मायबोली मालवणी
-              </h1>
-              <div className="flex items-center gap-1 sm:gap-2.5 mt-0.5 sm:mt-1">
-                <span className="hidden xs:inline-block h-[1.5px] sm:h-[2px] w-3 sm:w-12 bg-gold"></span>
-                <p className="font-poppins text-[11px] xs:text-[13px] sm:text-[16px] lg:text-[18.5px] font-extrabold text-[#a36b08] tracking-wide whitespace-nowrap">
-                  कोकणाचो आवाज, मालवणी अभिमान!
-                </p>
-                <span className="hidden xs:inline-block h-[1.5px] sm:h-[2px] w-3 sm:w-12 bg-gold"></span>
-              </div>
+              <img
+                src="/header-mayboli.jpeg"
+                alt="मायबोली"
+                className="h-[50px] xs:h-[65px] sm:h-[95px] lg:h-[115px] w-auto max-w-[48%] object-contain rounded-xl sm:rounded-2xl border-2 border-gold/40 shadow-lg transition-transform hover:scale-[1.01] block"
+              />
+              <img
+                src="/header-malvani.jpeg"
+                alt="मालवणी"
+                className="h-[50px] xs:h-[65px] sm:h-[95px] lg:h-[115px] w-auto max-w-[48%] object-contain rounded-xl sm:rounded-2xl border-2 border-gold/40 shadow-lg transition-transform hover:scale-[1.01] block"
+              />
             </div>
 
             {/* 3. Banner Header Logo (header-logo.jpg) - ONLY IN DESKTOP VIEW */}

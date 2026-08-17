@@ -4,8 +4,9 @@ export default function Masthead({ activeNav = 'होम' }) {
 
   return (
     <header style={{ background: 'var(--cream)', borderBottom: '3px solid var(--gold)', paddingTop: 20 }}>
-        <div className="flex justify-center mb-1">
-          <img src="/logo.png" alt="मायबोली मालवणी" className="h-[150px] object-contain drop-shadow-md" />
+        <div className="flex justify-center items-center gap-3 mb-2 px-4">
+          <img src="/header-mayboli.jpeg" alt="मायबोली" className="h-[75px] sm:h-[115px] w-auto object-contain rounded-2xl border-2 border-gold/40 shadow-lg" />
+          <img src="/header-malvani.jpeg" alt="मालवणी" className="h-[75px] sm:h-[115px] w-auto object-contain rounded-2xl border-2 border-gold/40 shadow-lg" />
         </div>
       <nav style={{ background: 'var(--maroon)', marginTop: 16 }}>
         <div className="max-w-[1180px] mx-auto px-6">

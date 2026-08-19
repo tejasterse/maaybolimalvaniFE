@@ -19,17 +19,20 @@ export default function AdminLoginPage() {
     }, 
     onSuccess: (data) => {
       const token = data.token || data.accessToken || data.data?.token;
-      const user = data.user || data.data?.user || { email, role: 'ADMIN', name: 'Admin' };
+      const user = data.user || data.data?.user;
       
-      if (token) {
-        localStorage.setItem('token', token);
-      } else {
-        localStorage.setItem('token', 'demo-admin-jwt-token');
+      if (!token || !user) {
+        const errorMsg = 'लॉगिन माहिती अमान्य आहे.';
+        setError(errorMsg);
+        toast.error(errorMsg);
+        return;
       }
+
+      localStorage.setItem('token', token);
 
       const formattedUser = {
         ...user,
-        role: (user.role || 'ADMIN').toUpperCase()
+        role: (user.role || user.roleName || 'USER').toUpperCase()
       };
       localStorage.setItem('user', JSON.stringify(formattedUser));
 
@@ -37,21 +40,6 @@ export default function AdminLoginPage() {
       navigate('/admin', { replace: true });
     },
     onError: (err) => {
-      // Local fallback for offline / demo testing
-      const cleanEmail = email.trim().toLowerCase();
-      const cleanPass = pass.trim();
-      if (
-        (cleanEmail === 'admin@example.com' && cleanPass === 'admin123') ||
-        (cleanEmail === 'admin@maayboli.in' && (cleanPass === 'admin123' || cleanPass === 'kokan@2026'))
-      ) {
-        const dummyUser = { id: 1, name: 'प्रशासक (Admin)', email: cleanEmail, role: 'ADMIN' };
-        localStorage.setItem('token', 'demo-admin-jwt-token');
-        localStorage.setItem('user', JSON.stringify(dummyUser));
-        toast.success('लॉगिन यशस्वी (Demo/Fallback)!');
-        navigate('/admin', { replace: true });
-        return;
-      }
-
       const msg = err.response?.data?.message || 'चुकीचा ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.';
       setError(msg);
       toast.error(msg);

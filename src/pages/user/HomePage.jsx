@@ -903,6 +903,13 @@ export default function HomePage({ onNavigate }) {
                     allowFullScreen
                     className="w-full h-full border-0"
                   />
+                ) : (modalVideo.video_url || modalVideo.videoUrl) ? (
+                  <video
+                    src={getMediaUrl(modalVideo.video_url || modalVideo.videoUrl)}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
+                  />
                 ) : modalVideo.video_type ? (
                   <video
                     src={getMediaUrl(`/posts/${modalVideo.id}/video`)}
@@ -917,13 +924,6 @@ export default function HomePage({ onNavigate }) {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full border-0"
-                  />
-                ) : (modalVideo.video_url || modalVideo.videoUrl) ? (
-                  <video
-                    src={getMediaUrl(modalVideo.video_url || modalVideo.videoUrl)}
-                    controls
-                    autoPlay
-                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full text-grey font-poppins">

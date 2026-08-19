@@ -195,6 +195,13 @@ export default function VideosPage({ onNavigate, onGoBack }) {
                   autoPlay
                   className="w-full h-full"
                 />
+              ) : selectedVideo.video_type ? (
+                <video
+                  src={getMediaUrl(`/posts/${selectedVideo.id}/video`)}
+                  controls
+                  autoPlay
+                  className="w-full h-full"
+                />
               ) : (
                 <div className="flex items-center justify-center h-full text-grey">
                   व्हिडिओ प्ले होत नाही.

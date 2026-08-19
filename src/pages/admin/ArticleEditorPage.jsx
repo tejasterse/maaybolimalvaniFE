@@ -102,10 +102,10 @@ export default function ArticleEditorPage({ onBack }) {
   const { data: reportersData = [] } = useQuery({ queryKey: ['reporters'], queryFn: fetchReporters });
 
   const defaultReporters = [
-    { id: 'rep1', name: 'मेघेश मोंडकर (Meghesh Mondkar)' },
-    { id: 'rep2', name: 'रत्नाकर प्रभु (Ratnakar Prabhu)' },
-    { id: 'rep3', name: 'मनोज घाटकर (Manoj Ghatkar)' },
-    { id: 'rep4', name: 'निलेश पाटील (Nilesh Patil)' },
+    { id: 'rep1', name: 'विशेष बातमीदार: मेघेश मोंडकर (Meghesh Mondkar)' },
+    { id: 'rep2', name: 'विशेष बातमीदार: रत्नाकर प्रभु (Ratnakar Prabhu)' },
+    { id: 'rep3', name: 'विशेष बातमीदार: मनोज घाटकर (Manoj Ghatkar)' },
+    { id: 'rep4', name: 'विशेष बातमीदार: निलेश पाटील (Nilesh Patil)' },
     { id: 'rep5', name: 'संतोष मुळीक' },
     { id: 'rep6', name: 'राजू तावडे' },
     { id: 'rep7', name: 'संदीप मुळीक' },

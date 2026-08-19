@@ -98,12 +98,12 @@ export default function ArticlePage({ articleData, onNavigate, onGoBack }) {
       ? getMediaUrl(`/posts/${post.id}/image`)
       : 'https://images.unsplash.com/photo-1580746738099-8f2c8b8f8b5e?w=1000&h=560&fit=crop';
 
-  const videoUrl = post.video_type
-    ? getMediaUrl(`/posts/${post.id}/video`)
-    : (post.videos && post.videos.length > 0 && !getYouTubeId(post.videos[0]?.video_url))
-      ? getMediaUrl(post.videos[0].video_url)
-      : (post.video_url && !youtubeId)
-        ? getMediaUrl(post.video_url)
+  const videoUrl = (post.video_url && !youtubeId)
+    ? getMediaUrl(post.video_url)
+    : post.video_type
+      ? getMediaUrl(`/posts/${post.id}/video`)
+      : (post.videos && post.videos.length > 0 && !getYouTubeId(post.videos[0]?.video_url))
+        ? getMediaUrl(post.videos[0].video_url)
         : null;
 
   const formattedDate = new Date(post.createdAt).toLocaleDateString('mr-IN', {

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { fetchPosts, deletePost } from '../../api/posts.js';
+import { fetchCategories } from '../../api/categories.js';
+import { fetchDistricts } from '../../api/districts.js';
+import { fetchReporters, fetchUsers } from '../../api/users.js';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { getMediaUrl } from '../../utils/media.js';
@@ -34,9 +37,42 @@ export default function ArticlesPage({ onEdit }) {
   const [selectedTaluka, setSelectedTaluka] = useState('सर्व तालुके');
   const [selectedCategory, setSelectedCategory] = useState('सर्व विभाग');
   const [selectedAuthor, setSelectedAuthor] = useState('सर्व लेखक');
+
+  const [dbTalukas, setDbTalukas] = useState([]);
+  const [dbCategories, setDbCategories] = useState([]);
+  const [dbAuthors, setDbAuthors] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
+
+  useEffect(() => {
+    const fetchFilterData = async () => {
+      try {
+        const [categoriesData, districtsData, reportersData] = await Promise.allSettled([
+          fetchCategories(),
+          fetchDistricts(),
+          fetchReporters()
+        ]);
+
+        if (categoriesData.status === 'fulfilled' && Array.isArray(categoriesData.value)) {
+          setDbCategories(categoriesData.value.map(c => c.marathiName || c.name));
+        }
+
+        if (districtsData.status === 'fulfilled' && Array.isArray(districtsData.value)) {
+          setDbTalukas(districtsData.value.map(d => d.marathiName || d.name));
+        }
+
+        if (reportersData.status === 'fulfilled' && Array.isArray(reportersData.value)) {
+          setDbAuthors(reportersData.value.map(r => r.name || r.email).filter(Boolean));
+        }
+      } catch (err) {
+        console.error("Failed to load filter metadata:", err);
+      }
+    };
+
+    fetchFilterData();
+  }, []);
 
   const loadArticles = async () => {
     setLoading(true);
@@ -131,14 +167,12 @@ export default function ArticlesPage({ onEdit }) {
             className="font-poppins text-[12px] text-teal bg-white border-[1.5px] border-line px-3 py-1.5 rounded-[20px] outline-none cursor-pointer"
           >
             <option>सर्व तालुके</option>
-            <option>मालवण</option>
-            <option>कणकवली</option>
-            <option>कुडाळ</option>
-            <option>सावंतवाडी</option>
-            <option>वेंगुर्ला</option>
-            <option>देवगड</option>
-            <option>वैभववाडी</option>
-            <option>दोडामार्ग</option>
+            {Array.from(new Set([
+              ...dbTalukas,
+              ...articles.map(a => a.taluka).filter(t => t && t !== 'Unknown')
+            ])).map(taluka => (
+              <option key={taluka} value={taluka}>{taluka}</option>
+            ))}
           </select>
 
           <select
@@ -147,12 +181,12 @@ export default function ArticlesPage({ onEdit }) {
             className="font-poppins text-[12px] text-teal bg-white border-[1.5px] border-line px-3 py-1.5 rounded-[20px] outline-none cursor-pointer"
           >
             <option>सर्व विभाग</option>
-            <option>पर्यटन</option>
-            <option>राजकारण</option>
-            <option>मासेमारी-शेती</option>
-            <option>संस्कृती</option>
-            <option>खेळ</option>
-            <option>इतर बातमे</option>
+            {Array.from(new Set([
+              ...dbCategories,
+              ...articles.map(a => a.category).filter(c => c && c !== 'Unknown')
+            ])).map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
           </select>
 
           <select
@@ -161,9 +195,12 @@ export default function ArticlesPage({ onEdit }) {
             className="font-poppins text-[12px] text-teal bg-white border-[1.5px] border-line px-3 py-1.5 rounded-[20px] outline-none cursor-pointer"
           >
             <option>सर्व लेखक</option>
-            <option>सारिका पवार</option>
-            <option>राजेश कदम</option>
-            <option>मीना जाधव</option>
+            {Array.from(new Set([
+              ...dbAuthors,
+              ...articles.map(a => a.author).filter(auth => auth && auth !== 'Unknown')
+            ])).map(author => (
+              <option key={author} value={author}>{author}</option>
+            ))}
           </select>
         </div>
       </div>

@@ -7,9 +7,10 @@ import { fetchAds } from '../../api/ads.js';
 import { getMediaUrl } from '../../utils/media.js';
 import SEOHead from '../../components/shared/SEOHead.jsx';
 import { generateBreadcrumbSchema } from '../../utils/seo.js';
+import { fetchDistricts } from '../../api/districts.js';
 import AdCarousel from '../../components/shared/AdCarousel.jsx';
 
-const talukaFilters = ['सगळे तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'वैभववाडी', 'दोडामार्ग'];
+const defaultTalukaFilters = ['सगळे तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'वैभववाडी', 'दोडामार्ग'];
 
 const categoryDetails = {
   listing: { title: 'तालुक्यच्यो बातम्या', desc: 'सिंधुदुर्ग आनि कोकण परिसरांतल्यो तालुक्यांच्यो बातम्या', count: 'एकूण ६२ लेख' },

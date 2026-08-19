@@ -53,6 +53,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('latest');
   const detail = categoryDetails[categoryKey] || categoryDetails['listing'];
+  const details = detail;
 
   // Sync selectedTaluka if initialTaluka changes
   useEffect(() => {

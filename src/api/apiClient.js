@@ -28,7 +28,7 @@ apiClient.interceptors.response.use(
   async (error) => {
     if (error.response) {
       if (error.response.status === 401) {
-        if (window.location.pathname.startsWith('/admin')) {
+        if (window.location.pathname.startsWith('/admin') && !window.location.pathname.includes('login')) {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           toast.error('सत्राची मुदत संपली आहे. कृपया पुन्हा लॉगिन करा.');
@@ -40,7 +40,10 @@ apiClient.interceptors.response.use(
         toast.error('सर्व्हरमध्ये त्रुटी आली. कृपया थोड्या वेळाने प्रयत्न करा.');
       }
     } else if (error.request) {
-      toast.error('सर्व्हरशी संपर्क होऊ शकला नाही. नेटवर्क तपासा.');
+      // Only show network error toast when not on login page and not suppressed
+      if (!error.config?.suppressNetworkToast && !window.location.pathname.includes('login')) {
+        toast.error('सर्व्हरशी संपर्क होऊ शकला नाही. नेटवर्क तपासा.');
+      }
     }
     return Promise.reject(error);
   }

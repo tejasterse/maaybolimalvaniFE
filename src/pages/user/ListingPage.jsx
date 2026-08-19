@@ -48,6 +48,7 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
   
   const categoryKey = propCategoryKey || params.categoryKey || 'listing';
   
+  const [selectedRegion, setSelectedRegion] = useState('कोंकण');
   const [selectedTaluka, setSelectedTaluka] = useState(location.state?.taluka || initialTaluka || 'सगळे तालुके');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('latest');
@@ -156,23 +157,58 @@ export default function ListingPage({ categoryKey: propCategoryKey, initialTaluk
       </div>
 
       <div className="max-w-[1180px] mx-auto px-6">
-        {/* Toolbar */}
-        <div className="flex justify-between items-center py-6 flex-wrap gap-3">
-          <div className="flex gap-2 flex-wrap">
-            {talukaFilters.map((f) => (
-              <span
-                key={f}
-                onClick={() => setSelectedTaluka(f)}
-                className="font-poppins text-[12.5px] px-3.5 py-[7px] rounded-[18px] cursor-pointer border-[1.5px] nav-transition"
-                style={{
-                  background: selectedTaluka === f ? 'var(--navy)' : '#fff',
-                  color: selectedTaluka === f ? '#fff' : 'var(--ink)',
-                  borderColor: selectedTaluka === f ? 'var(--navy)' : 'var(--line)'
-                }}
-              >
-                {f}
-              </span>
-            ))}
+        {/* Region & District Toolbar */}
+        <div className="py-6 border-b border-line/60 mb-4">
+          <div className="flex flex-col gap-3">
+            {/* 1. Primary Region Categories: कोंकण, महाराष्ट्र, देश */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-poppins text-[12px] font-bold text-maroon-deep mr-1">विभाग:</span>
+              {['कोंकण', 'महाराष्ट्र', 'देश'].map((reg) => (
+                <button
+                  key={reg}
+                  onClick={() => {
+                    setSelectedRegion(reg);
+                    if (reg !== 'कोंकण') setSelectedTaluka('सगळे');
+                  }}
+                  className={`font-poppins text-[13px] font-bold px-4 py-1.5 rounded-full transition-all cursor-pointer ${
+                    selectedRegion === reg
+                      ? 'bg-maroon text-gold-light shadow-sm border border-gold/40'
+                      : 'bg-white text-navy border border-line hover:bg-cream'
+                  }`}
+                >
+                  {reg}
+                </button>
+              ))}
+            </div>
+
+            {/* 2. Sub-categories under कोंकण (Only shown when कोंकण is selected) */}
+            {selectedRegion === 'कोंकण' && (
+              <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-line/40">
+                <span className="font-poppins text-[11px] text-grey mr-1 font-semibold">तालुका / sub-category:</span>
+                {['सगळे तालुके', 'मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'दोडामार्ग', 'वैभववाडी'].map((f) => (
+                  <span
+                    key={f}
+                    onClick={() => setSelectedTaluka(f)}
+                    className={`font-poppins text-[12px] px-3 py-1 rounded-full cursor-pointer border transition-all ${
+                      selectedTaluka === f
+                        ? 'bg-teal text-white font-semibold border-teal shadow-xs'
+                        : 'bg-white text-ink border-line hover:bg-teal/5'
+                    }`}
+                  >
+                    {f}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Toolbar - Order controls */}
+        <div className="flex justify-between items-center pb-4 flex-wrap gap-3">
+          <div className="font-poppins text-[13px] text-grey font-medium">
+            {selectedRegion === 'कोंकण' && selectedTaluka !== 'सगळे तालुके' 
+              ? `${selectedTaluka} बातम्या` 
+              : `${selectedRegion} विभाग खबरें`}
           </div>
           <div className="flex items-center gap-2">
             <span className="font-poppins text-[12px] text-grey">क्रमवारी:</span>

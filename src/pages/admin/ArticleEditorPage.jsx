@@ -524,23 +524,53 @@ export default function ArticleEditorPage({ onBack }) {
               </select>
             </div>
             <div className="mb-3.5">
-              <label className="block font-poppins text-[11.5px] text-grey mb-1.5">तालुका</label>
-              <div className="flex flex-wrap gap-1.5">
-                {districtsData.map((t) => (
-                  <span
-                    key={t.id}
-                    onClick={() => setSelectedTaluka(t.name)}
-                    className="font-poppins text-[11.5px] px-2.5 py-1 rounded-[14px] cursor-pointer transition-colors"
-                    style={
-                      selectedTaluka === t.name
-                        ? { background: 'var(--teal)', color: '#fff' }
-                        : { background: '#F6F1E6', color: 'var(--teal)' }
-                    }
+              <label className="block font-poppins text-[11.5px] font-bold text-grey mb-1.5">जिल्हा / प्रादेशिक विभाग</label>
+              {/* Region Categories: कोंकण, महाराष्ट्र, देश */}
+              <div className="flex items-center gap-1.5 mb-2.5">
+                {['कोंकण', 'महाराष्ट्र', 'देश'].map((reg) => (
+                  <button
+                    key={reg}
+                    type="button"
+                    onClick={() => {
+                      if (reg !== 'कोंकण') {
+                        setSelectedTaluka(reg);
+                      } else if (!['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'दोडामार्ग', 'वैभववाडी'].includes(selectedTaluka)) {
+                        setSelectedTaluka('मालवण');
+                      }
+                    }}
+                    className={`font-poppins text-[11.5px] px-3 py-1 rounded-[14px] cursor-pointer transition-colors font-bold ${
+                      (reg === 'कोंकण' && ['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'दोडामार्ग', 'वैभववाडी', 'कोंकण'].includes(selectedTaluka)) || selectedTaluka === reg
+                        ? 'bg-maroon text-gold-light shadow-xs'
+                        : 'bg-gray-100 text-slate-700 hover:bg-gray-200'
+                    }`}
                   >
-                    {t.name}
-                  </span>
+                    {reg}
+                  </button>
                 ))}
               </div>
+
+              {/* Sub-categories shown when Konkan is selected */}
+              {(['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'दोडामार्ग', 'वैभववाडी', 'कोंकण'].includes(selectedTaluka) || !selectedTaluka) && (
+                <div>
+                  <div className="font-poppins text-[10.5px] text-grey mb-1 font-semibold">कोंकण sub-categories:</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {['मालवण', 'कणकवली', 'कुडाळ', 'सावंतवाडी', 'वेंगुर्ला', 'देवगड', 'दोडामार्ग', 'वैभववाडी'].map((t) => (
+                      <span
+                        key={t}
+                        onClick={() => setSelectedTaluka(t)}
+                        className="font-poppins text-[11.5px] px-2.5 py-1 rounded-[14px] cursor-pointer transition-colors"
+                        style={
+                          selectedTaluka === t
+                            ? { background: 'var(--teal)', color: '#fff', fontWeight: '600' }
+                            : { background: '#F6F1E6', color: 'var(--teal)' }
+                        }
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <div className="mb-3.5">
               <label className="block font-poppins text-[11.5px] text-grey mb-1.5">प्रकाशन तारीख</label>

@@ -156,6 +156,7 @@ export default function HomePage({ onNavigate }) {
     }
   };
   const [activeTab, setActiveTab] = useState('सर्व');
+  const [selectedRegion, setSelectedRegion] = useState('कोंकण');
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
   const stripHtml = (html) => {
@@ -448,27 +449,80 @@ export default function HomePage({ onNavigate }) {
           <div className="py-6"></div>
         )}
 
-        {/* 2. Taluka Highlights - Centered & Responsive */}
+        {/* 2. District & Region Categories - कोंकण, महाराष्ट्र, देश */}
         <div className="mb-10">
           <div className="flex flex-col items-center justify-center text-center mb-5">
             <h2 className="font-tiro text-[24px] md:text-[26px] font-bold text-maroon-deep relative pb-1">
-              तालुक्याच्यो बातम्या
+              स्थानिक व प्रादेशिक बातम्या
             </h2>
-            <div className="w-12 h-[2.5px] bg-teal rounded-full mt-1"></div>
+            <div className="w-12 h-[2.5px] bg-teal rounded-full mt-1 mb-4"></div>
+
+            {/* Region Selector Tabs: कोंकण, महाराष्ट्र, देश */}
+            <div className="inline-flex items-center gap-2 p-1.5 bg-gray-100/90 rounded-full border border-line shadow-inner">
+              {['कोंकण', 'महाराष्ट्र', 'देश'].map((reg) => (
+                <button
+                  key={reg}
+                  onClick={() => setSelectedRegion(reg)}
+                  className={`py-1.5 px-5 rounded-full font-poppins font-bold text-[13px] transition-all cursor-pointer ${
+                    selectedRegion === reg
+                      ? 'bg-maroon text-gold-light shadow-md border border-gold/40'
+                      : 'bg-transparent text-navy hover:bg-white/60'
+                  }`}
+                >
+                  {reg}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-3.5">
-            {dynamicTalukaHighlights.map((t) => (
-              <div
-                key={t.name}
-                onClick={() => navigate('/listing', { state: { taluka: t.name } })}
-                className="w-[calc(50%-6px)] sm:w-[calc(33.33%-10px)] md:w-[135px] lg:w-[145px] flex-shrink-0 rounded-xl p-3 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md bg-white flex flex-col justify-center items-center text-center h-[108px] border-b-4 border-teal"
-                style={{ borderTop: '1px solid var(--line)', borderLeft: '1px solid var(--line)', borderRight: '1px solid var(--line)' }}
-              >
-                <div className="font-tiro font-bold text-[16px] text-maroon-deep mb-1">{t.name}</div>
-                <div className="font-mukta text-[11px] leading-tight text-grey line-clamp-2">{t.headline}</div>
-              </div>
-            ))}
-          </div>
+
+          {/* Sub-categories displayed ONLY when कोंकण is selected */}
+          {selectedRegion === 'कोंकण' ? (
+            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-3.5">
+              {dynamicTalukaHighlights.map((t) => (
+                <div
+                  key={t.name}
+                  onClick={() => navigate('/listing', { state: { taluka: t.name } })}
+                  className="w-[calc(50%-6px)] sm:w-[calc(33.33%-10px)] md:w-[135px] lg:w-[145px] flex-shrink-0 rounded-xl p-3 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md bg-white flex flex-col justify-center items-center text-center h-[108px] border-b-4 border-teal"
+                  style={{ borderTop: '1px solid var(--line)', borderLeft: '1px solid var(--line)', borderRight: '1px solid var(--line)' }}
+                >
+                  <div className="font-tiro font-bold text-[16px] text-maroon-deep mb-1">{t.name}</div>
+                  <div className="font-mukta text-[11px] leading-tight text-grey line-clamp-2">{t.headline}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* News for महाराष्ट्र or देश when selected */
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-[1000px] mx-auto">
+              {posts
+                .filter(p => p.districtName === selectedRegion || p.categoryName === selectedRegion)
+                .slice(0, 6)
+                .map((post) => (
+                  <div
+                    key={post.id}
+                    onClick={() => navigate(`/article/${post.id}`)}
+                    className="bg-white rounded-xl p-3.5 border border-line shadow-sm hover:shadow-md cursor-pointer transition-all flex flex-col justify-between"
+                  >
+                    <div>
+                      <span className="font-poppins text-[10px] font-bold text-teal bg-teal/10 px-2 py-0.5 rounded-full inline-block mb-1.5 uppercase">
+                        {selectedRegion}
+                      </span>
+                      <h4 className="font-tiro font-bold text-[15px] text-ink leading-snug line-clamp-2">
+                        {post.title}
+                      </h4>
+                    </div>
+                    <div className="font-poppins text-[11px] text-grey mt-2 flex items-center justify-between">
+                      <span>{new Date(post.createdAt).toLocaleDateString('mr-IN')}</span>
+                      <span className="text-teal font-semibold">वाचा →</span>
+                    </div>
+                  </div>
+                ))}
+              {posts.filter(p => p.districtName === selectedRegion || p.categoryName === selectedRegion).length === 0 && (
+                <div className="col-span-full py-8 text-center font-poppins text-sm text-grey bg-white rounded-xl border border-line">
+                  {selectedRegion} विभागासाठी सध्या कोणतीही बातमी उपलब्ध नाही.
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Dynamic Advertisement 1 */}

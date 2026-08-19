@@ -11,8 +11,13 @@ export const createGalleryItem = async (formData) => {
 };
 
 export const updateGalleryItem = async ({ id, formData }) => {
-    const res = await apiClient.put(`/gallery/${id}`, formData);
-    return res.data;
+    try {
+        const res = await apiClient.post(`/gallery/${id}`, formData);
+        return res.data;
+    } catch (err) {
+        const res = await apiClient.put(`/gallery/${id}`, formData);
+        return res.data;
+    }
 };
 
 export const deleteGalleryItem = async (id) => {

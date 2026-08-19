@@ -16,8 +16,13 @@ export const createEvent = async (formData) => {
 };
 
 export const updateEvent = async ({ id, formData }) => {
-    const res = await apiClient.put(`/events/${id}`, formData);
-    return res.data;
+    try {
+        const res = await apiClient.post(`/events/${id}`, formData);
+        return res.data;
+    } catch (err) {
+        const res = await apiClient.put(`/events/${id}`, formData);
+        return res.data;
+    }
 };
 
 export const deleteEvent = async (id) => {

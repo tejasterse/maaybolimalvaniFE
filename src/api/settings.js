@@ -6,6 +6,11 @@ export const fetchSettings = async () => {
 };
 
 export const updateSettings = async (settingsData) => {
-  const { data } = await apiClient.put('/settings', settingsData);
-  return data;
+  try {
+    const { data } = await apiClient.post('/settings', settingsData);
+    return data;
+  } catch (err) {
+    const { data } = await apiClient.put('/settings', settingsData);
+    return data;
+  }
 };

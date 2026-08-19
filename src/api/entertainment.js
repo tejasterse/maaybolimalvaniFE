@@ -16,8 +16,13 @@ export const createEntertainment = async (formData) => {
 };
 
 export const updateEntertainment = async ({ id, formData }) => {
-    const res = await apiClient.put(`/entertainment/${id}`, formData);
-    return res.data;
+    try {
+        const res = await apiClient.post(`/entertainment/${id}`, formData);
+        return res.data;
+    } catch (err) {
+        const res = await apiClient.put(`/entertainment/${id}`, formData);
+        return res.data;
+    }
 };
 
 export const deleteEntertainment = async (id) => {

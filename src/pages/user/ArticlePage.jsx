@@ -16,7 +16,7 @@ import { getMediaUrl } from '../../utils/media.js';
 import AdCarousel from '../../components/shared/AdCarousel.jsx';
 import SEOHead from '../../components/shared/SEOHead.jsx';
 import AEOFactsBox from '../../components/shared/AEOFactsBox.jsx';
-import { generateNewsArticleSchema, generateBreadcrumbSchema, createExcerpt } from '../../utils/seo.js';
+import { generateNewsArticleSchema, generateBreadcrumbSchema, createExcerpt, cleanText } from '../../utils/seo.js';
 import toast from 'react-hot-toast';
 
 function getYouTubeId(url) {
@@ -221,7 +221,7 @@ ${pageUrl}
           </div>
 
           <h1 className="font-tiro text-[28px] sm:text-[36px] leading-[1.3] text-ink mb-4 font-semibold">
-            {post.title}
+            {cleanText(post.title)}
           </h1>
 
           {/* Author / Reporter / Metadata row */}

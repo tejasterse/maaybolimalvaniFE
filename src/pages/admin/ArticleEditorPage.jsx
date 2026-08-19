@@ -11,6 +11,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Globe, ArrowRight, Video } from 'lucide-react';
 
 import { getMediaUrl } from '../../utils/media.js';
+import { cleanText } from '../../utils/seo.js';
 import toast from 'react-hot-toast';
 
 function getYouTubeId(url) {
@@ -169,21 +170,28 @@ export default function ArticleEditorPage({ onBack }) {
     );
     const dist = districtsData.find(d => d.name === selectedTaluka || d.id === selectedTaluka);
 
+    const cleanTitleStr = cleanText(title);
+    const cleanBodyStr = body ? body.replace(/&nbsp;/gi, ' ').replace(/\u00a0/g, ' ') : '';
+    const cleanReporterStr = cleanText(reporterName);
+    const cleanSeoTitleStr = cleanText(seoTitle);
+    const cleanSeoDescStr = cleanText(seoDescription);
+    const cleanSeoKeyStr = cleanText(seoKeywords);
+
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', body);
+    formData.append('title', cleanTitleStr);
+    formData.append('content', cleanBodyStr);
     formData.append('category_id', cat ? cat.id : (article?.category_id || 1));
     if (dist) formData.append('district_id', dist.id);
     formData.append('is_breaking', breakingOn ? 1 : 0);
     formData.append('is_featured', featureOn ? 1 : 0);
-    formData.append('reporter_name', reporterName || '');
+    formData.append('reporter_name', cleanReporterStr || '');
     if (pubDate) formData.append('createdAt', pubDate);
     formData.append('status', status);
 
     formData.append('video_url', youtubeUrl || '');
-    formData.append('seo_title', seoTitle || '');
-    formData.append('seo_description', seoDescription || '');
-    formData.append('seo_keywords', seoKeywords || '');
+    formData.append('seo_title', cleanSeoTitleStr || '');
+    formData.append('seo_description', cleanSeoDescStr || '');
+    formData.append('seo_keywords', cleanSeoKeyStr || '');
     formData.append('slug', customSlug || '');
 
     if (imageFile) {

@@ -10,11 +10,50 @@ export const DEFAULT_OG_IMAGE = `${BASE_URL}/header-logo.jpg`;
 export const PUBLISHER_LOGO = `${BASE_URL}/logo.png`;
 
 /**
+ * Sanitize text by stripping HTML tags and decoding/replacing HTML entities
+ */
+export function stripHtmlAndEntities(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#160;/g, ' ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&rsquo;/gi, "'")
+    .replace(/&lsquo;/gi, "'")
+    .replace(/&rdquo;/gi, '"')
+    .replace(/&ldquo;/gi, '"')
+    .replace(/&ndash;/gi, '-')
+    .replace(/&mdash;/gi, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Clean plain text strings (titles, reporter names, etc.) by replacing non-breaking spaces
+ */
+export function cleanText(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#160;/g, ' ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
  * Generate clean readable text snippet from HTML or plain text
  */
 export function createExcerpt(text, maxLength = 160) {
   if (!text) return "";
-  const plainText = text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  const plainText = stripHtmlAndEntities(text);
   if (plainText.length <= maxLength) return plainText;
   return plainText.substring(0, maxLength).trim() + "...";
 }

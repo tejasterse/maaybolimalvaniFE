@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { X, Landmark, Palmtree, Fish, Film, Trophy, Scale, Train, Bus, Car, Bot, ArrowRight, Calendar, MapPin, Play, Newspaper, Eye, Video, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Landmark, Palmtree, Fish, Film, Trophy, Scale, Train, Bus, Car, Bot, ArrowRight, Calendar, MapPin, Play, Newspaper, Eye, Video, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { fetchPosts } from '../../api/posts.js';
 import { fetchCategories } from '../../api/categories.js';
 import { fetchDistricts } from '../../api/districts.js';
@@ -158,6 +158,19 @@ export default function HomePage({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('सर्व');
   const [selectedRegion, setSelectedRegion] = useState('कोंकण');
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 120) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const stripHtml = (html) => {
     if (!html) return '';
@@ -273,8 +286,9 @@ export default function HomePage({ onNavigate }) {
     ? posts
     : posts.filter((a) => a.categoryName === activeTab);
 
-  // Dynamic breaking news from database
+  // Dynamic breaking news from database (fallback to posts if no breaking news tagged)
   const breakingNewsData = posts.filter(p => p.is_breaking === 1 || p.is_breaking === true);
+  const tickerPosts = breakingNewsData.length > 0 ? breakingNewsData : posts.slice(0, 8);
 
   // Rotate hero article if multiple breaking news exist
   useEffect(() => {
@@ -300,36 +314,68 @@ export default function HomePage({ onNavigate }) {
         canonicalUrl="/"
         jsonLd={[websiteSchema, orgSchema]}
       />
-      {/* 1. Breaking news ticker */}
-      {breakingNewsData.length > 0 && (
-        <div
-          className="overflow-hidden py-2 px-4"
-          style={{ background: 'var(--maroon)', borderBottom: '2px solid var(--gold)' }}
-        >
-          <div className="flex items-center gap-4">
-            <span
-              className="flex-shrink-0 font-poppins font-bold text-[10px] uppercase tracking-[.12em] text-navy px-3 py-1 rounded-full"
-              style={{ background: 'var(--gold)' }}
-            >
-              ताजी फडफडीत बातमी
-            </span>
-            <div className="overflow-hidden flex-1">
-              <div className="ticker-inner font-poppins text-[12.5px] text-[#fbe8c9] whitespace-nowrap flex items-center">
-                {breakingNewsData.map((b, index) => (
-                  <span key={b.id} className=" items-center">
-                    <span
-                      onClick={() => navigate(`/article/${b.id}`)}
-                      className="cursor-pointer hover:underline transition-all"
-                    >
-                      {b.title}
-                    </span>
-                    {index < breakingNewsData.length - 1 && <span className="mx-4" style={{ color: 'var(--gold)' }}>◆</span>}
-                  </span>
-                ))}
+      {/* 1. Breaking news ticker (Inline at top, Fixed at bottom when scrolled) */}
+      {tickerPosts.length > 0 && (
+        <>
+          <div
+            className={`transition-all duration-300 ${
+              isScrolled
+                ? 'fixed bottom-0 left-0 right-0 z-40 shadow-[0_-6px_25px_rgba(0,0,0,0.45)]'
+                : 'relative'
+            }`}
+            style={{
+              background: 'var(--maroon)',
+              borderTop: '2px solid var(--gold)',
+              borderBottom: '2px solid var(--gold)'
+            }}
+          >
+            <div className="flex items-center gap-2 sm:gap-4 py-2 px-3 sm:px-5 max-w-[1400px] mx-auto">
+              
+              {/* Left Side Bolt & Badge */}
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                <Zap size={18} className="text-gold fill-gold shrink-0 animate-pulse" />
+                <span
+                  className="flex items-center gap-1.5 font-poppins font-extrabold text-[10.5px] sm:text-[11.5px] uppercase tracking-[.1em] text-navy px-3 py-1 rounded-full shadow-md whitespace-nowrap"
+                  style={{ background: 'var(--gold)', color: 'var(--navy)' }}
+                >
+                  <Zap size={13} className="fill-navy text-navy" />
+                  ताजी फडफडीत बातमी
+                </span>
+                <Zap size={16} className="text-gold fill-gold shrink-0 hidden sm:block animate-pulse" />
               </div>
+
+              {/* Ticker Scrolling Content */}
+              <div className="overflow-hidden flex-1 relative">
+                <div className="ticker-inner font-poppins font-bold text-[12.5px] sm:text-[13.5px] text-[#fbe8c9] whitespace-nowrap flex items-center">
+                  {tickerPosts.map((b, index) => (
+                    <span key={b.id || index} className="inline-flex items-center">
+                      <span
+                        onClick={() => navigate(`/article/${b.id}`)}
+                        className="cursor-pointer hover:text-gold hover:underline transition-colors"
+                      >
+                        {b.title}
+                      </span>
+                      {index < tickerPosts.length - 1 && (
+                        <span className="mx-4 flex items-center text-gold">
+                          <Zap size={12} className="fill-gold text-gold inline" />
+                        </span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Side Bolt */}
+              <div className="flex items-center gap-1 flex-shrink-0 pl-1">
+                <Zap size={18} className="text-gold fill-gold shrink-0 animate-pulse" />
+              </div>
+
             </div>
           </div>
-        </div>
+
+          {/* Reserve height when fixed at bottom so content doesn't shift */}
+          {isScrolled && <div className="h-[42px]" />}
+        </>
       )}
 
       <div className="max-w-[1180px] mx-auto px-4 sm:px-6 pb-12">

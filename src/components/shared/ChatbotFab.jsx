@@ -77,7 +77,7 @@ export default function ChatbotFab() {
       {!isOpen && (
         <div
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 font-poppins font-semibold text-[13.5px] px-5 py-3.5 rounded-[30px] flex items-center gap-2.5 cursor-pointer z-40 hover:scale-105 transition-transform shadow-lg"
+          className="fixed bottom-14 sm:bottom-16 right-4 sm:right-6 font-poppins font-semibold text-[13.5px] px-5 py-3.5 rounded-[30px] flex items-center gap-2.5 cursor-pointer z-40 hover:scale-105 transition-transform shadow-lg"
           style={{
             background: 'var(--navy)',
             color: '#fbe8c9',
@@ -98,7 +98,7 @@ export default function ChatbotFab() {
       {/* Chat Window Popup */}
       {isOpen && (
         <div 
-          className="fixed bottom-6 right-6 z-50 flex flex-col overflow-hidden bg-white rounded-[16px] animate-fade-in shadow-2xl"
+          className="fixed bottom-14 sm:bottom-16 right-4 sm:right-6 z-50 flex flex-col overflow-hidden bg-white rounded-[16px] animate-fade-in shadow-2xl"
           style={{ width: '390px', height: '600px', maxWidth: 'calc(100vw - 32px)', maxHeight: 'calc(100vh - 32px)', border: '1px solid var(--line)' }}
         >
           {/* Header */}
